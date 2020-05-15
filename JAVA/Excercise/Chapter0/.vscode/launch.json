@@ -1,0 +1,77 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - main",
+            "request": "launch",
+            "mainClass": "main",
+            "projectName": "Chapter0"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Bai9",
+            "request": "launch",
+            "mainClass": "app.Bai9",
+            "projectName": "Chapter0"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Bai8",
+            "request": "launch",
+            "mainClass": "app.Bai8",
+            "projectName": "Chapter0"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Bai7",
+            "request": "launch",
+            "mainClass": "app.Bai7",
+            "projectName": "Chapter0"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Bai6",
+            "request": "launch",
+            "mainClass": "app.Bai6",
+            "projectName": "Chapter0"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Bai4",
+            "request": "launch",
+            "mainClass": "app.Bai4",
+            "projectName": "Chapter0"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Bai3",
+            "request": "launch",
+            "mainClass": "app.Bai3",
+            "projectName": "Chapter0"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Bai2",
+            "request": "launch",
+            "mainClass": "app.Bai2",
+            "projectName": "Chapter0"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-App<Chapter0>",
+            "request": "launch",
+            "mainClass": "app.App",
+            "projectName": "Chapter0"
+        }
+    ]
+}

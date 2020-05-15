@@ -1,0 +1,117 @@
+
+
+Version:	3.12
+CmdLine:	G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\JavaDesktopByTik.exe --l4j-debug
+WOW64:		yes
+Working dir:	G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\.
+Java min ver:	1.008.000
+Java max ver:	
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+32-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (not found)
+Ignore:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_141
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_141\bin\javaw.exe (OK)
+Match:		1.008.000_141
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_241
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (not found)
+Ignore:		1.008.000_241
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+32-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8
+Ignore:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8.0_141
+Ignore:		1.008.000_141
+64-bit search:	SOFTWARE\JavaSoft\JRE...
+32-bit search:	SOFTWARE\JavaSoft\JRE...
+64-bit search:	SOFTWARE\JavaSoft\JDK...
+Check:		SOFTWARE\JavaSoft\JDK\12.0.2
+Check launcher:	C:\Program Files\Java\jdk-12.0.2\bin\javaw.exe (OK)
+Match:		1.012.000_002
+Check:		SOFTWARE\JavaSoft\JDK\14
+Check launcher:	C:\Program Files\Java\jdk-14\bin\javaw.exe (not found)
+Ignore:		1.014.000
+Runtime used:	1.012.000_002 (64-bit)
+Launcher:	C:\Program Files\Java\jdk-12.0.2\bin\javaw.exe
+Launcher args:	-jar "G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\JavaDesktopByTik.exe"
+Args length:	92/32768 chars
+Exit code:	0
+
+
+Version:	3.12
+CmdLine:	G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\JavaDesktopByTik.exe --l4j-debug
+WOW64:		yes
+Working dir:	G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\.
+Java min ver:	1.008.000
+Java max ver:	
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+32-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (not found)
+Ignore:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_141
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_141\bin\javaw.exe (OK)
+Match:		1.008.000_141
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_241
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (not found)
+Ignore:		1.008.000_241
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+32-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8
+Ignore:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8.0_141
+Ignore:		1.008.000_141
+64-bit search:	SOFTWARE\JavaSoft\JRE...
+32-bit search:	SOFTWARE\JavaSoft\JRE...
+64-bit search:	SOFTWARE\JavaSoft\JDK...
+Check:		SOFTWARE\JavaSoft\JDK\12.0.2
+Check launcher:	C:\Program Files\Java\jdk-12.0.2\bin\javaw.exe (OK)
+Match:		1.012.000_002
+Check:		SOFTWARE\JavaSoft\JDK\14
+Check launcher:	C:\Program Files\Java\jdk-14\bin\javaw.exe (not found)
+Ignore:		1.014.000
+Runtime used:	1.012.000_002 (64-bit)
+Launcher:	C:\Program Files\Java\jdk-12.0.2\bin\javaw.exe
+Launcher args:	-jar "G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\JavaDesktopByTik.exe"
+Args length:	92/32768 chars
+Exit code:	0
+
+
+Version:	3.12
+CmdLine:	G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\JavaDesktopByTik.exe --l4j-debug
+WOW64:		yes
+Working dir:	G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\.
+Java min ver:	1.008.000
+Java max ver:	
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+32-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (not found)
+Ignore:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_141
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_141\bin\javaw.exe (OK)
+Match:		1.008.000_141
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_241
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (not found)
+Ignore:		1.008.000_241
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+32-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8
+Ignore:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8.0_141
+Ignore:		1.008.000_141
+64-bit search:	SOFTWARE\JavaSoft\JRE...
+32-bit search:	SOFTWARE\JavaSoft\JRE...
+64-bit search:	SOFTWARE\JavaSoft\JDK...
+Check:		SOFTWARE\JavaSoft\JDK\12.0.2
+Check launcher:	C:\Program Files\Java\jdk-12.0.2\bin\javaw.exe (OK)
+Match:		1.012.000_002
+Check:		SOFTWARE\JavaSoft\JDK\14
+Check launcher:	C:\Program Files\Java\jdk-14\bin\javaw.exe (not found)
+Ignore:		1.014.000
+Runtime used:	1.012.000_002 (64-bit)
+Launcher:	C:\Program Files\Java\jdk-12.0.2\bin\javaw.exe
+Launcher args:	-jar "G:\GitHub\SGU-Project\JAVA\Excercise\JavaDesktop\src\Application\JavaDesktopByTik.exe"
+Args length:	92/32768 chars
+Exit code:	0
