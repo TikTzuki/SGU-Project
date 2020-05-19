@@ -7,9 +7,11 @@ package GUI;
 
 import BUS.BUSGetAuthor;
 import BUS.BUSGetBook;
+import BUS.BUSGetDiscount;
 import BUS.BUSGetGenre;
 import DTO.Author;
 import DTO.Book;
+import DTO.Discount;
 import DTO.Genre;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -50,7 +52,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Tik
  */
 public class GUIOrderManager extends JFrame{
-
+    private Font fontContent = new Font(Font.SERIF, 0, 12);
     public JPanel pnlMainPanel;
     JTabbedPane tabbedPane;
     JPanel pnlCreateOrder;
@@ -60,9 +62,12 @@ public class GUIOrderManager extends JFrame{
     JPanel pnlSelectedProduct;
     JPanel pnlSelectedProductDetail;
     JPanel pnlInstanceOrder;
+    JTable tblOrderDetail;
+    DefaultTableModel modelTblOrderdetail;
     public GUIOrderManager() {
         initComponents();
         modelTblProduct = (DefaultTableModel) tblProduct.getModel();
+        modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
         showTableProduct();
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -95,24 +100,42 @@ public class GUIOrderManager extends JFrame{
         pnlSelectedProductDetail.setPreferredSize(new Dimension(200, 300));
         pnlSelectedProductDetail.setBackground(Color.red);
         
-        Dimension selectedProductLabelSize = new Dimension(200, 20);
+        Dimension selectedProductLabelSize = new Dimension(50, 20);
         JPanel pnlBlock = new JPanel(); pnlBlock.setPreferredSize(new Dimension(200, 120));
+        
+        lblBookId.setPreferredSize(selectedProductLabelSize);
+        lblBookId.setFont(fontContent);
         lblBookGenre.setPreferredSize(selectedProductLabelSize);
+        lblBookGenre.setFont(fontContent);
         lblBookName.setPreferredSize(selectedProductLabelSize);
+        lblBookName.setFont(fontContent);
         lblBookAuthor.setPreferredSize(selectedProductLabelSize);
+        lblBookAuthor.setFont(fontContent);
         lblBookPrice.setPreferredSize(selectedProductLabelSize);
-        lblBookQuantity.setPreferredSize(new Dimension(60, 20));
-        txtBookQuantity.setPreferredSize(new Dimension(30, 20));
+        lblBookPrice.setFont(fontContent);
+        lblBookQuantity.setPreferredSize(new Dimension(100, 20));
+        lblBookQuantity.setFont(fontContent);
         lblISBN.setPreferredSize(selectedProductLabelSize);
+        lblISBN.setFont(fontContent);
+        lblBookIdValue.setPreferredSize(new Dimension(100,20));
+        txtBookQuantity.setPreferredSize(new Dimension(50, 20));
+        
         
         pnlSelectedProductDetail.add(pnlBlock);
+        pnlSelectedProductDetail.add(lblBookId);
+        pnlSelectedProductDetail.add(lblBookIdValue);
         pnlSelectedProductDetail.add(lblBookGenre);
+        pnlSelectedProductDetail.add(lblBookGenreValue);
         pnlSelectedProductDetail.add(lblBookName);
+        pnlSelectedProductDetail.add(lblBookNameValue);
         pnlSelectedProductDetail.add(lblBookAuthor);
+        pnlSelectedProductDetail.add(lblBookAuthorValue);
         pnlSelectedProductDetail.add(lblBookPrice);
+        pnlSelectedProductDetail.add(lblBookPriceValue);
         pnlSelectedProductDetail.add(lblBookQuantity);
         pnlSelectedProductDetail.add(txtBookQuantity);
         pnlSelectedProductDetail.add(lblISBN);
+        pnlSelectedProductDetail.add(lblISBNValue);
         
         pnlSelectedProduct.add(lblBookImg,BorderLayout.WEST);
         pnlSelectedProduct.add(pnlSelectedProductDetail,BorderLayout.EAST);
@@ -122,9 +145,10 @@ public class GUIOrderManager extends JFrame{
         JPanel pnlAttachProductToOrder = new JPanel();
          pnlAttachProductToOrder.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent evt){
-                 attachProductToOrder(evt);
+                    showTblOrderDetail(evt);
              }
          });
+
         JLabel lblAttachProductToOrder = new JLabel("Thêm vào hóa đơn >>");
         
         pnlAttachProductToOrder.add(lblAttachProductToOrder);
@@ -134,28 +158,64 @@ public class GUIOrderManager extends JFrame{
         pnlInstanceOrder = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         pnlInstanceOrder.setPreferredSize(new Dimension(550,320));
         //Panel bên trái hóa đơn hiện tại
-        JPanel pnlOrderDetail = new JPanel();
-        pnlOrderDetail.setPreferredSize(new Dimension(400,320));
+        JPanel pnlLeftInstanceOrder = new JPanel();
+        pnlLeftInstanceOrder .setPreferredSize(new Dimension(400,320));
         JLabel lblOrderDetail = new JLabel("Hóa đơn");
-        JTable tblOrderDetail = new JTable();
+        tblOrderDetail = new JTable();
         tblOrderDetail.setPreferredSize(new Dimension(400,500));
+        tblOrderDetail.setModel(new DefaultTableModel(
+            new Object[][]{
+            
+            },
+            new Object[]{"ID","Tên sách","Giá bán","#","Thành tiền"}));
         JScrollPane scrollTblOrderDetail = new JScrollPane(tblOrderDetail);
         scrollTblOrderDetail.setPreferredSize(new Dimension(400,260));
-        JLabel lblTotalDetail = new JLabel("Tổng");
+        JLabel lblTotalValueDiscount = new JLabel("Khuyến mãi: \n Tên khuyen mai");
+        JLabel lblTotalPriceOrder = new JLabel("Tổng:");
         
-        pnlOrderDetail.add(lblOrderDetail);
-        pnlOrderDetail.add(scrollTblOrderDetail);
-        pnlOrderDetail.add(lblTotalDetail);
+        pnlLeftInstanceOrder.add(lblOrderDetail);
+        pnlLeftInstanceOrder.add(scrollTblOrderDetail);
+        pnlLeftInstanceOrder.add(lblTotalValueDiscount);
+        pnlLeftInstanceOrder.add(lblTotalPriceOrder);
         
         //Thêm panel bên trái vào hóa đơn hiện tại
-        pnlInstanceOrder.add(pnlOrderDetail);
+        pnlInstanceOrder.add(pnlLeftInstanceOrder);
         //Panel bên phải hóa dơn hiện tại
-        JPanel pnlRightInstanceOrder = new JPanel();
+        JPanel pnlRightInstanceOrder = new JPanel(new FlowLayout(FlowLayout.CENTER,0,20));
         pnlRightInstanceOrder.setPreferredSize(new Dimension(150,320));
         pnlRightInstanceOrder.setBackground(Color.PINK);
+        
+        Dimension controlSize = new Dimension(100,40);
+        lblSaveOrder.setPreferredSize(controlSize);
+        lblClearOrder.setPreferredSize(controlSize);
+        lblDeleteOrderItem.setPreferredSize(controlSize);
+        cbbDiscount.setPreferredSize(new Dimension(146, 20));
+        
+        BUSGetDiscount discount = new BUSGetDiscount();
+        ArrayList<Discount> discountList = new ArrayList<>();
+        try {
+            discountList = discount.getDiscount();
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cbbDiscount.addItem("Ma giam gia");
+        for(Discount temp:discountList){
+            cbbDiscount.addItem(temp.getDiscount_name());
+        }
+        
+        pnlSaveOrder.add(lblSaveOrder);
+        pnlClearOrder.add(lblClearOrder);
+        pnlDeleteOrderItem.add(lblDeleteOrderItem);
+        pnlDiscount.add(cbbDiscount);
+        
+        pnlRightInstanceOrder.add(pnlSaveOrder);
+        pnlRightInstanceOrder.add(pnlClearOrder);
+        pnlRightInstanceOrder.add(pnlDeleteOrderItem);
+        pnlRightInstanceOrder.add(pnlDiscount);
         pnlInstanceOrder.add(pnlRightInstanceOrder);
         //Thêm panel hóa đơn hiện tại
         pnlCreateOrder.add(pnlInstanceOrder);
+        
             //Table sản phẩm
         tblProduct = new JTable();
         tblProduct.setPreferredSize(new Dimension(0, 1000));
@@ -197,7 +257,7 @@ public class GUIOrderManager extends JFrame{
         BUSGetGenre busGenre = new BUSGetGenre();
         BUSGetAuthor busAuthor = new BUSGetAuthor();
         
-        ArrayList<Book> listBook;
+        ArrayList<Book> listBook;    
 
         try {
             listBook = busBook.getBook();
@@ -208,7 +268,7 @@ public class GUIOrderManager extends JFrame{
                 genre = busGenre.getGenreByBookId(book.getBook_id());
                 author = busAuthor.getAuthorByBookId(book.getBook_id());
                 modelTblProduct.addRow(new Object[]{
-                    //ảnh
+                    //ảnh & id
                     book.getBook_id(),
                     //loại sách
                     genre.getName(),
@@ -231,17 +291,23 @@ public class GUIOrderManager extends JFrame{
     }
     public void showSelectedProduct(MouseEvent evt){
         int selectedRowIndex = tblProduct.getSelectedRow();
+            lblBookId.setText("ID ");
+            lblBookGenre.setText("Thể loại");
+            lblBookName.setText("Tên");
+            lblBookAuthor.setText("Tác giả");
+            lblBookPrice.setText("Giá");
+            lblBookQuantity.setText("Số lượng");
+            lblISBN.setText("ISBN");
         
-
         ImageIcon iiconBook =
         loadIcon("src/images/"+tblProduct.getValueAt(selectedRowIndex, 0).toString()+".jpg", 200, 300);
         lblBookImg.setIcon(iiconBook);
-        lblBookGenre.setText("Thể loại: "+tblProduct.getValueAt(selectedRowIndex, 1).toString());
-        lblBookName.setText("Tên sách: "+tblProduct.getValueAt(selectedRowIndex, 2).toString());
-        lblBookAuthor.setText("Tác giả: "+tblProduct.getValueAt(selectedRowIndex, 3).toString());
-        lblBookPrice.setText("Giá: "+tblProduct.getValueAt(selectedRowIndex, 4).toString());
-        lblBookQuantity.setText("Số lượng: ");
-        txtBookQuantity.setText("0");
+        lblBookIdValue.setText(tblProduct.getValueAt(selectedRowIndex,0).toString());
+        lblBookGenreValue.setText(tblProduct.getValueAt(selectedRowIndex, 1).toString());
+        lblBookNameValue.setText(tblProduct.getValueAt(selectedRowIndex, 2).toString());
+        lblBookAuthorValue.setText(tblProduct.getValueAt(selectedRowIndex, 3).toString());
+        lblBookPriceValue.setText(tblProduct.getValueAt(selectedRowIndex, 4).toString());
+        txtBookQuantity.setText("1");
         txtBookQuantity.addKeyListener(new KeyListener() {
             String keyPressed, instanceString;
             @Override
@@ -254,10 +320,11 @@ public class GUIOrderManager extends JFrame{
 
             @Override
             public void keyReleased(KeyEvent evt) {
+                System.out.println(KeyEvent.getKeyText(evt.getKeyCode()));
                 keyLockOnlyNumberInLimit(evt, Integer.parseInt(tblProduct.getValueAt(selectedRowIndex, 5).toString()));
             }
         });
-        lblISBN.setText("ISBN: "+tblProduct.getValueAt(selectedRowIndex, 6).toString());
+        lblISBNValue.setText(tblProduct.getValueAt(selectedRowIndex, 6).toString());
 
 
     }
@@ -270,7 +337,7 @@ public class GUIOrderManager extends JFrame{
             int iy = image.getHeight();
             int dx = 0, dy = 0;
             if (x / y > ix / iy) {
-                dy = y;
+                dy = y;    
                 dx = dy * ix / iy;
             } else {
                 dx = x;
@@ -286,29 +353,69 @@ public class GUIOrderManager extends JFrame{
     public void keyLockOnlyNumberInLimit(KeyEvent evt, int limit){
         String keyRealeased = KeyEvent.getKeyText(evt.getKeyCode());
         Pattern patern = Pattern.compile("\\d{1,2}");
-        //Trường hợp ký tự vừa nhập vào là Backspace
-        if(keyRealeased == "Backspace")
-            return;
-        //Kiểm tra ký tự đã realeased bằng Regex
-        if(!patern.matcher(keyRealeased).matches())
+        //Trường hợp ký tự vừa nhập vào là ký tự không hiển thị
+        String[] specialChar = {"Caps Lock","Alt","Num Lock","Backspace","Windows",
+            "Escape","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12",
+            "Scroll Lock","Pause","Insert","Home","Page Up","Delete","End","Page Down","Left","Up",
+            "Down","Right","Enter","Ctrl","Begin","Shift"
+        };
+        for(String temp:specialChar){
+            if(keyRealeased == temp)
+                return;
+        }
+        //Kiểm tra ký tự đã realeased bằng Regex || Số lượng mua vượt quá số lượng có sẵn
+        if(!patern.matcher(keyRealeased).matches() || Integer.parseInt(txtBookQuantity.getText()) > limit )
         {   
             txtBookQuantity.setText(txtBookQuantity.getText().substring(0,txtBookQuantity.getText().length()-1));
         }
-        //Nếu số lượng mua vượt quá số lượng có sẵn 
-        if(Integer.parseInt(txtBookQuantity.getText()) > limit )
-        {
-            txtBookQuantity.setText(txtBookQuantity.getText().substring(0,txtBookQuantity.getText().length()-1));
-        }
+
     }
-    public void attachProductToOrder(MouseEvent evt){
-         
-     }
+    public void showTblOrderDetail(MouseEvent evt) {
+        if (lblBookImg.getIcon() == null && txtBookQuantity.getText() == "1") {
+            return;
+        }
+        //Xet xem da co san pham trong hoa chua, neu roi thi cap nhat lai so luong va thanh tien
+        for (int i = 0; i < modelTblOrderdetail.getRowCount(); i++) {
+            if (modelTblOrderdetail.getValueAt(i, 0) == lblBookIdValue.getText()) {
+                modelTblOrderdetail.setValueAt(txtBookQuantity.getText(), i, 3);
+                modelTblOrderdetail.setValueAt(
+                        Integer.parseInt(lblBookPriceValue.getText()) * Integer.parseInt(txtBookQuantity.getText()),
+                         i, 4);
+                return;
+            }
+        }
+        //Neu chua co thi them san pham vao hoa don
+        modelTblOrderdetail.addRow(new Object[]{
+            lblBookIdValue.getText(),
+            lblBookNameValue.getText(),
+            lblBookPriceValue.getText(),
+            txtBookQuantity.getText(),
+            Integer.parseInt(lblBookPriceValue.getText()) * Integer.parseInt(txtBookQuantity.getText())
+        });
+    }
     JLabel lblBookImg = new JLabel();
-    JLabel lblBookGenre = new JLabel("Thể loại");
-    JLabel lblBookName = new JLabel("Tên sách");
-    JLabel lblBookAuthor = new JLabel("Tác giả");
-    JLabel lblBookPrice = new JLabel("Giá");
-    JLabel lblBookQuantity = new JLabel("Số lượng");
+    JLabel lblBookId = new JLabel();
+    JLabel lblBookGenre = new JLabel();
+    JLabel lblBookName = new JLabel();
+    JLabel lblBookAuthor = new JLabel();
+    JLabel lblBookPrice = new JLabel();
+    JLabel lblBookQuantity = new JLabel();
+    JLabel lblISBN = new JLabel();
+    
+    JLabel lblBookIdValue = new JLabel();
+    JLabel lblBookGenreValue  = new JLabel();
+    JLabel lblBookNameValue  = new JLabel();
+    JLabel lblBookAuthorValue  = new JLabel();
+    JLabel lblBookPriceValue  = new JLabel();
     JTextField txtBookQuantity = new JTextField();
-    JLabel lblISBN = new JLabel("ISBN");
+    JLabel lblISBNValue  = new JLabel();
+    
+    JPanel pnlSaveOrder = new JPanel();
+    JPanel pnlClearOrder = new JPanel();
+    JPanel pnlDeleteOrderItem = new JPanel();
+    JPanel pnlDiscount = new JPanel();
+    JLabel lblSaveOrder = new JLabel("Lưu");
+    JLabel lblClearOrder = new JLabel("Xóa hết");
+    JLabel lblDeleteOrderItem = new JLabel("Xóa");
+    JComboBox<Object> cbbDiscount = new JComboBox<>();
 }
