@@ -42,4 +42,11 @@ public class BUSGetDiscount {
     public ArrayList<Discount> getDiscount() throws Exception {
         return this.getDiscount(null);
     }
+    
+    public Discount getDiscountByName(String condition) throws Exception{
+        
+        ArrayList<Discount> disList = getDiscount(condition, "discount_type DESC");
+        
+        return disList.get(0);
+    }
 }

@@ -20,13 +20,14 @@ public class BUSGetDiscountDetail {
         connect = DAO.DAO.getDAO();
     }
     public ArrayList<DiscountDetail> getDiscountDetails(String condition, String orderBy) throws Exception{
-        ResultSet result = connect.Select("discount_detail");
+        ResultSet result = connect.Select("discount_detail",condition,orderBy);
         ArrayList discountDetailList = new ArrayList<>();
         while(result.next()){
             DiscountDetail discountDetail = new DiscountDetail();
             discountDetail.setDiscount_id(result.getInt("discount_id"));
             discountDetail.setBook_id(result.getInt("book_id"));
             discountDetail.setPercent(result.getInt("percent"));
+            discountDetailList.add(discountDetail);
         }
         return discountDetailList;
     }

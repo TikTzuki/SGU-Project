@@ -8,10 +8,12 @@ package GUI;
 import BUS.BUSGetAuthor;
 import BUS.BUSGetBook;
 import BUS.BUSGetDiscount;
+import BUS.BUSGetDiscountDetail;
 import BUS.BUSGetGenre;
 import DTO.Author;
 import DTO.Book;
 import DTO.Discount;
+import DTO.DiscountDetail;
 import DTO.Genre;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -64,6 +66,13 @@ public class GUIOrderManager extends JFrame{
     JPanel pnlInstanceOrder;
     JTable tblOrderDetail;
     DefaultTableModel modelTblOrderdetail;
+    //Tong hoa don
+    JLabel lblTotalValueDiscount = new JLabel("Gia tri khuyen mai:");
+    JLabel lblTotalValueDiscountValue = new JLabel("0");
+    JLabel lblTotalPriceOrder = new JLabel("Tổng:");
+    JLabel lblTotalPriceOrderBefDisValue = new JLabel("0");
+    JLabel lblTotalPriceOrderValue = new JLabel("0");
+    
     public GUIOrderManager() {
         initComponents();
         modelTblProduct = (DefaultTableModel) tblProduct.getModel();
@@ -82,7 +91,7 @@ public class GUIOrderManager extends JFrame{
 
         //Tạo panel tạo hóa đơn
         pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
-        pnlCreateOrder.setPreferredSize(new Dimension(1200, 5000));
+        pnlCreateOrder.setPreferredSize(new Dimension(1200, 1000));
         pnlCreateOrder.setBackground(Color.ORANGE);
             //Panel sản phẩm đang được chọn
         pnlSelectedProduct = new JPanel(new BorderLayout());
@@ -170,13 +179,15 @@ public class GUIOrderManager extends JFrame{
             new Object[]{"ID","Tên sách","Giá bán","#","Thành tiền"}));
         JScrollPane scrollTblOrderDetail = new JScrollPane(tblOrderDetail);
         scrollTblOrderDetail.setPreferredSize(new Dimension(400,260));
-        JLabel lblTotalValueDiscount = new JLabel("Khuyến mãi: \n Tên khuyen mai");
-        JLabel lblTotalPriceOrder = new JLabel("Tổng:");
         
+
         pnlLeftInstanceOrder.add(lblOrderDetail);
         pnlLeftInstanceOrder.add(scrollTblOrderDetail);
         pnlLeftInstanceOrder.add(lblTotalValueDiscount);
+        pnlLeftInstanceOrder.add(lblTotalValueDiscountValue);
         pnlLeftInstanceOrder.add(lblTotalPriceOrder);
+        pnlLeftInstanceOrder.add(lblTotalPriceOrderBefDisValue);
+        pnlLeftInstanceOrder.add(lblTotalPriceOrderValue);
         
         //Thêm panel bên trái vào hóa đơn hiện tại
         pnlInstanceOrder.add(pnlLeftInstanceOrder);
@@ -185,33 +196,37 @@ public class GUIOrderManager extends JFrame{
         pnlRightInstanceOrder.setPreferredSize(new Dimension(150,320));
         pnlRightInstanceOrder.setBackground(Color.PINK);
         
-        Dimension controlSize = new Dimension(100,40);
+        Dimension controlSize = new Dimension(100,20);
         lblSaveOrder.setPreferredSize(controlSize);
         lblClearOrder.setPreferredSize(controlSize);
         lblDeleteOrderItem.setPreferredSize(controlSize);
         cbbDiscount.setPreferredSize(new Dimension(146, 20));
+        //Discount
+        cbbDiscount.setModel(modelCbbDiscount = showCbbDiscount());
+        btnApplyDiscount.setPreferredSize(new Dimension(100, 20));
+        pnlDiscount.setPreferredSize(new Dimension(150, 50));
+        //Chon id khach hang
+        pnlCustomerId.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        lblCustomerId.setPreferredSize(new Dimension(70, 20));
+        txtCustomerId.setPreferredSize(new Dimension(50,20));
+        btnSearchCustomerId.setPreferredSize(new Dimension(20, 20));
         
-        BUSGetDiscount discount = new BUSGetDiscount();
-        ArrayList<Discount> discountList = new ArrayList<>();
-        try {
-            discountList = discount.getDiscount();
-        } catch (Exception ex) {
-            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        cbbDiscount.addItem("Ma giam gia");
-        for(Discount temp:discountList){
-            cbbDiscount.addItem(temp.getDiscount_name());
-        }
         
         pnlSaveOrder.add(lblSaveOrder);
         pnlClearOrder.add(lblClearOrder);
         pnlDeleteOrderItem.add(lblDeleteOrderItem);
         pnlDiscount.add(cbbDiscount);
+        pnlDiscount.add(btnApplyDiscount);
+        pnlCustomerId.add(lblCustomerId);
+        pnlCustomerId.add(txtCustomerId);
+        pnlCustomerId.add(btnSearchCustomerId);
         
         pnlRightInstanceOrder.add(pnlSaveOrder);
         pnlRightInstanceOrder.add(pnlClearOrder);
         pnlRightInstanceOrder.add(pnlDeleteOrderItem);
         pnlRightInstanceOrder.add(pnlDiscount);
+        pnlRightInstanceOrder.add(pnlCustomerId);
+        //Them bang luu, xoa hoa don vao panel hoa don hien tien
         pnlInstanceOrder.add(pnlRightInstanceOrder);
         //Thêm panel hóa đơn hiện tại
         pnlCreateOrder.add(pnlInstanceOrder);
@@ -231,7 +246,7 @@ public class GUIOrderManager extends JFrame{
         });
             //Scrollpane chứa tabel sản phẩm
         JScrollPane scrollPane = new JScrollPane(tblProduct);
-        scrollPane.setPreferredSize(new Dimension(1000, 400));
+        scrollPane.setPreferredSize(new Dimension(1000, 300));
         pnlCreateOrder.add(scrollPane);
         
         //Tạo panel quản lý hóa đơn
@@ -244,7 +259,14 @@ public class GUIOrderManager extends JFrame{
         tabbedPane.addTab("Quản lý hóa đơn",null,pnlOrderManager,"Quản lý hóa đơn");
 
         pnlMainPanel.add(tabbedPane, BorderLayout.CENTER);
-
+        
+        //Bat su kien cho button applyDiscount
+        btnApplyDiscount.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                applyDiscount(evt);
+            }
+        });
         add(pnlMainPanel);
     }
 
@@ -349,7 +371,6 @@ public class GUIOrderManager extends JFrame{
         }
         return null;
     }
-    
     public void keyLockOnlyNumberInLimit(KeyEvent evt, int limit){
         String keyRealeased = KeyEvent.getKeyText(evt.getKeyCode());
         Pattern patern = Pattern.compile("\\d{1,2}");
@@ -371,16 +392,18 @@ public class GUIOrderManager extends JFrame{
 
     }
     public void showTblOrderDetail(MouseEvent evt) {
-        if (lblBookImg.getIcon() == null && txtBookQuantity.getText() == "1") {
+        if (lblBookImg.getIcon() == null || txtBookQuantity.getText() == "0") {
             return;
         }
-        //Xet xem da co san pham trong hoa chua, neu roi thi cap nhat lai so luong va thanh tien
+        //Xet xem da co san pham trong hoa don chua, neu roi thi cap nhat lai so luong va thanh tien
         for (int i = 0; i < modelTblOrderdetail.getRowCount(); i++) {
             if (modelTblOrderdetail.getValueAt(i, 0) == lblBookIdValue.getText()) {
                 modelTblOrderdetail.setValueAt(txtBookQuantity.getText(), i, 3);
                 modelTblOrderdetail.setValueAt(
                         Integer.parseInt(lblBookPriceValue.getText()) * Integer.parseInt(txtBookQuantity.getText()),
                          i, 4);
+                //Tinh tong hoa don
+                showTotalValueOrder();
                 return;
             }
         }
@@ -392,6 +415,56 @@ public class GUIOrderManager extends JFrame{
             txtBookQuantity.getText(),
             Integer.parseInt(lblBookPriceValue.getText()) * Integer.parseInt(txtBookQuantity.getText())
         });
+        //Tinh tong hoa don
+        showTotalValueOrder();
+    }
+    public DefaultComboBoxModel showCbbDiscount(){
+        BUSGetDiscount discount = new BUSGetDiscount();
+        DefaultComboBoxModel modelCbb = new DefaultComboBoxModel();
+        ArrayList<Discount> discountList = new ArrayList<>();
+        try {
+            discountList = discount.getDiscount();
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for(Discount temp:discountList){
+            modelCbb.addElement(temp.getDiscount_name());
+        }
+        return modelCbb;
+    }
+    public void showTotalValueOrder() {
+        int sum = 0 ;
+        int discount = Integer.parseInt(lblTotalValueDiscountValue.getText());
+        for (int i = 0; i < modelTblOrderdetail.getRowCount(); i++) {
+            sum+= Integer.parseInt(modelTblOrderdetail.getValueAt(i, 4).toString());
+        }
+        lblTotalPriceOrderBefDisValue.setText(""+sum);
+        lblTotalPriceOrderValue.setText(""+(sum-discount));
+    }
+    public void applyDiscount(ActionEvent evt){
+        int discountValue = 0;
+        BUSGetDiscount busDiscount = new BUSGetDiscount();
+        BUSGetDiscountDetail busDiscountDetail = new BUSGetDiscountDetail();
+        String nameOfDiscount = modelCbbDiscount.getSelectedItem().toString();
+        int discountType = Integer.parseInt(lblTotalPriceOrderBefDisValue.getText());
+        Discount discountTemp = new Discount();
+        ArrayList<DiscountDetail> discountDetailList = new ArrayList<>();
+        try {
+            discountTemp = busDiscount.getDiscountByName("discount_name='"+nameOfDiscount+"' and discount_type<="+discountType);
+            discountDetailList = busDiscountDetail.getDiscountDetails(" discount_id="+discountTemp.getDiscount_id());
+            for(DiscountDetail disTemp:discountDetailList){
+                for(int i=0; i<modelTblOrderdetail.getRowCount(); i++){
+                    if(disTemp.getBook_id()==Integer.parseInt(modelTblOrderdetail.getValueAt(i, 0).toString())){
+                        discountValue += (disTemp.getPercent()*Integer.parseInt(modelTblOrderdetail.getValueAt(i, 4).toString()))/100;
+                    };
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        lblTotalValueDiscountValue.setText(""+discountValue);
+        showTotalValueOrder();
     }
     JLabel lblBookImg = new JLabel();
     JLabel lblBookId = new JLabel();
@@ -410,12 +483,25 @@ public class GUIOrderManager extends JFrame{
     JTextField txtBookQuantity = new JTextField();
     JLabel lblISBNValue  = new JLabel();
     
+    JScrollPane scrollTblOrderDetail;/*
+    JLabel lblTotalValueDiscount = new JLabel();
+    JLabel lblTotalValueDiscountValue = new JLabel();
+    JLabel lblTotalPriceOrder = new JLabel();
+    JLabel lblTotalPriceOrderBefDisValue = new JLabel();
+    JLabel lblTotalPriceOrderValue = new JLabel();*/
+    
     JPanel pnlSaveOrder = new JPanel();
     JPanel pnlClearOrder = new JPanel();
     JPanel pnlDeleteOrderItem = new JPanel();
     JPanel pnlDiscount = new JPanel();
+    JPanel pnlCustomerId = new JPanel();
     JLabel lblSaveOrder = new JLabel("Lưu");
     JLabel lblClearOrder = new JLabel("Xóa hết");
     JLabel lblDeleteOrderItem = new JLabel("Xóa");
     JComboBox<Object> cbbDiscount = new JComboBox<>();
+    DefaultComboBoxModel<Object> modelCbbDiscount = new DefaultComboBoxModel<>();
+    JButton btnApplyDiscount = new JButton("Ap ma");
+    JLabel lblCustomerId = new JLabel("ID khach:");
+    JTextField txtCustomerId = new JTextField();
+    JButton btnSearchCustomerId = new JButton("S");
 }
