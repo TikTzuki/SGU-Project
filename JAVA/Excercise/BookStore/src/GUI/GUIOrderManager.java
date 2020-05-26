@@ -17,6 +17,8 @@ import DTO.Customer;
 import DTO.Discount;
 import DTO.DiscountDetail;
 import DTO.Genre;
+import DTO.Order;
+import DTO.OrderItem;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,6 +36,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -278,6 +281,11 @@ public class GUIOrderManager extends JFrame{
                 applyDiscount(evt);
             }
         });
+        lblSaveOrder.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt){
+                saveOrder(evt);
+            };
+        });
         add(pnlMainPanel);
     }
 
@@ -493,6 +501,7 @@ public class GUIOrderManager extends JFrame{
         });
         JTable tblCustomer = new JTable(modelTblCustomer);
         JButton btnChose = new JButton("Chọn");
+        findCustomer.setSize(340, 340);
         txtSearch.setPreferredSize(new Dimension(150, 30));
         btnSearch.setPreferredSize(new Dimension(60, 30));
         btnChose.setPreferredSize(new Dimension(100, 30));
@@ -502,7 +511,8 @@ public class GUIOrderManager extends JFrame{
         try {
             if(txtSearch.getText()!=""){
                 String partent = txtSearch.getText();
-                //customerList = busCustomer.getCustomer(" customer_id="+ ");
+                String condition = "customer_id LIKE '%"+partent+"%' OR first_name LIKE '%"+partent+"%' OR last_name LIKE '%"+partent+"%' OR phone_number LIKE '%"+partent+"%'";
+                customerList = busCustomer.getCustomer();
             }
             
         } catch (Exception ex) {
@@ -523,9 +533,49 @@ public class GUIOrderManager extends JFrame{
         findCustomer.add(btnSearch);
         findCustomer.add(scrollForTblCustomer);
         findCustomer.add(btnChose);
-        findCustomer.setSize(340, 300);
+        
         findCustomer.setLocationRelativeTo(btnSearchCustomerId);
         findCustomer.setVisible(true);
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                modelTblCustomer.setRowCount(0);
+                String condition = "1";
+                String partent = txtSearch.getText();
+                if(partent!=""){
+                    condition = "customer_id LIKE '%" + partent 
+                            +"%' OR first_name LIKE '%" + partent 
+                            +"%' OR last_name LIKE '%" + partent
+                            +"%' OR phone_number LIKE '%" + partent + "%'";
+                }
+                ArrayList<Customer> cusTempList = new ArrayList<>();
+                try {
+                    cusTempList = busCustomer.getCustomer(condition);
+                } catch (Exception ex) {
+                    Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for(Customer cus: cusTempList){
+                    modelTblCustomer.addRow(new Object[]{
+                        cus.getCustomer_id(),
+                        cus.getFirst_name()+cus.getLast_name(),
+                        cus.getPhone_number()
+                    });
+                }
+            }
+        });
+        btnChose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String customerIdFound = tblCustomer.getValueAt(tblCustomer.getSelectedRow(), 0).toString();
+                txtCustomerId.setText(customerIdFound);
+            }
+        });
+    }
+    public void saveOrder(MouseEvent evt){
+        Order order = new Order();
+        OrderItem orderItem = new OrderItem();
+        int staff_id = 1;
+        String discount_name = modelCbbDiscount.getSelectedItem().toString();
     }
     JLabel lblBookImg = new JLabel();
     JLabel lblBookId = new JLabel();

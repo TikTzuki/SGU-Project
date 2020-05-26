@@ -50,7 +50,7 @@ public class BUSOrderManager {
 
     public void inserts(Order order) throws Exception {
         HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("order_id", order.getOrder_id());
+        //map.put("order_id", "NULL");
         map.put("staff_id", order.getStaff_id());
         map.put("discount_id", order.getDiscount_id());
         map.put("customer_id", order.getCustomer_id());
