@@ -7,11 +7,13 @@ package GUI;
 
 import BUS.BUSGetAuthor;
 import BUS.BUSGetBook;
+import BUS.BUSGetCustomer;
 import BUS.BUSGetDiscount;
 import BUS.BUSGetDiscountDetail;
 import BUS.BUSGetGenre;
 import DTO.Author;
 import DTO.Book;
+import DTO.Customer;
 import DTO.Discount;
 import DTO.DiscountDetail;
 import DTO.Genre;
@@ -67,10 +69,11 @@ public class GUIOrderManager extends JFrame{
     JTable tblOrderDetail;
     DefaultTableModel modelTblOrderdetail;
     //Tong hoa don
-    JLabel lblTotalValueDiscount = new JLabel("Gia tri khuyen mai:");
-    JLabel lblTotalValueDiscountValue = new JLabel("0");
-    JLabel lblTotalPriceOrder = new JLabel("Tổng:");
+    JLabel lblTotalPriceOrderBefDis = new JLabel("Tổng (chưa áp khuyến mãi):");
     JLabel lblTotalPriceOrderBefDisValue = new JLabel("0");
+    JLabel lblTotalValueDiscount = new JLabel("Khuyen mai:");
+    JLabel lblTotalValueDiscountValue = new JLabel("0");
+    JLabel lblTotalPriceOrder = new JLabel("Tổng :");
     JLabel lblTotalPriceOrderValue = new JLabel("0");
     
     public GUIOrderManager() {
@@ -90,7 +93,7 @@ public class GUIOrderManager extends JFrame{
         tabbedPane = new JTabbedPane();
 
         //Tạo panel tạo hóa đơn
-        pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         pnlCreateOrder.setPreferredSize(new Dimension(1200, 1000));
         pnlCreateOrder.setBackground(Color.ORANGE);
             //Panel sản phẩm đang được chọn
@@ -183,10 +186,11 @@ public class GUIOrderManager extends JFrame{
 
         pnlLeftInstanceOrder.add(lblOrderDetail);
         pnlLeftInstanceOrder.add(scrollTblOrderDetail);
+        pnlLeftInstanceOrder.add(lblTotalPriceOrderBefDis);
+        pnlLeftInstanceOrder.add(lblTotalPriceOrderBefDisValue);
         pnlLeftInstanceOrder.add(lblTotalValueDiscount);
         pnlLeftInstanceOrder.add(lblTotalValueDiscountValue);
         pnlLeftInstanceOrder.add(lblTotalPriceOrder);
-        pnlLeftInstanceOrder.add(lblTotalPriceOrderBefDisValue);
         pnlLeftInstanceOrder.add(lblTotalPriceOrderValue);
         
         //Thêm panel bên trái vào hóa đơn hiện tại
@@ -210,7 +214,14 @@ public class GUIOrderManager extends JFrame{
         lblCustomerId.setPreferredSize(new Dimension(70, 20));
         txtCustomerId.setPreferredSize(new Dimension(50,20));
         btnSearchCustomerId.setPreferredSize(new Dimension(20, 20));
-        
+        btnSearchCustomerId.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showNSearchCustomer(e);{
+                 JFrame findCustomer = new JFrame("Tìm khách hàng");
+                }
+            }
+        });
         
         pnlSaveOrder.add(lblSaveOrder);
         pnlClearOrder.add(lblClearOrder);
@@ -435,12 +446,14 @@ public class GUIOrderManager extends JFrame{
     }
     public void showTotalValueOrder() {
         int sum = 0 ;
-        int discount = Integer.parseInt(lblTotalValueDiscountValue.getText());
+        int discount = 0;
+        if(lblTotalValueDiscountValue.getText()!="Ap ma khong thanh cong")
+            discount = Integer.parseInt(lblTotalValueDiscountValue.getText());
         for (int i = 0; i < modelTblOrderdetail.getRowCount(); i++) {
             sum+= Integer.parseInt(modelTblOrderdetail.getValueAt(i, 4).toString());
         }
         lblTotalPriceOrderBefDisValue.setText(""+sum);
-        lblTotalPriceOrderValue.setText(""+(sum-discount));
+        lblTotalPriceOrderValue.setText(""+(sum-discount)+" vnđ");
     }
     public void applyDiscount(ActionEvent evt){
         int discountValue = 0;
@@ -452,6 +465,11 @@ public class GUIOrderManager extends JFrame{
         ArrayList<DiscountDetail> discountDetailList = new ArrayList<>();
         try {
             discountTemp = busDiscount.getDiscountByName("discount_name='"+nameOfDiscount+"' and discount_type<="+discountType);
+            if(discountTemp.getDiscount_id()==-1){
+                lblTotalValueDiscountValue.setText("Ap ma khong thanh cong");
+                showTotalValueOrder();
+                return;
+            };
             discountDetailList = busDiscountDetail.getDiscountDetails(" discount_id="+discountTemp.getDiscount_id());
             for(DiscountDetail disTemp:discountDetailList){
                 for(int i=0; i<modelTblOrderdetail.getRowCount(); i++){
@@ -465,6 +483,49 @@ public class GUIOrderManager extends JFrame{
         }
         lblTotalValueDiscountValue.setText(""+discountValue);
         showTotalValueOrder();
+    }
+    public void showNSearchCustomer(ActionEvent e) {
+        JFrame findCustomer = new JFrame("Tìm khách hàng");
+        JTextField txtSearch = new JTextField();
+        JButton btnSearch = new JButton("Tìm");
+        DefaultTableModel modelTblCustomer = new DefaultTableModel(new Object[][]{}, new String[]{
+            "ID", "Tên", "SĐT"
+        });
+        JTable tblCustomer = new JTable(modelTblCustomer);
+        JButton btnChose = new JButton("Chọn");
+        txtSearch.setPreferredSize(new Dimension(150, 30));
+        btnSearch.setPreferredSize(new Dimension(60, 30));
+        btnChose.setPreferredSize(new Dimension(100, 30));
+        findCustomer.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        BUSGetCustomer busCustomer = new BUSGetCustomer();
+        ArrayList<Customer> customerList = new ArrayList<>();
+        try {
+            if(txtSearch.getText()!=""){
+                String partent = txtSearch.getText();
+                //customerList = busCustomer.getCustomer(" customer_id="+ ");
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for(Customer cus: customerList){
+            modelTblCustomer.addRow(new Object[]{
+                cus.getCustomer_id(),
+                cus.getFirst_name()+cus.getLast_name(),
+                cus.getPhone_number()
+            });
+        }
+        
+        tblCustomer.setPreferredSize(new Dimension(300, 500));
+        JScrollPane scrollForTblCustomer = new JScrollPane(tblCustomer);
+        scrollForTblCustomer.setPreferredSize(new Dimension(300, 200));
+        findCustomer.add(txtSearch);
+        findCustomer.add(btnSearch);
+        findCustomer.add(scrollForTblCustomer);
+        findCustomer.add(btnChose);
+        findCustomer.setSize(340, 300);
+        findCustomer.setLocationRelativeTo(btnSearchCustomerId);
+        findCustomer.setVisible(true);
     }
     JLabel lblBookImg = new JLabel();
     JLabel lblBookId = new JLabel();

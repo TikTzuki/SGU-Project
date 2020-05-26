@@ -46,7 +46,11 @@ public class BUSGetDiscount {
     public Discount getDiscountByName(String condition) throws Exception{
         
         ArrayList<Discount> disList = getDiscount(condition, "discount_type DESC");
-        
+        if(!disList.isEmpty()){
         return disList.get(0);
+        }
+        Discount temp = new Discount();
+        temp.setDiscount_id(-1);
+        return temp;
     }
 }
