@@ -100,8 +100,8 @@ public class GUIOrderManager{
         tabbedPane = new JTabbedPane();
 
         //Tạo panel tạo hóa đơn
-        pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        pnlCreateOrder.setPreferredSize(new Dimension(1200, 1000));
+        pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        pnlCreateOrder.setPreferredSize(new Dimension(1100, 1000));
         pnlCreateOrder.setBackground(Color.ORANGE);
             //Panel sản phẩm đang được chọn
         pnlSelectedProduct = new JPanel(new BorderLayout());
@@ -168,7 +168,7 @@ public class GUIOrderManager{
              }
          });
 
-        JLabel lblAttachProductToOrder = new JLabel("Thêm vào hóa đơn >>");
+        JLabel lblAttachProductToOrder = new JLabel("Thêm vào >>");
         
         pnlAttachProductToOrder.add(lblAttachProductToOrder);
         
@@ -264,12 +264,12 @@ public class GUIOrderManager{
         });
             //Scrollpane chứa tabel sản phẩm
         JScrollPane scrollPane = new JScrollPane(tblProduct);
-        scrollPane.setPreferredSize(new Dimension(1000, 300));
+        scrollPane.setPreferredSize(new Dimension(1100, 300));
         pnlCreateOrder.add(scrollPane);
         
         //Tạo panel quản lý hóa đơn
         pnlOrderManager = new JPanel();
-        pnlOrderManager.setPreferredSize(new Dimension(1200, 500));
+        pnlOrderManager.setPreferredSize(new Dimension(1000, 500));
         pnlOrderManager.setBackground(Color.cyan);
         
         //

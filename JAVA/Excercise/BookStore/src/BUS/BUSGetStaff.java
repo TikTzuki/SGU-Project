@@ -10,6 +10,7 @@ import DTO.Genre;
 import DTO.Staff;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,7 +34,7 @@ public class BUSGetStaff {
             staff.setEmail(result.getString("email"));
             staff.setPassword(result.getString("password"));
             staff.setPhone_number(result.getString("phone_number"));
-            staff.setSex(result.getString(result.getString("sex")));
+            //staff.setSex(result.getString(result.getString("sex")));
             staffList.add(staff);
         }
         return staffList;
@@ -48,14 +49,25 @@ public class BUSGetStaff {
     }
     
     public boolean checkStaff(Staff staff) throws Exception{
-        ArrayList<Staff> staffList = this.getStaff("phone_number=`"+staff.getPhone_number()+"`");
-        if(staffList.isEmpty()){
+        ArrayList<Staff> staffList = this.getStaff("phone_number='"+staff.getPhone_number()+"'");
+        
+        if (staffList.isEmpty()) {
             System.out.print("Wrong phone number");
+            JOptionPane.showMessageDialog(null, "Sai so dien thoai");
             return false;
         }
-        if(staff.getPassword()!=staffList.get(0).getPassword()){
+        if (!staff.getPassword().equals(staffList.get(0).getPassword())) {
+            System.out.print("Wrong password");
+            JOptionPane.showMessageDialog(null, "Sai mat khau");
             return false;
         }
         return true;
+    }
+    public Staff getStaffByPhoneNumber(String phone_number) throws Exception{
+        ArrayList<Staff> staffList = this.getStaff("phone_number=`"+phone_number+"`");
+        if(staffList.isEmpty()){
+            return null;
+        }
+        return staffList.get(0);
     }
 }
