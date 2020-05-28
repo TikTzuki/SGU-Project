@@ -91,4 +91,11 @@ public class BUSOrderManager {
         }
     }
     
+    public int getLastOrderId() throws Exception{
+        ResultSet result = this.connect.execute("SELECT MAX(order_id) FROM book_order");
+        while(result.next()){
+            return result.getInt("MAX(order_id)");
+        }
+        return 0;
+    }
 }

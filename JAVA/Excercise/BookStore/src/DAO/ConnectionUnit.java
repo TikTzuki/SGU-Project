@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -44,13 +46,16 @@ public class ConnectionUnit {
         return this.connect.executeQuery(query.toString());
     }
 
-    public ResultSet Select(String table) throws Exception {
+    public ResultSet Select(String table) throws Exception{
         StringBuilder query = new StringBuilder("SELECT * FROM " + table+"");
         query.append(";");
         System.out.println("Select: " + query.toString());
         return this.connect.executeQuery(query.toString());
     }
-
+    
+    public ResultSet execute(String query) throws Exception {
+        return this.connect.executeQuery(query);
+    }
     private void AddCondition(StringBuilder query, String Condition) {
         if (Condition != null) {
             query.append(" WHERE " + Condition);
