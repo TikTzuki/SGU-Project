@@ -11,6 +11,8 @@ import BUS.BUSGetCustomer;
 import BUS.BUSGetDiscount;
 import BUS.BUSGetDiscountDetail;
 import BUS.BUSGetGenre;
+import BUS.BUSOrderItemManager;
+import BUS.BUSOrderManager;
 import DTO.Author;
 import DTO.Book;
 import DTO.Customer;
@@ -37,7 +39,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,17 +82,20 @@ public class GUIOrderManager extends JFrame{
     JLabel lblTotalValueDiscountValue = new JLabel("0");
     JLabel lblTotalPriceOrder = new JLabel("Tổng :");
     JLabel lblTotalPriceOrderValue = new JLabel("0");
-    
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd");  
+    Date today = new Date();
     public GUIOrderManager() {
-        //initComponents();
-        
+        initComponents();
+        modelTblProduct = (DefaultTableModel) tblProduct.getModel();
+        modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
+        showTableProduct();
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    public JPanel initComponents() {
+    public void initComponents() {
         pnlMainPanel = new JPanel(new BorderLayout());
         //Tạo tabbedPane chứa panel tạo hóa đơn, quản lý hóa đơn
         tabbedPane = new JTabbedPane();
@@ -263,7 +270,7 @@ public class GUIOrderManager extends JFrame{
         
         //Tạo panel quản lý hóa đơn
         pnlOrderManager = new JPanel();
-        pnlOrderManager.setPreferredSize(new Dimension(1100, 500));
+        pnlOrderManager.setPreferredSize(new Dimension(1200, 500));
         pnlOrderManager.setBackground(Color.cyan);
         
         //
@@ -284,12 +291,7 @@ public class GUIOrderManager extends JFrame{
                 saveOrder(evt);
             };
         });
-        //Table
-        modelTblProduct = (DefaultTableModel) tblProduct.getModel();
-        modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
-        showTableProduct();
         add(pnlMainPanel);
-        return pnlMainPanel;
     }
 
     public static void main(String[] args) {
@@ -451,7 +453,7 @@ public class GUIOrderManager extends JFrame{
         }
         
         for(Discount temp:discountList){
-            modelCbb.addElement(temp.getDiscount_name());
+            modelCbb.addElement(temp.getDiscount_id()+". "+temp.getDiscount_name());
         }
         return modelCbb;
     }
@@ -514,7 +516,7 @@ public class GUIOrderManager extends JFrame{
         try {
             if(txtSearch.getText()!=""){
                 String partent = txtSearch.getText();
-                //String condition = "customer_id LIKE '%"+partent+"%' OR first_name LIKE '%"+partent+"%' OR last_name LIKE '%"+partent+"%' OR phone_number LIKE '%"+partent+"%'";
+                String condition = "customer_id LIKE '%"+partent+"%' OR first_name LIKE '%"+partent+"%' OR last_name LIKE '%"+partent+"%' OR phone_number LIKE '%"+partent+"%'";
                 customerList = busCustomer.getCustomer();
             }
             
@@ -575,11 +577,31 @@ public class GUIOrderManager extends JFrame{
         });
     }
     public void saveOrder(MouseEvent evt){
-        Order order = new Order();
-        OrderItem orderItem = new OrderItem();
-        int staff_id = 1;
-        String discount_name = modelCbbDiscount.getSelectedItem().toString();
+        Order order;
         
+        int staff_id = 1;
+        int order_id = 0;
+        String discount_name = modelCbbDiscount.getSelectedItem().toString();
+        String discount_id = discount_name.substring(0, discount_name.indexOf(". "));
+        String customer_id = txtCustomerId.getText();
+        String order_date = dateFormatter.format(today);
+        String total = lblTotalPriceOrderValue.getText().substring(0, lblTotalPriceOrderValue.getText().indexOf("vnđ")-1);
+        System.out.println(1 +", :"+ /*Integer.parseInt(discount_id) +*/", :"+ /*Integer.parseInt(customer_id)+order_date+*/", toal: "+Integer.parseInt(total));
+        //order = new Order(99999, staff_id, Integer.parseInt(discount_id), Integer.parseInt(customer_id), order_date, Integer.parseInt(total));
+        BUSOrderManager busOrder = new BUSOrderManager();
+        try {
+            //busOrder.inserts(order);
+            
+            order_id = busOrder.getLastOrderId();
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println(order_id);
+        BUSOrderItemManager busOrderItem = new BUSOrderItemManager();
+        for(int i=0; i<modelTblOrderdetail.getRowCount(); i++){
+            OrderItem orderItem = new OrderItem();
+            
+        }
         
     }
     JLabel lblBookImg = new JLabel();
