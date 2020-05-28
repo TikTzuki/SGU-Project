@@ -30,6 +30,14 @@ public class Order {
         this.order_date = order_date;
         this.total = total;
     }
+    public Order(int staff_id, int discount_id, int customer_id, String order_date, int total) {
+        this.order_id = 9999;
+        this.staff_id = staff_id;
+        this.discount_id = discount_id;
+        this.customer_id = customer_id;
+        this.order_date = order_date;
+        this.total = total;
+    }
 
     public int getOrder_id() {
         return order_id;

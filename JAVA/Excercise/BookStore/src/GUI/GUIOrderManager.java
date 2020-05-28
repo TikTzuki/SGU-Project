@@ -21,6 +21,7 @@ import DTO.DiscountDetail;
 import DTO.Genre;
 import DTO.Order;
 import DTO.OrderItem;
+import DTO.Staff;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -63,6 +64,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Tik
  */
 public class GUIOrderManager{
+    //Nhan vien
+    Staff staff;
     private Font fontContent = new Font(Font.SERIF, 0, 12);
     public JPanel pnlMainPanel;
     JTabbedPane tabbedPane;
@@ -94,15 +97,19 @@ public class GUIOrderManager{
         setVisible(true);*/
     }
 
-    public JPanel initComponents() {
+    public JPanel initComponents(Staff staff) {
+        // Nhan vien
+         this.staff = staff;
+        //Panel chinh
         pnlMainPanel = new JPanel(new BorderLayout());
+        pnlMainPanel.setBackground(Color.white);
         //Tạo tabbedPane chứa panel tạo hóa đơn, quản lý hóa đơn
         tabbedPane = new JTabbedPane();
-
+        tabbedPane.setBackground(Color.white);
         //Tạo panel tạo hóa đơn
         pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        pnlCreateOrder.setPreferredSize(new Dimension(1100, 1000));
-        pnlCreateOrder.setBackground(Color.ORANGE);
+        pnlCreateOrder.setPreferredSize(new Dimension(1100, 700));
+        pnlCreateOrder.setBackground(Color.white);
             //Panel sản phẩm đang được chọn
         pnlSelectedProduct = new JPanel(new BorderLayout());
         pnlSelectedProduct.setPreferredSize(new Dimension(400, 320));
@@ -270,7 +277,7 @@ public class GUIOrderManager{
         //Tạo panel quản lý hóa đơn
         pnlOrderManager = new JPanel();
         pnlOrderManager.setPreferredSize(new Dimension(1000, 500));
-        pnlOrderManager.setBackground(Color.cyan);
+        pnlOrderManager.setBackground(Color.white);
         
         //
         tabbedPane.addTab("Thêm hóa đơn", null, pnlCreateOrder, "Thêm hóa đơn");
@@ -579,21 +586,19 @@ public class GUIOrderManager{
         });
     }
     public void saveOrder(MouseEvent evt){
-        Order order;
+        Order orderForInsert;
         
-        int staff_id = 1;
+        int staff_id = this.staff.getStaff_id();
         int order_id = 0;
         String discount_name = modelCbbDiscount.getSelectedItem().toString();
         String discount_id = discount_name.substring(0, discount_name.indexOf(". "));
         String customer_id = txtCustomerId.getText();
         String order_date = dateFormatter.format(today);
         String total = lblTotalPriceOrderValue.getText().substring(0, lblTotalPriceOrderValue.getText().indexOf("vnđ")-1);
-        System.out.println(1 +", :"+ /*Integer.parseInt(discount_id) +*/", :"+ /*Integer.parseInt(customer_id)+order_date+*/", toal: "+Integer.parseInt(total));
-        //order = new Order(99999, staff_id, Integer.parseInt(discount_id), Integer.parseInt(customer_id), order_date, Integer.parseInt(total));
+        orderForInsert = new Order(staff_id, Integer.parseInt(discount_id), Integer.parseInt(customer_id), order_date, Integer.parseInt(total));
         BUSOrderManager busOrder = new BUSOrderManager();
         try {
-            //busOrder.inserts(order);
-            
+            busOrder.inserts(orderForInsert);
             order_id = busOrder.getLastOrderId();
         } catch (Exception ex) {
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
