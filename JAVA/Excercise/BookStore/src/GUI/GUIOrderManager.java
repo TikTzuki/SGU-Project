@@ -62,7 +62,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Tik
  */
-public class GUIOrderManager extends JFrame{
+public class GUIOrderManager{
     private Font fontContent = new Font(Font.SERIF, 0, 12);
     public JPanel pnlMainPanel;
     JTabbedPane tabbedPane;
@@ -85,17 +85,16 @@ public class GUIOrderManager extends JFrame{
     SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd");  
     Date today = new Date();
     public GUIOrderManager() {
-        initComponents();
-        modelTblProduct = (DefaultTableModel) tblProduct.getModel();
-        modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
-        showTableProduct();
+        //initComponents();
+        
+        /*
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setVisible(true);
+        setVisible(true);*/
     }
 
-    public void initComponents() {
+    public JPanel initComponents() {
         pnlMainPanel = new JPanel(new BorderLayout());
         //Tạo tabbedPane chứa panel tạo hóa đơn, quản lý hóa đơn
         tabbedPane = new JTabbedPane();
@@ -291,7 +290,10 @@ public class GUIOrderManager extends JFrame{
                 saveOrder(evt);
             };
         });
-        add(pnlMainPanel);
+        modelTblProduct = (DefaultTableModel) tblProduct.getModel();
+        modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
+        showTableProduct();
+        return pnlMainPanel;
     }
 
     public static void main(String[] args) {

@@ -21,7 +21,7 @@ import javax.swing.JTextField;
  *
  * @author root
  */
-public class BookStoreMain{
+public class GUIBookStoreMain{
     GUIOrderManager orderManager = new GUIOrderManager();
     private Staff staff;
     private BUSGetStaff busStaff = new BUSGetStaff();
@@ -34,39 +34,11 @@ public class BookStoreMain{
     private JPanel pnlBookManagerItem = new JPanel();
     //Top
     private JPanel pnlTopMenu = new JPanel();
-    public BookStoreMain(){
+    public GUIBookStoreMain(){
         //initLogin();
         initComp();
     }
-    public void initLogin(){
-        frLogin = new JFrame("Dang nhap");
-        frLogin.setSize(500, 500);
-        frLogin.setLayout(new FlowLayout());
-        JPanel pnlPhoneNumber = new JPanel();
-        JLabel lblPhoneNumber = new JLabel("SDT: ");
-        JTextField txtPhoneNumber = new JTextField();
-        JPanel pnlPassword = new JPanel();
-        JLabel lblPassword = new JLabel("Mat khau: ");
-        JTextField txtPassword = new JTextField();
-        
-        pnlPhoneNumber.setPreferredSize(new Dimension(400, 40));
-        txtPhoneNumber.setPreferredSize(new Dimension(100, 20));
-        
-        pnlPhoneNumber.add(lblPhoneNumber);
-        pnlPhoneNumber.add(txtPhoneNumber);
-        
-        pnlPassword.setPreferredSize(new Dimension(400,40));
-        txtPassword.setPreferredSize(new Dimension(100,20));
-        
-        pnlPassword.add(lblPassword);
-        pnlPassword.add(txtPassword);
-        frLogin.add(pnlPhoneNumber);
-        frLogin.add(pnlPassword);
-        
-        frLogin.setVisible(true);
-        frLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frLogin.setLocationRelativeTo(null);
-    }
+    
     public void initComp(){
         frMain.setLayout(new BorderLayout());
         //Left side bar
@@ -94,7 +66,7 @@ public class BookStoreMain{
     }
     
     public static void main(String[] args) {
-        BookStoreMain main = new BookStoreMain();
+        GUIBookStoreMain main = new GUIBookStoreMain();
     }
 
 }
