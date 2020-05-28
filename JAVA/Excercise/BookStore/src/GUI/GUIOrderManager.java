@@ -80,17 +80,15 @@ public class GUIOrderManager extends JFrame{
     JLabel lblTotalPriceOrderValue = new JLabel("0");
     
     public GUIOrderManager() {
-        initComponents();
-        modelTblProduct = (DefaultTableModel) tblProduct.getModel();
-        modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
-        showTableProduct();
+        //initComponents();
+        
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    public void initComponents() {
+    public JPanel initComponents() {
         pnlMainPanel = new JPanel(new BorderLayout());
         //Tạo tabbedPane chứa panel tạo hóa đơn, quản lý hóa đơn
         tabbedPane = new JTabbedPane();
@@ -265,7 +263,7 @@ public class GUIOrderManager extends JFrame{
         
         //Tạo panel quản lý hóa đơn
         pnlOrderManager = new JPanel();
-        pnlOrderManager.setPreferredSize(new Dimension(1200, 500));
+        pnlOrderManager.setPreferredSize(new Dimension(1100, 500));
         pnlOrderManager.setBackground(Color.cyan);
         
         //
@@ -286,7 +284,12 @@ public class GUIOrderManager extends JFrame{
                 saveOrder(evt);
             };
         });
+        //Table
+        modelTblProduct = (DefaultTableModel) tblProduct.getModel();
+        modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
+        showTableProduct();
         add(pnlMainPanel);
+        return pnlMainPanel;
     }
 
     public static void main(String[] args) {
@@ -511,7 +514,7 @@ public class GUIOrderManager extends JFrame{
         try {
             if(txtSearch.getText()!=""){
                 String partent = txtSearch.getText();
-                String condition = "customer_id LIKE '%"+partent+"%' OR first_name LIKE '%"+partent+"%' OR last_name LIKE '%"+partent+"%' OR phone_number LIKE '%"+partent+"%'";
+                //String condition = "customer_id LIKE '%"+partent+"%' OR first_name LIKE '%"+partent+"%' OR last_name LIKE '%"+partent+"%' OR phone_number LIKE '%"+partent+"%'";
                 customerList = busCustomer.getCustomer();
             }
             
@@ -576,6 +579,8 @@ public class GUIOrderManager extends JFrame{
         OrderItem orderItem = new OrderItem();
         int staff_id = 1;
         String discount_name = modelCbbDiscount.getSelectedItem().toString();
+        
+        
     }
     JLabel lblBookImg = new JLabel();
     JLabel lblBookId = new JLabel();
