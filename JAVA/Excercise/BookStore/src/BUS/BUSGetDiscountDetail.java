@@ -37,4 +37,7 @@ public class BUSGetDiscountDetail {
     public ArrayList<DiscountDetail> getDiscountDetails() throws Exception{
         return getDiscountDetails(null);
     }
+    public ArrayList<DiscountDetail> getDiscountDetailsById(int discountId) throws Exception{
+        return this.getDiscountDetails("discount_id="+discountId);
+    }
 }

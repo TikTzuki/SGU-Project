@@ -66,6 +66,11 @@ public class Discount {
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
     }
+
+    @Override
+    public String toString() {
+        return "Discount{" + "discount_id=" + discount_id + ", discount_name=" + discount_name + ", discount_type=" + discount_type + ", start_date=" + start_date + ", end_date=" + end_date + '}';
+    }
     
     
 }

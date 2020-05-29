@@ -34,7 +34,7 @@ public class BUSGetStaff {
             staff.setEmail(result.getString("email"));
             staff.setPassword(result.getString("password"));
             staff.setPhone_number(result.getString("phone_number"));
-            //staff.setSex(result.getString(result.getString("sex")));
+            staff.setSex((result.getString("sex")));
             staffList.add(staff);
         }
         return staffList;
@@ -64,7 +64,7 @@ public class BUSGetStaff {
         return true;
     }
     public Staff getStaffByPhoneNumber(String phone_number) throws Exception{
-        ArrayList<Staff> staffList = this.getStaff("phone_number=`"+phone_number+"`");
+        ArrayList<Staff> staffList = this.getStaff("phone_number='"+phone_number+"'");
         if(staffList.isEmpty()){
             return null;
         }

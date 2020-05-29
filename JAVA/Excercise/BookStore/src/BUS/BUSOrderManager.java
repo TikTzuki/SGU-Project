@@ -25,7 +25,7 @@ public class BUSOrderManager {
     }
 
     public ArrayList<Order> getOrder(String condition, String orderBy) throws Exception {
-        ResultSet result = connect.Select("order", condition, orderBy);
+        ResultSet result = connect.Select("book_order", condition, orderBy);
         ArrayList<Order> orderList = new ArrayList<>();
         while (result.next()) {
             Order order = new Order();
@@ -56,7 +56,7 @@ public class BUSOrderManager {
         map.put("customer_id", order.getCustomer_id());
         map.put("order_date", order.getOrder_date());
         map.put("total", order.getTotal());
-        this.connect.Insert("order", map);
+        connect.Insert("book_order", map);
     }
 
     public void inserts(HashSet<Order> orderList) throws Exception {
@@ -72,7 +72,7 @@ public class BUSOrderManager {
         map.put("customer_id", order.getCustomer_id());
         map.put("order_date", order.getOrder_date());
         map.put("total", order.getTotal());
-        this.connect.Update("order", map, "order_id=" + order.getOrder_id());
+        this.connect.Update("book_order", map, "order_id=" + order.getOrder_id());
     }
 
     public void updates(HashSet<Order> orderList) throws Exception{
@@ -82,7 +82,7 @@ public class BUSOrderManager {
     }
     
     public void deletes(Order order) throws Exception{
-        this.connect.Delete("order", "order_id="+order.getOrder_id());
+        this.connect.Delete("book_order", "order_id="+order.getOrder_id());
     }
     
     public void deletes(HashSet<Order> orderList) throws Exception{

@@ -87,4 +87,9 @@ public class Order {
         this.total = total;
     }
 
+    @Override
+    public String toString() {
+        return "Order{" + "order_id=" + order_id + ", staff_id=" + staff_id + ", discount_id=" + discount_id + ", customer_id=" + customer_id + ", order_date=" + order_date + ", total=" + total + '}';
+    }
+
 }

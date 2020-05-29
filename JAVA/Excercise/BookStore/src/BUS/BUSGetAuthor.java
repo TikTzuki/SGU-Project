@@ -56,4 +56,16 @@ public class BUSGetAuthor {
         }
         return author;
     }
+    public String getAuthorNameById(int authorId) throws Exception{
+        ResultSet result = connect.Select("author", "author_id="+authorId);
+        Author author = new Author();
+        while(result.next()){
+            author.setAuthor_id(result.getInt("author_id"));
+            author.setFirst_name(result.getString("first_name"));
+            author.setLast_name(result.getString("last_name"));
+            author.setPhone_number(result.getString("phone_number"));
+            author.setEmail(result.getString("email"));
+        }
+        return author.getFirst_name()+" "+author.getLast_name();
+    }
 }

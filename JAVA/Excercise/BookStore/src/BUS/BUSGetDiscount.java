@@ -28,8 +28,8 @@ public class BUSGetDiscount {
             discount.setDiscount_id(result.getInt("discount_id"));
             discount.setDiscount_name(result.getString("discount_name"));
             discount.setDiscount_type(result.getInt("discount_type"));
-            discount.setStart_date("start_date");
-            discount.setEnd_date("end_date");
+            discount.setStart_date(result.getString("start_date"));
+            discount.setEnd_date(result.getString("end_date"));
             discountList.add(discount);
         }
         return discountList;
@@ -43,14 +43,19 @@ public class BUSGetDiscount {
         return this.getDiscount(null);
     }
     
-    public Discount getDiscountByName(String condition) throws Exception{
-        
-        ArrayList<Discount> disList = getDiscount(condition, "discount_type DESC");
+    public Discount getDiscountByNameNType(String discountName, String discountType) throws Exception{
+        ArrayList<Discount> disList = getDiscount("discount_name='"+discountName+"' AND discount_type<="+discountType , "discount_type DESC");
         if(!disList.isEmpty()){
         return disList.get(0);
         }
         Discount temp = new Discount();
         temp.setDiscount_id(-1);
         return temp;
+    }
+    
+    public Discount getDiscountBtId(int discountId) throws Exception{
+        ArrayList<Discount> discountList = new ArrayList<>();
+        discountList = this.getDiscount("discount_id="+discountId);
+        return discountList.get(0);
     }
 }

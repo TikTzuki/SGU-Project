@@ -47,5 +47,9 @@ public class BUSGetBook {
         return this.getBook(null);
     }
     
+    public Book getBookById(String bookId) throws Exception{
+        ArrayList<Book> bookList = this.getBook("book_id="+bookId);
+        return bookList.get(0);
+    }
     
 }

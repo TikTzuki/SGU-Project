@@ -8,6 +8,7 @@ package BUS;
 import DAO.ConnectionUnit;
 import DTO.Genre;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -48,5 +49,14 @@ public class BUSGetGenre {
             genre = new Genre(result.getInt("genre_id"), result.getString("name"));
         }
         return genre;
+    }
+    
+    public String getGenreNameByBookId(int book_id) throws Exception{
+        ResultSet result = connect.Select("genre,book", "book.genre_id=genre.genre_id and book_id="+book_id, null);
+        Genre genre = new Genre();
+        while(result.next()){
+            genre = new Genre(result.getInt("genre_id"), result.getString("name"));
+        }
+        return genre.getName();
     }
 }

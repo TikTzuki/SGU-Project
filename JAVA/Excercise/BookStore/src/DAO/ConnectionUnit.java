@@ -70,6 +70,7 @@ public class ConnectionUnit {
 
     //INSERT INTO TableName (columnName...) VALUES (column Value)
     public boolean Insert(String TableName, HashMap<String, Object> ColumnValues) throws Exception{
+        System.out.println(TableName);
         StringBuilder query = new StringBuilder("INSERT INTO " + TableName+"");
         StringBuilder valueInsert = new StringBuilder();
         query.append("(");

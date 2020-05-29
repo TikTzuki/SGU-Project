@@ -25,7 +25,7 @@ import javax.swing.JTextField;
  * @author root
  */
 public class GUIBookStoreMain extends JFrame{
-    private Color colorPink = new Color(255,97,194,255);
+     private Color colorPink = new Color(255,97,194,255);
     private Color colorBlueWeak = new Color(97,255,218,255);
     private Color colorBlue = new Color(32,164,243,255);
     private Color colorCream = new Color(255,205,97,255);
@@ -43,6 +43,7 @@ public class GUIBookStoreMain extends JFrame{
     //Main
         //Nơi khai báo các panel chính
         // VŨ, TRÂN, NINH KHAI BÁO GUI VỚI HÀM KHỞI TẠO TRỐNG
+    FrameHienThi_Book vu = new FrameHienThi_Book();
     GUIOrderManager orderManager = new GUIOrderManager();
         //Mảng chứa nội dung chính
     JPanel[] pnlMainContentArray;
@@ -94,10 +95,10 @@ public class GUIBookStoreMain extends JFrame{
         
         //Khởi tạo nội panel chứa nội dung chính
         JPanel pnlAnalysis = new JPanel();
-        JPanel pnlBookManager = new JPanel();                         // VŨ
+        JPanel pnlBookManager = vu.SanPham();                          // VŨ
         JPanel pnlOrderManager = orderManager.initComponents(staff);  // LONG
         JPanel pnlPublisherManager = new JPanel();                    //VŨ
-        JPanel pnlDiscountManager = new JPanel();                    //NINH
+        JPanel pnlDiscountManager = new  JPanel();                    //NINH
         JPanel pnlCustomerManager = new JPanel();                    //TRÂN
         JPanel pnlStaffManager = new JPanel();                       //LONG
         //Tạo ra 1 mảng tạm để chứ các content panel và đưa vào mảng content panel
@@ -112,8 +113,8 @@ public class GUIBookStoreMain extends JFrame{
 
         this.setVisible(true);
         this.pack();
-        this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        //frMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
     }
     

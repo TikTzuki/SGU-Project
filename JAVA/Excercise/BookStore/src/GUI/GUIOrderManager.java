@@ -5,37 +5,10 @@
  */
 package GUI;
 
-import BUS.BUSGetAuthor;
-import BUS.BUSGetBook;
-import BUS.BUSGetCustomer;
-import BUS.BUSGetDiscount;
-import BUS.BUSGetDiscountDetail;
-import BUS.BUSGetGenre;
-import BUS.BUSOrderItemManager;
-import BUS.BUSOrderManager;
-import DTO.Author;
-import DTO.Book;
-import DTO.Customer;
-import DTO.Discount;
-import DTO.DiscountDetail;
-import DTO.Genre;
-import DTO.Order;
-import DTO.OrderItem;
-import DTO.Staff;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import BUS.*;
+import DTO.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -48,15 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.*;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -64,6 +29,12 @@ import javax.swing.table.DefaultTableModel;
  * @author Tik
  */
 public class GUIOrderManager{
+    private Color colorPink = new Color(255,97,194,255);
+    private Color colorBlueWeak = new Color(97,255,218,255);
+    private Color colorBlue = new Color(32,164,243,255);
+    private Color colorCream = new Color(255,205,97,255);
+    private Color colorRice = new Color(229,218,218,255);
+    private Color colorGray = new Color(93,87,107,255);
     //Nhan vien
     Staff staff;
     private Font fontContent = new Font(Font.SERIF, 0, 12);
@@ -87,6 +58,21 @@ public class GUIOrderManager{
     JLabel lblTotalPriceOrderValue = new JLabel("0");
     SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd");  
     Date today = new Date();
+    //Date transfer object
+    private BUSGetBook busBook = new BUSGetBook();
+    private BUSOrderManager busOrder = new BUSOrderManager();
+    private BUSOrderItemManager busOrderItem = new BUSOrderItemManager();
+    private BUSGetGenre busGenre = new BUSGetGenre();
+    private BUSGetAuthor busAuthor = new BUSGetAuthor();
+    private BUSGetDiscount busDiscount = new BUSGetDiscount();
+    private BUSGetDiscountDetail busDiscountDetail = new BUSGetDiscountDetail();
+    static private ArrayList<Book> bookListGlobal = new ArrayList<>();
+    static private ArrayList<OrderItem> orderItemListGlobal = new ArrayList<>();
+    static private Order orderGlobal = new Order();
+    static private Book selectedBookGlobal = new Book();
+    static private ArrayList<Discount> discountListGlobal = new ArrayList<>();
+    static private Discount selectedDiscountGolbal = new Discount();
+    static private ArrayList<DiscountDetail> discountDetailListGlobal = new ArrayList<>();
     public GUIOrderManager() {
         //initComponents();
         
@@ -124,10 +110,10 @@ public class GUIOrderManager{
             //Thông tin sản phẩm đang đc chọn
         pnlSelectedProductDetail = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         pnlSelectedProductDetail.setPreferredSize(new Dimension(200, 300));
-        pnlSelectedProductDetail.setBackground(Color.red);
+        pnlSelectedProductDetail.setBackground(colorRice);
         
-        Dimension selectedProductLabelSize = new Dimension(50, 20);
-        JPanel pnlBlock = new JPanel(); pnlBlock.setPreferredSize(new Dimension(200, 120));
+        Dimension selectedProductLabelSize = new Dimension(60, 20);
+        JPanel pnlBlock = new JPanel(); pnlBlock.setPreferredSize(new Dimension(200, 120)); pnlBlock.setBackground(colorRice);
         
         lblBookId.setPreferredSize(selectedProductLabelSize);
         lblBookId.setFont(fontContent);
@@ -182,10 +168,10 @@ public class GUIOrderManager{
         pnlCreateOrder.add(pnlAttachProductToOrder);
             //Panel hóa đơn hiện tại
         pnlInstanceOrder = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        pnlInstanceOrder.setPreferredSize(new Dimension(550,320));
+        pnlInstanceOrder.setPreferredSize(new Dimension(560,320));
         //Panel bên trái hóa đơn hiện tại
-        JPanel pnlLeftInstanceOrder = new JPanel();
-        pnlLeftInstanceOrder .setPreferredSize(new Dimension(400,320));
+        JPanel pnlLeftInstanceOrder = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        pnlLeftInstanceOrder .setPreferredSize(new Dimension(410,320));
         JLabel lblOrderDetail = new JLabel("Hóa đơn");
         tblOrderDetail = new JTable();
         tblOrderDetail.setPreferredSize(new Dimension(400,500));
@@ -195,8 +181,16 @@ public class GUIOrderManager{
             },
             new Object[]{"ID","Tên sách","Giá bán","#","Thành tiền"}));
         JScrollPane scrollTblOrderDetail = new JScrollPane(tblOrderDetail);
-        scrollTblOrderDetail.setPreferredSize(new Dimension(400,260));
+        scrollTblOrderDetail.setPreferredSize(new Dimension(400,240));
         
+        Dimension sizeOrderCalc = new Dimension(190, 16);
+        lblTotalPriceOrderBefDis.setPreferredSize(sizeOrderCalc);
+        lblTotalPriceOrderValue.setPreferredSize(sizeOrderCalc);
+        lblTotalValueDiscount.setPreferredSize(sizeOrderCalc);
+        
+        lblTotalPriceOrderBefDisValue.setPreferredSize(new Dimension(190, 16));
+        lblTotalPriceOrderValue.setPreferredSize(new Dimension(190, 16));
+        lblTotalValueDiscountValue.setPreferredSize(new Dimension(190, 16));
 
         pnlLeftInstanceOrder.add(lblOrderDetail);
         pnlLeftInstanceOrder.add(scrollTblOrderDetail);
@@ -212,7 +206,7 @@ public class GUIOrderManager{
         //Panel bên phải hóa dơn hiện tại
         JPanel pnlRightInstanceOrder = new JPanel(new FlowLayout(FlowLayout.CENTER,0,20));
         pnlRightInstanceOrder.setPreferredSize(new Dimension(150,320));
-        pnlRightInstanceOrder.setBackground(Color.PINK);
+        pnlRightInstanceOrder.setBackground(colorRice);
         
         Dimension controlSize = new Dimension(100,20);
         lblSaveOrder.setPreferredSize(controlSize);
@@ -223,8 +217,10 @@ public class GUIOrderManager{
         cbbDiscount.setModel(modelCbbDiscount = showCbbDiscount());
         btnApplyDiscount.setPreferredSize(new Dimension(100, 20));
         pnlDiscount.setPreferredSize(new Dimension(150, 50));
+        pnlDiscount.setBackground(colorRice);
         //Chon id khach hang
         pnlCustomerId.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        pnlCustomerId.setBackground(colorRice);
         lblCustomerId.setPreferredSize(new Dimension(70, 20));
         txtCustomerId.setPreferredSize(new Dimension(50,20));
         btnSearchCustomerId.setPreferredSize(new Dimension(20, 20));
@@ -289,7 +285,7 @@ public class GUIOrderManager{
         btnApplyDiscount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                applyDiscount(evt);
+                showTotalValueOrder();
             }
         });
         lblSaveOrder.addMouseListener(new MouseAdapter() {
@@ -308,17 +304,11 @@ public class GUIOrderManager{
     }
     public void showTableProduct() {
         modelTblProduct.setRowCount(0);
-        BUSGetBook busBook = new BUSGetBook();
-        BUSGetGenre busGenre = new BUSGetGenre();
-        BUSGetAuthor busAuthor = new BUSGetAuthor();
-        
-        ArrayList<Book> listBook;    
-
         try {
-            listBook = busBook.getBook();
+            bookListGlobal = this.busBook.getBook();
             Genre genre;
             Author author;
-            for (Iterator<Book> obj = listBook.iterator(); obj.hasNext();) {
+            for (Iterator<Book> obj = bookListGlobal.iterator(); obj.hasNext();) {
                 Book book=obj.next();
                 genre = busGenre.getGenreByBookId(book.getBook_id());
                 author = busAuthor.getAuthorByBookId(book.getBook_id());
@@ -346,23 +336,33 @@ public class GUIOrderManager{
     }
     public void showSelectedProduct(MouseEvent evt){
         int selectedRowIndex = tblProduct.getSelectedRow();
-            lblBookId.setText("ID ");
-            lblBookGenre.setText("Thể loại");
-            lblBookName.setText("Tên");
-            lblBookAuthor.setText("Tác giả");
-            lblBookPrice.setText("Giá");
-            lblBookQuantity.setText("Số lượng");
-            lblISBN.setText("ISBN");
+        lblBookId.setText("ID ");
+        lblBookGenre.setText("Thể loại");
+        lblBookName.setText("Tên");
+        lblBookAuthor.setText("Tác giả");
+        lblBookPrice.setText("Giá");
+        lblBookQuantity.setText("Số lượng");
+        lblISBN.setText("ISBN");
         
-        ImageIcon iiconBook =
-        loadIcon("src/images/"+tblProduct.getValueAt(selectedRowIndex, 0).toString()+".jpg", 200, 300);
-        lblBookImg.setIcon(iiconBook);
-        lblBookIdValue.setText(tblProduct.getValueAt(selectedRowIndex,0).toString());
-        lblBookGenreValue.setText(tblProduct.getValueAt(selectedRowIndex, 1).toString());
-        lblBookNameValue.setText(tblProduct.getValueAt(selectedRowIndex, 2).toString());
-        lblBookAuthorValue.setText(tblProduct.getValueAt(selectedRowIndex, 3).toString());
-        lblBookPriceValue.setText(tblProduct.getValueAt(selectedRowIndex, 4).toString());
-        txtBookQuantity.setText("1");
+        //Lấy book từ id
+        try {
+            selectedBookGlobal = busBook.getBookById(tblProduct.getValueAt(selectedRowIndex, 0).toString());
+            ImageIcon iiconBook
+                    = loadIcon("src/images/" + selectedBookGlobal.getBook_id() + ".jpg", 200, 300);
+            lblBookImg.setIcon(iiconBook);
+            lblBookIdValue.setText(selectedBookGlobal.getBook_id() + "");
+            
+            lblBookGenreValue.setText(busGenre.getGenreNameByBookId(selectedBookGlobal.getBook_id()));
+            lblBookNameValue.setText(selectedBookGlobal.getTitle());
+            lblBookAuthorValue.setText(busAuthor.getAuthorNameById(selectedBookGlobal.getAuthor_id()));
+            lblBookPriceValue.setText(selectedBookGlobal.getPrice()+"");
+            txtBookQuantity.setText("1");
+            lblISBNValue.setText(selectedBookGlobal.getIsbn());
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        
         txtBookQuantity.addKeyListener(new KeyListener() {
             String keyPressed, instanceString;
             @Override
@@ -379,7 +379,7 @@ public class GUIOrderManager{
                 keyLockOnlyNumberInLimit(evt, Integer.parseInt(tblProduct.getValueAt(selectedRowIndex, 5).toString()));
             }
         });
-        lblISBNValue.setText(tblProduct.getValueAt(selectedRowIndex, 6).toString());
+        
 
 
     }
@@ -421,91 +421,101 @@ public class GUIOrderManager{
         if(!patern.matcher(keyRealeased).matches() || Integer.parseInt(txtBookQuantity.getText()) > limit )
         {   
             txtBookQuantity.setText(txtBookQuantity.getText().substring(0,txtBookQuantity.getText().length()-1));
+            if(txtBookQuantity.getText().length()==0){
+                txtBookQuantity.setText("1");
+            }
         }
 
     }
     public void showTblOrderDetail(MouseEvent evt) {
-        if (lblBookImg.getIcon() == null || txtBookQuantity.getText() == "0") {
+        // Nếu sản phẩm không tồn tại, hoặc có số lượng = 0, hoặc không điền số lượng
+        if (lblBookImg.getIcon() == null || txtBookQuantity.getText().equalsIgnoreCase("0") || txtBookQuantity.getText().equalsIgnoreCase("")) {
             return;
         }
-        //Xet xem da co san pham trong hoa don chua, neu roi thi cap nhat lai so luong va thanh tien
-        for (int i = 0; i < modelTblOrderdetail.getRowCount(); i++) {
-            if (modelTblOrderdetail.getValueAt(i, 0) == lblBookIdValue.getText()) {
-                modelTblOrderdetail.setValueAt(txtBookQuantity.getText(), i, 3);
-                modelTblOrderdetail.setValueAt(
-                        Integer.parseInt(lblBookPriceValue.getText()) * Integer.parseInt(txtBookQuantity.getText()),
-                         i, 4);
-                //Tinh tong hoa don
-                showTotalValueOrder();
-                return;
+        int quantity = Integer.parseInt(txtBookQuantity.getText());
+        int price = selectedBookGlobal.getPrice()*Integer.parseInt(txtBookQuantity.getText());
+        //Neu chua co thi them san pham vao order item list
+        if (orderItemListGlobal.isEmpty()) {
+
+            OrderItem newOrderItem = new OrderItem(0, selectedBookGlobal.getBook_id(), quantity, price);
+            orderItemListGlobal.add(newOrderItem);
+        } else {
+            //neu roi thi cap nhat lai so luong va thanh tien
+            for (OrderItem orderItem : orderItemListGlobal) {
+                if (orderItem.getBook_id() == selectedBookGlobal.getBook_id()) {
+                    orderItem.setQuantity(quantity);
+                    orderItem.setPrice(price);
+                }
             }
         }
-        //Neu chua co thi them san pham vao hoa don
-        modelTblOrderdetail.addRow(new Object[]{
-            lblBookIdValue.getText(),
-            lblBookNameValue.getText(),
-            lblBookPriceValue.getText(),
-            txtBookQuantity.getText(),
-            Integer.parseInt(lblBookPriceValue.getText()) * Integer.parseInt(txtBookQuantity.getText())
-        });
+        modelTblOrderdetail.setRowCount(0);
+        for(OrderItem orderItem: orderItemListGlobal){
+            modelTblOrderdetail.addRow(new Object[]{
+                orderItem.getBook_id(),
+                selectedBookGlobal.getBook_id(),
+                selectedBookGlobal.getPrice(),
+                orderItem.getQuantity(),
+                orderItem.getPrice()
+            });
+        }
         //Tinh tong hoa don
         showTotalValueOrder();
     }
     public DefaultComboBoxModel showCbbDiscount(){
-        BUSGetDiscount discount = new BUSGetDiscount();
         DefaultComboBoxModel modelCbb = new DefaultComboBoxModel();
-        ArrayList<Discount> discountList = new ArrayList<>();
         try {
-            discountList = discount.getDiscount();
+            discountListGlobal = busDiscount.getDiscount();
         } catch (Exception ex) {
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        for(Discount temp:discountList){
+        modelCbb.addElement("0. Không áp mã");
+        //Thêm khuyến mãi vào combo box
+        for(Discount temp:discountListGlobal){
             modelCbb.addElement(temp.getDiscount_id()+". "+temp.getDiscount_name());
         }
         return modelCbb;
     }
     public void showTotalValueOrder() {
+        applyDiscount();
         int sum = 0 ;
         int discount = 0;
-        if(lblTotalValueDiscountValue.getText()!="Ap ma khong thanh cong")
-            discount = Integer.parseInt(lblTotalValueDiscountValue.getText());
-        for (int i = 0; i < modelTblOrderdetail.getRowCount(); i++) {
-            sum+= Integer.parseInt(modelTblOrderdetail.getValueAt(i, 4).toString());
-        }
-        lblTotalPriceOrderBefDisValue.setText(""+sum);
-        lblTotalPriceOrderValue.setText(""+(sum-discount)+" vnđ");
-    }
-    public void applyDiscount(ActionEvent evt){
-        int discountValue = 0;
-        BUSGetDiscount busDiscount = new BUSGetDiscount();
-        BUSGetDiscountDetail busDiscountDetail = new BUSGetDiscountDetail();
-        String nameOfDiscount = modelCbbDiscount.getSelectedItem().toString();
-        int discountType = Integer.parseInt(lblTotalPriceOrderBefDisValue.getText());
-        Discount discountTemp = new Discount();
-        ArrayList<DiscountDetail> discountDetailList = new ArrayList<>();
-        try {
-            discountTemp = busDiscount.getDiscountByName("discount_name='"+nameOfDiscount+"' and discount_type<="+discountType);
-            if(discountTemp.getDiscount_id()==-1){
-                lblTotalValueDiscountValue.setText("Ap ma khong thanh cong");
-                showTotalValueOrder();
-                return;
-            };
-            discountDetailList = busDiscountDetail.getDiscountDetails(" discount_id="+discountTemp.getDiscount_id());
-            for(DiscountDetail disTemp:discountDetailList){
-                for(int i=0; i<modelTblOrderdetail.getRowCount(); i++){
-                    if(disTemp.getBook_id()==Integer.parseInt(modelTblOrderdetail.getValueAt(i, 0).toString())){
-                        discountValue += (disTemp.getPercent()*Integer.parseInt(modelTblOrderdetail.getValueAt(i, 4).toString()))/100;
-                    };
+        for (OrderItem orderItem : orderItemListGlobal) {
+            sum += orderItem.getPrice() * orderItem.getQuantity();
+            System.out.println("SUM: "+sum);
+            if (selectedDiscountGolbal.getDiscount_id() != 0 && selectedDiscountGolbal.getDiscount_type()<=sum) {
+                for (DiscountDetail dcDetail : discountDetailListGlobal) {
+                    if (orderItem.getBook_id() == dcDetail.getBook_id()) {
+                        //Công thức: giá tiền x số lượng x phần trăm giảm
+                        discount += (dcDetail.getPercent() * orderItem.getPrice() * orderItem.getQuantity()) / 100;
+                    }
                 }
             }
+        }
+        lblTotalPriceOrderBefDisValue.setText(""+sum);
+        lblTotalValueDiscountValue.setText(""+discount);
+        lblTotalPriceOrderValue.setText(""+(sum-discount)+" vnđ");
+    }
+    public void applyDiscount(){
+        String temp = cbbDiscount.getSelectedItem().toString();
+        int selectedDiscountId = Integer.parseInt(temp.substring(0, temp.indexOf(". ")));
+        // Nếu không chọn mã giảm giá thì set id giảm giá đang chọn bằng 0
+        if(selectedDiscountId==0){
+            selectedDiscountGolbal.setDiscount_id(0);
+            lblTotalValueDiscountValue.setText("Không có mã giảm giá.");
+            return;
+        }
+        try {
+            //Lấy discount hiện tại
+            selectedDiscountGolbal = busDiscount.getDiscountBtId(selectedDiscountId);
+            System.out.println(selectedDiscountGolbal.toString());
+            //Lấy danh sách chi tiết discount hiện tại
+            discountDetailListGlobal = busDiscountDetail.getDiscountDetailsById(selectedDiscountGolbal.getDiscount_id());
         } catch (Exception ex) {
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        lblTotalValueDiscountValue.setText(""+discountValue);
-        showTotalValueOrder();
     }
+    
     public void showNSearchCustomer(ActionEvent e) {
         JFrame findCustomer = new JFrame("Tìm khách hàng");
         JTextField txtSearch = new JTextField();
@@ -592,10 +602,16 @@ public class GUIOrderManager{
         int order_id = 0;
         String discount_name = modelCbbDiscount.getSelectedItem().toString();
         String discount_id = discount_name.substring(0, discount_name.indexOf(". "));
-        String customer_id = txtCustomerId.getText();
+        String customer_id;
+        if(txtCustomerId.getText().equals("")){
+                    customer_id = "0";
+        } else {
+            customer_id = txtCustomerId.getText();
+        }
         String order_date = dateFormatter.format(today);
         String total = lblTotalPriceOrderValue.getText().substring(0, lblTotalPriceOrderValue.getText().indexOf("vnđ")-1);
         orderForInsert = new Order(staff_id, Integer.parseInt(discount_id), Integer.parseInt(customer_id), order_date, Integer.parseInt(total));
+        System.out.println(orderForInsert.toString());
         BUSOrderManager busOrder = new BUSOrderManager();
         try {
             busOrder.inserts(orderForInsert);
