@@ -46,5 +46,10 @@ public class DiscountDetail {
     public void setPercent(int percent) {
         this.percent = percent;
     }
+
+    @Override
+    public String toString() {
+        return "DiscountDetail{" + "book_id=" + book_id + ", discount_id=" + discount_id + ", percent=" + percent + '}';
+    }
     
 }

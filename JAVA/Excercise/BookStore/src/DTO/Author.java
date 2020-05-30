@@ -66,5 +66,10 @@ public class Author {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "Author{" + "author_id=" + author_id + ", first_name=" + first_name + ", last_name=" + last_name + ", phone_number=" + phone_number + ", email=" + email + '}';
+    }
     
 }

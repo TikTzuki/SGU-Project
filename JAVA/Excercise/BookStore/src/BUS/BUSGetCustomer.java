@@ -41,4 +41,7 @@ public class BUSGetCustomer {
     public ArrayList<Customer> getCustomer() throws Exception{
         return this.getCustomer(null, null);
     }
+    public Customer getCustomerById(int customerId) throws Exception{
+        return this.getCustomer(" customer_id="+customerId).get(0);
+    }
 }

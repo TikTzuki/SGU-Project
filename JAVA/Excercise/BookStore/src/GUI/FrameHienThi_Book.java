@@ -346,7 +346,7 @@ public class FrameHienThi_Book
         */
         //Doc();
         jscrollpane.setBounds(65, 410, 830, 206);
-        //pBook.add(jscrollpane);
+        pBook.add(jscrollpane);
         //JTableHeader tbh = table.getTableHeader();
         //tbh.setFont(new Font("Tahoma", 1, 15));
         table.getTableHeader().setForeground(Color.BLACK);
@@ -377,7 +377,7 @@ public class FrameHienThi_Book
 /*
     public void Doc() {
         Book_BUS bus = new Book_BUS();
-        if (BUS.ds == null) {
+        if (bus.ds == null) {
             bus.showAll();
         }
         Vector header = new Vector();
@@ -560,5 +560,5 @@ public class FrameHienThi_Book
         Doc();
     }
 
- */   
+    */
 }

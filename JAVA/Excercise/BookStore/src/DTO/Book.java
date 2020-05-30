@@ -96,5 +96,10 @@ public class Book {
     public void setAvailable_quantity(int available_quantity) {
         this.available_quantity = available_quantity;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" + "book_id=" + book_id + ", author_id=" + author_id + ", genre_id=" + genre_id + ", title=" + title + ", isbn=" + isbn + ", publication_date=" + publication_date + ", price=" + price + ", available_quantity=" + available_quantity + '}';
+    }
     
 }

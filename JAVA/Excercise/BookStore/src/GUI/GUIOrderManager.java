@@ -73,6 +73,8 @@ public class GUIOrderManager{
     static private ArrayList<Discount> discountListGlobal = new ArrayList<>();
     static private Discount selectedDiscountGolbal = new Discount();
     static private ArrayList<DiscountDetail> discountDetailListGlobal = new ArrayList<>();
+    static private ArrayList<Customer> customerListGlobal = new ArrayList<>();
+    static private Customer selectedCustomerGlobal = new Customer();
     public GUIOrderManager() {
         //initComponents();
         
@@ -272,8 +274,9 @@ public class GUIOrderManager{
         
         //Tạo panel quản lý hóa đơn
         pnlOrderManager = new JPanel();
-        pnlOrderManager.setPreferredSize(new Dimension(1000, 500));
+        pnlOrderManager.setPreferredSize(new Dimension(1100, 700));
         pnlOrderManager.setBackground(Color.white);
+        
         
         //
         tabbedPane.addTab("Thêm hóa đơn", null, pnlCreateOrder, "Thêm hóa đơn");
@@ -288,10 +291,20 @@ public class GUIOrderManager{
                 showTotalValueOrder();
             }
         });
-        lblSaveOrder.addMouseListener(new MouseAdapter() {
+        pnlSaveOrder.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt){
                 saveOrder(evt);
             };
+        });
+        pnlClearOrder.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt){
+                clearOrder(evt);
+            }
+        });
+        pnlDeleteOrderItem.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt){
+                deleteSelectedOrderItem(evt);
+            }
         });
         modelTblProduct = (DefaultTableModel) tblProduct.getModel();
         modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
@@ -302,6 +315,7 @@ public class GUIOrderManager{
     public static void main(String[] args) {
         GUIOrderManager pnlMainPanel = new GUIOrderManager();
     }
+    
     public void showTableProduct() {
         modelTblProduct.setRowCount(0);
         try {
@@ -346,7 +360,7 @@ public class GUIOrderManager{
         
         //Lấy book từ id
         try {
-            selectedBookGlobal = busBook.getBookById(tblProduct.getValueAt(selectedRowIndex, 0).toString());
+            selectedBookGlobal = busBook.getBookById(Integer.parseInt(tblProduct.getValueAt(selectedRowIndex, 0).toString()));
             ImageIcon iiconBook
                     = loadIcon("src/images/" + selectedBookGlobal.getBook_id() + ".jpg", 200, 300);
             lblBookImg.setIcon(iiconBook);
@@ -428,38 +442,50 @@ public class GUIOrderManager{
 
     }
     public void showTblOrderDetail(MouseEvent evt) {
-        // Nếu sản phẩm không tồn tại, hoặc có số lượng = 0, hoặc không điền số lượng
-        if (lblBookImg.getIcon() == null || txtBookQuantity.getText().equalsIgnoreCase("0") || txtBookQuantity.getText().equalsIgnoreCase("")) {
-            return;
-        }
-        int quantity = Integer.parseInt(txtBookQuantity.getText());
-        int price = selectedBookGlobal.getPrice()*Integer.parseInt(txtBookQuantity.getText());
-        //Neu chua co thi them san pham vao order item list
-        if (orderItemListGlobal.isEmpty()) {
-
-            OrderItem newOrderItem = new OrderItem(0, selectedBookGlobal.getBook_id(), quantity, price);
-            orderItemListGlobal.add(newOrderItem);
-        } else {
-            //neu roi thi cap nhat lai so luong va thanh tien
-            for (OrderItem orderItem : orderItemListGlobal) {
-                if (orderItem.getBook_id() == selectedBookGlobal.getBook_id()) {
-                    orderItem.setQuantity(quantity);
-                    orderItem.setPrice(price);
+        try {
+            // Nếu sản phẩm không tồn tại, hoặc có số lượng = 0, hoặc không điền số lượng
+            if (lblBookImg.getIcon() == null || txtBookQuantity.getText().equalsIgnoreCase("0") || txtBookQuantity.getText().equalsIgnoreCase("")) {
+                return;
+            }
+            int quantity = Integer.parseInt(txtBookQuantity.getText());
+            int price = selectedBookGlobal.getPrice() * Integer.parseInt(txtBookQuantity.getText());
+            //Trường hợp xét từng sản phẩm trong list trùng với sản phẩm đang chọn
+            if (!orderItemListGlobal.isEmpty()) {
+                for (OrderItem orderItem : orderItemListGlobal) {
+                    if (orderItem.getBook_id() == selectedBookGlobal.getBook_id()) {
+                        orderItem.setQuantity(quantity);
+                        orderItem.setPrice(price);
+                        modelTblOrderdetail.setRowCount(0);
+                        for (OrderItem ODItem : orderItemListGlobal) {
+                            Book bookTemp = busBook.getBookById(ODItem.getBook_id());
+                            modelTblOrderdetail.addRow(new Object[]{
+                                ODItem.getBook_id(),
+                                bookTemp.getTitle(),
+                                bookTemp.getPrice(),
+                                ODItem.getQuantity(),
+                                ODItem.getPrice()
+                            });
+                        }
+                        showTotalValueOrder();
+                        return;
+                    }
                 }
             }
-        }
-        modelTblOrderdetail.setRowCount(0);
-        for(OrderItem orderItem: orderItemListGlobal){
+            //Truong hop trống hoac có sản phẩm mới được thêm
+            OrderItem newOrderItem = new OrderItem(0, selectedBookGlobal.getBook_id(), quantity, price);
+            orderItemListGlobal.add(newOrderItem);
+            Book bookTemp = busBook.getBookById(newOrderItem.getBook_id());
             modelTblOrderdetail.addRow(new Object[]{
-                orderItem.getBook_id(),
-                selectedBookGlobal.getBook_id(),
-                selectedBookGlobal.getPrice(),
-                orderItem.getQuantity(),
-                orderItem.getPrice()
+                newOrderItem.getBook_id(),
+                bookTemp.getTitle(),
+                bookTemp.getPrice(),
+                newOrderItem.getQuantity(),
+                newOrderItem.getPrice()
             });
+            showTotalValueOrder();
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //Tinh tong hoa don
-        showTotalValueOrder();
     }
     public DefaultComboBoxModel showCbbDiscount(){
         DefaultComboBoxModel modelCbb = new DefaultComboBoxModel();
@@ -515,7 +541,6 @@ public class GUIOrderManager{
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     public void showNSearchCustomer(ActionEvent e) {
         JFrame findCustomer = new JFrame("Tìm khách hàng");
         JTextField txtSearch = new JTextField();
@@ -572,13 +597,13 @@ public class GUIOrderManager{
                             +"%' OR last_name LIKE '%" + partent
                             +"%' OR phone_number LIKE '%" + partent + "%'";
                 }
-                ArrayList<Customer> cusTempList = new ArrayList<>();
+                
                 try {
-                    cusTempList = busCustomer.getCustomer(condition);
+                    customerListGlobal = busCustomer.getCustomer(condition);
                 } catch (Exception ex) {
                     Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                for(Customer cus: cusTempList){
+                for(Customer cus: customerListGlobal){
                     modelTblCustomer.addRow(new Object[]{
                         cus.getCustomer_id(),
                         cus.getFirst_name()+cus.getLast_name(),
@@ -590,18 +615,20 @@ public class GUIOrderManager{
         btnChose.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String customerIdFound = tblCustomer.getValueAt(tblCustomer.getSelectedRow(), 0).toString();
-                txtCustomerId.setText(customerIdFound);
+                try {
+                    String customerIdFound = tblCustomer.getValueAt(tblCustomer.getSelectedRow(), 0).toString();
+                    selectedCustomerGlobal = busCustomer.getCustomerById(Integer.parseInt(customerIdFound));
+                    txtCustomerId.setText(selectedCustomerGlobal.getCustomer_id()+"");
+                } catch (Exception ex) {
+                    Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
     public void saveOrder(MouseEvent evt){
         Order orderForInsert;
         
-        int staff_id = this.staff.getStaff_id();
         int order_id = 0;
-        String discount_name = modelCbbDiscount.getSelectedItem().toString();
-        String discount_id = discount_name.substring(0, discount_name.indexOf(". "));
         String customer_id;
         if(txtCustomerId.getText().equals("")){
                     customer_id = "0";
@@ -610,23 +637,40 @@ public class GUIOrderManager{
         }
         String order_date = dateFormatter.format(today);
         String total = lblTotalPriceOrderValue.getText().substring(0, lblTotalPriceOrderValue.getText().indexOf("vnđ")-1);
-        orderForInsert = new Order(staff_id, Integer.parseInt(discount_id), Integer.parseInt(customer_id), order_date, Integer.parseInt(total));
+        orderForInsert = new Order(staff.getStaff_id(), selectedDiscountGolbal.getDiscount_id(), Integer.parseInt(customer_id), order_date, Integer.parseInt(total));
         System.out.println(orderForInsert.toString());
-        BUSOrderManager busOrder = new BUSOrderManager();
+
         try {
             busOrder.inserts(orderForInsert);
+            //Lấy ra id của order vừa insert
             order_id = busOrder.getLastOrderId();
+            System.out.println(order_id);
+            //Set lại order id cho từng order item và thêm vào database
+            for (OrderItem orderItem : orderItemListGlobal) {
+                System.out.println(orderItem);
+                orderItem.setOrder_id(order_id);
+                System.out.println(orderItem);
+                busOrderItem.inserts(orderItem);
+            }
         } catch (Exception ex) {
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(order_id);
-        BUSOrderItemManager busOrderItem = new BUSOrderItemManager();
-        for(int i=0; i<modelTblOrderdetail.getRowCount(); i++){
-            OrderItem orderItem = new OrderItem();
-            
-        }
-        
     }
+    public void clearOrder(MouseEvent evt){
+        orderItemListGlobal.clear();
+        modelTblOrderdetail.setRowCount(0);
+        showTotalValueOrder();
+    }
+    public void deleteSelectedOrderItem(MouseEvent evt){
+        int selectedRow = tblOrderDetail.getSelectedRow();
+        if(selectedRow<0)
+            return;
+        orderItemListGlobal.remove(selectedRow);
+        modelTblOrderdetail.removeRow(selectedRow);
+        showTotalValueOrder();
+    }
+    
+    // Tab add Order
     JLabel lblBookImg = new JLabel();
     JLabel lblBookId = new JLabel();
     JLabel lblBookGenre = new JLabel();
@@ -644,12 +688,7 @@ public class GUIOrderManager{
     JTextField txtBookQuantity = new JTextField();
     JLabel lblISBNValue  = new JLabel();
     
-    JScrollPane scrollTblOrderDetail;/*
-    JLabel lblTotalValueDiscount = new JLabel();
-    JLabel lblTotalValueDiscountValue = new JLabel();
-    JLabel lblTotalPriceOrder = new JLabel();
-    JLabel lblTotalPriceOrderBefDisValue = new JLabel();
-    JLabel lblTotalPriceOrderValue = new JLabel();*/
+    JScrollPane scrollTblOrderDetail;
     
     JPanel pnlSaveOrder = new JPanel();
     JPanel pnlClearOrder = new JPanel();
@@ -665,4 +704,6 @@ public class GUIOrderManager{
     JLabel lblCustomerId = new JLabel("ID khach:");
     JTextField txtCustomerId = new JTextField();
     JButton btnSearchCustomerId = new JButton("S");
+    
+    //Tab order manager
 }
