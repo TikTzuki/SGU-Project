@@ -5,6 +5,8 @@
  */
 package bookstore;
 
+import GUI.GUIBookStoreMain;
+
 /**
  *
  * @author Tik
@@ -16,6 +18,7 @@ public class BookStore {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        GUIBookStoreMain bookStore = new GUIBookStoreMain();
     }
     
 }

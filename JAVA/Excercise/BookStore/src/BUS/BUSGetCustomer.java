@@ -44,4 +44,7 @@ public class BUSGetCustomer {
     public Customer getCustomerById(int customerId) throws Exception{
         return this.getCustomer(" customer_id="+customerId).get(0);
     }
+    public ArrayList<Customer> getCustomerBySearchLikeIdName(String nameOrId) throws Exception{
+        return this.getCustomer(" customer_id LIKE '%"+nameOrId+"%' OR first_name LIKE '%"+nameOrId+"%' OR last_name LIKE '%"+nameOrId+"%' ");
+    }
 }

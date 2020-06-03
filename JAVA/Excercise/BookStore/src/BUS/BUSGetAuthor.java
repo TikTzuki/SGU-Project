@@ -68,4 +68,7 @@ public class BUSGetAuthor {
         }
         return author.getFirst_name()+" "+author.getLast_name();
     }
+    public ArrayList<Author> getAuthorBySearchLikeIdName(String nameOrId) throws Exception{
+        return this.getAuthor(" author_id LIKE '%"+nameOrId+"%' OR first_name LIKE '%"+nameOrId+"%' OR last_name LIKE '%"+nameOrId+"%' ");
+    }
 }

@@ -58,4 +58,7 @@ public class BUSGetDiscount {
         discountList = this.getDiscount("discount_id="+discountId);
         return discountList.get(0);
     }
+    public ArrayList<Discount> getDiscountBySearchLikeIdNameType(String nameOrId) throws Exception{
+        return this.getDiscount(" discount_id LIKE '%"+nameOrId+"%' OR discount_name LIKE '%"+nameOrId+"%' OR discount_type LIKE '%"+nameOrId+"%' ");
+    }
 }

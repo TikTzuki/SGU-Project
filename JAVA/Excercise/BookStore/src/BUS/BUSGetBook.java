@@ -54,4 +54,20 @@ public class BUSGetBook {
     public String getBookTitleById(int bookId) throws Exception{
         return this.getBookById(bookId).getTitle();
     }
+    public void updates(Book book) throws Exception{
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("book_id", book.getBook_id());
+        map.put("author_id", book.getAuthor_id());
+        map.put("genre_id", book.getGenre_id());
+        map.put("title", book.getTitle());
+        map.put("isbn",book.getIsbn());
+        map.put("publication_date", book.getPublication_date());
+        map.put("price",book.getPrice());
+        map.put("available_quantity", book.getAvailable_quantity());
+        this.connect.Update("book", map, "book_id="+book.getBook_id());
+        
+    }
+    public ArrayList<Book> getBookBySearchLikeIdName(String nameOrId) throws Exception{
+        return this.getBook(" book_id LIKE '%"+nameOrId+"%' OR title LIKE '%"+nameOrId+"%'");
+    }
 }

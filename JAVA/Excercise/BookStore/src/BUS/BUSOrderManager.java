@@ -98,4 +98,12 @@ public class BUSOrderManager {
         }
         return 0;
     }
+    
+    public Order getOrderById(int orderId) throws Exception{
+        return this.getOrder("order_id="+orderId).get(0);
+    }
+    
+    public ArrayList<Order> getOrderBySearchLikeId(int orderId) throws Exception{
+        return this.getOrder("order_id LIKE '%"+orderId+"%'");
+    }
 }

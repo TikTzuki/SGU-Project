@@ -84,4 +84,7 @@ public class BUSOrderItemManager {
             deletes(orderItem);
         }
     }
+    public ArrayList<OrderItem> getOrderItemById(int id) throws Exception{
+        return this.getOrderItem("order_id="+id);
+    }
 }

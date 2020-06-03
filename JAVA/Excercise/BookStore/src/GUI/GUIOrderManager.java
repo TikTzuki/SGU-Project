@@ -16,13 +16,17 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+import jdk.nashorn.internal.ir.ContinueNode;
+
 
 /**
  *
@@ -66,6 +70,8 @@ public class GUIOrderManager{
     private BUSGetAuthor busAuthor = new BUSGetAuthor();
     private BUSGetDiscount busDiscount = new BUSGetDiscount();
     private BUSGetDiscountDetail busDiscountDetail = new BUSGetDiscountDetail();
+    private BUSGetCustomer busCustomer = new BUSGetCustomer();
+    private BUSGetStaff busStaff = new BUSGetStaff();
     static private ArrayList<Book> bookListGlobal = new ArrayList<>();
     static private ArrayList<OrderItem> orderItemListGlobal = new ArrayList<>();
     static private Order orderGlobal = new Order();
@@ -75,6 +81,9 @@ public class GUIOrderManager{
     static private ArrayList<DiscountDetail> discountDetailListGlobal = new ArrayList<>();
     static private ArrayList<Customer> customerListGlobal = new ArrayList<>();
     static private Customer selectedCustomerGlobal = new Customer();
+    static private ArrayList<Order> orderListGolbal = new ArrayList<>();
+    static private Order selectedOrderGolbal = new Order();
+    static private ArrayList<OrderItem> selectedOrderItem = new ArrayList<>();
     public GUIOrderManager() {
         //initComponents();
         
@@ -277,7 +286,67 @@ public class GUIOrderManager{
         pnlOrderManager.setPreferredSize(new Dimension(1100, 700));
         pnlOrderManager.setBackground(Color.white);
         
+        //Jpanel chi tiết hóa đơn
+        pnlOrderItem.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+        pnlOrderItem.setPreferredSize(new Dimension(1120, 240));
+        pnlOrderItem.setBackground(colorBlue);
+            //Panel Chi tiết hóa đơn 
+            pnlOrderItemLeft.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+            showPnlOrderItem();
+            pnlOrderItemLeft.setPreferredSize(new Dimension(500,240));
+            //Table chi tiết hóa đơn
+            tblOrderItem.setModel(new DefaultTableModel(new Object[][]{}, new String[]{
+                "ID","Tên sách","Tác giả","ISBN","#","Giá sách","Thành tiền"
+            }));
+            tblOrderItem.setPreferredScrollableViewportSize(new Dimension(400,240));
+            scrollTblOrderItem.setViewportView(tblOrderItem);
+            scrollTblOrderItem.setPreferredSize(new Dimension(400, 240));
+            //Panel thao tác hóa đơn
+            pnlOrderItemControl.setPreferredSize(new Dimension(150,240));
+            pnlOrderItemControl.setBackground(Color.white);
+            
+            pnlExportExcel.add(new JLabel("Xuất file excel"));
+            pnlExportExcel.setPreferredSize(new Dimension(100,30));
+            pnlExportExcel.setBackground(colorRice);
+            pnlOrderItemControl.add(pnlExportExcel);
         
+        pnlOrderItem.add(pnlOrderItemLeft);
+        pnlOrderItem.add(scrollTblOrderItem);
+        pnlOrderItem.add(pnlOrderItemControl);
+        
+        //JPanel tìm kiếm
+        pnlSearchOrder.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+        pnlSearchOrder.setPreferredSize(new Dimension(1100,110));
+        pnlSearchOrder.setBackground(colorRice);
+        pnlSearchOrderCondition.setPreferredSize(new Dimension(900,110));
+        showSearchCondition();
+        JButton btnSearch = new JButton("Tìm kiếm");
+        btnSearch.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                 searchOrder();
+             }
+         });
+        pnlSearchOrder.add(pnlSearchOrderCondition);
+        pnlSearchOrder.add(btnSearch);
+        //Table hóa đơn
+        tblOrder.setPreferredSize(new Dimension(1000, 400));
+        tblOrder.setModel(new DefaultTableModel(new Object[][]{}, new String[]{
+            "Mã hđ","Khách hàng", "Người bán", "Khuyến mãi", "Ngày lập", "Số lượng sản phẩm", "Tổng"
+        }));
+        tblOrder.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt) {
+                showLblOrderItemLeftValue();
+                showTblOrderItem();
+            }
+        });
+        
+        scrollTblOrder.setViewportView(tblOrder);
+        scrollTblOrder.setPreferredSize(new Dimension(1000,300));
+        
+        pnlOrderManager.add(pnlOrderItem);
+        pnlOrderManager.add(pnlSearchOrder);
+        pnlOrderManager.add(scrollTblOrder);
         //
         tabbedPane.addTab("Thêm hóa đơn", null, pnlCreateOrder, "Thêm hóa đơn");
         tabbedPane.addTab("Quản lý hóa đơn",null,pnlOrderManager,"Quản lý hóa đơn");
@@ -308,14 +377,17 @@ public class GUIOrderManager{
         });
         modelTblProduct = (DefaultTableModel) tblProduct.getModel();
         modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
+        modelTblOrder = (DefaultTableModel) tblOrder.getModel();
+        modelTblOrderItem = (DefaultTableModel) tblOrderItem.getModel();
         showTableProduct();
+        showTableOrder();
         return pnlMainPanel;
     }
 
     public static void main(String[] args) {
         GUIOrderManager pnlMainPanel = new GUIOrderManager();
     }
-    
+    //Methods tab add order manager
     public void showTableProduct() {
         modelTblProduct.setRowCount(0);
         try {
@@ -507,7 +579,7 @@ public class GUIOrderManager{
         int sum = 0 ;
         int discount = 0;
         for (OrderItem orderItem : orderItemListGlobal) {
-            sum += orderItem.getPrice() * orderItem.getQuantity();
+            sum += orderItem.getPrice();
             System.out.println("SUM: "+sum);
             if (selectedDiscountGolbal.getDiscount_id() != 0 && selectedDiscountGolbal.getDiscount_type()<=sum) {
                 for (DiscountDetail dcDetail : discountDetailListGlobal) {
@@ -639,19 +711,26 @@ public class GUIOrderManager{
         String total = lblTotalPriceOrderValue.getText().substring(0, lblTotalPriceOrderValue.getText().indexOf("vnđ")-1);
         orderForInsert = new Order(staff.getStaff_id(), selectedDiscountGolbal.getDiscount_id(), Integer.parseInt(customer_id), order_date, Integer.parseInt(total));
         System.out.println(orderForInsert.toString());
-
+        JOptionPane.showConfirmDialog(null, "Xác nhận tại hóa đơn?");
         try {
             busOrder.inserts(orderForInsert);
             //Lấy ra id của order vừa insert
             order_id = busOrder.getLastOrderId();
-            System.out.println(order_id);
-            //Set lại order id cho từng order item và thêm vào database
+            System.out.println("Thêm thành công");
+            //Set lại order id cho từng order item và thêm vào order_item
             for (OrderItem orderItem : orderItemListGlobal) {
                 System.out.println(orderItem);
                 orderItem.setOrder_id(order_id);
                 System.out.println(orderItem);
                 busOrderItem.inserts(orderItem);
+                //Update lại số sản phẩm tồn kho
+                Book bookForUpdate = busBook.getBookById(orderItem.getBook_id());
+                bookForUpdate.setAvailable_quantity(bookForUpdate.getAvailable_quantity()-orderItem.getQuantity());
+                busBook.updates(bookForUpdate);
             }
+            
+            
+        JOptionPane.showMessageDialog(null, "Thêm hóa đơn thành công");
         } catch (Exception ex) {
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -670,7 +749,374 @@ public class GUIOrderManager{
         showTotalValueOrder();
     }
     
-    // Tab add Order
+    // Methods tab Order manager
+    public void showTableOrder(){
+        try {
+            orderListGolbal = busOrder.getOrder();
+            for(Order order: orderListGolbal){
+                Customer cus = busCustomer.getCustomerById(order.getCustomer_id());
+                Staff staff = busStaff.getStaffById(order.getStaff_id());
+                Discount discount = busDiscount.getDiscountBtId(order.getDiscount_id());
+                ArrayList<OrderItem> orderItemList = busOrderItem.getOrderItemById(order.getOrder_id());
+                int sumQuantity = 0;
+                for(OrderItem orderItem : orderItemList){
+                    sumQuantity += orderItem.getQuantity();
+                }
+                modelTblOrder.addRow(new Object[]{
+                    order.getOrder_id(),
+                    cus.getFirst_name()+" "+cus.getLast_name(),
+                    staff.getFirst_name()+" "+staff.getLast_name(),
+                    discount.getDiscount_name(),
+                    order.getOrder_date(),
+                    sumQuantity,
+                    order.getTotal()
+                });
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void showPnlOrderItem(){
+        for(int i=0; i<namePnlOrderItem.length; i++){
+            pnlOrderItemArray[i] = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+            pnlOrderItemArray[i].setPreferredSize(new Dimension(500, 30));
+            pnlOrderItemArray[i].setBackground(colorRice);
+            JLabel lblName = new JLabel(namePnlOrderItem[i]);
+            lblName.setFont(new Font(Font.DIALOG, 0, 14));
+            pnlOrderItemArray[i].add(lblName);
+            lblPnlOrderItemValue[i] = new JLabel();
+            lblPnlOrderItemValue[i].setFont(new Font(Font.DIALOG, 0, 14));
+            pnlOrderItemArray[i].add(lblPnlOrderItemValue[i]);
+            pnlOrderItemLeft.add(pnlOrderItemArray[i]);
+        }
+    }
+    public void showLblOrderItemLeftValue(){
+        try {
+            int selectedRowIndex = tblOrder.getSelectedRow();
+            selectedOrderGolbal = busOrder.getOrderById(Integer.parseInt(tblOrder.getValueAt(selectedRowIndex, 0).toString()));
+            ArrayList<OrderItem> selectedOrderItemList = busOrderItem.getOrderItemById(selectedOrderGolbal.getOrder_id());
+            int sumQuantity=0, sumPrice = 0;
+            for(OrderItem temp : selectedOrderItemList){
+                sumQuantity += temp.getQuantity();
+                sumPrice += temp.getPrice();
+            }
+            Customer cus = busCustomer.getCustomerById(selectedOrderGolbal.getCustomer_id());
+            Staff staff = busStaff.getStaffById(selectedOrderGolbal.getStaff_id());
+            Discount discount = busDiscount.getDiscountBtId(selectedOrderGolbal.getDiscount_id());
+            lblPnlOrderItemValue[0].setText(selectedOrderGolbal.getOrder_id()+"");
+            lblPnlOrderItemValue[1].setText(selectedOrderGolbal.getCustomer_id()+", "+cus.getFirst_name()+" "+cus.getLast_name()+", "+cus.getAddress()+", "+cus.getPhone_number());
+            lblPnlOrderItemValue[2].setText(selectedOrderGolbal.getStaff_id()+", "+staff.getFirst_name()+" "+staff.getLast_name()+", "+staff.getPhone_number());
+            lblPnlOrderItemValue[3].setText(selectedOrderGolbal.getDiscount_id()+", "+discount.getDiscount_name()+", "+discount.getStart_date()+" đến "+discount.getEnd_date());
+            lblPnlOrderItemValue[4].setText(selectedOrderGolbal.getOrder_date());
+            lblPnlOrderItemValue[5].setText(sumQuantity+"");
+            lblPnlOrderItemValue[6].setText(sumPrice+". "+"Tổng giá trị khuyến mãi: "+(sumPrice-selectedOrderGolbal.getTotal()));
+            lblPnlOrderItemValue[7].setText(selectedOrderGolbal.getTotal()+"");
+            
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void showTblOrderItem() {
+       try{
+            selectedOrderItem = busOrderItem.getOrderItemById(selectedOrderGolbal.getOrder_id());
+            modelTblOrderItem.setRowCount(0);
+            for (OrderItem oi : selectedOrderItem) {
+                Book bookTemp = busBook.getBookById(oi.getBook_id());
+                Author authorTemp = busAuthor.getAuthorByBookId(bookTemp.getBook_id());
+                modelTblOrderItem.addRow(new Object[]{
+                    oi.getBook_id(),
+                    bookTemp.getTitle(),
+                    authorTemp.getFirst_name()+" "+authorTemp.getLast_name(),
+                    bookTemp.getIsbn(),
+                    oi.getQuantity(),
+                    bookTemp.getPrice(),
+                    oi.getPrice(),});
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void showSearchCondition(){
+        //Thêm Panel điều kiện search; thiết lập giá trị và sự kiện cho từng text field,button theo mảng String[] namePnlSearch
+        for(int i=0; i<namePnlSearch.length; i++){
+            pnlSearchConditionArray[i] = new JPanel();
+            Border borderSearch = BorderFactory.createTitledBorder(namePnlSearch[i]);
+            pnlSearchConditionArray[i].setBorder(borderSearch);
+            pnlSearchConditionArray[i].setPreferredSize(new Dimension(200, 50));
+            
+            txtSearchConditionArray[i].setPreferredSize(new Dimension(150,20));
+            btnSearchConditonArray[i].setPreferredSize(new Dimension(20,20));
+            JButton btnTemp = btnSearchConditonArray[i];
+            JTextField txtTemp = txtSearchConditionArray[i];
+            String strTemp = namePnlSearch[i];
+            btnSearchConditonArray[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showDialogSearch(btnTemp, txtTemp, strTemp);
+                }
+            });
+            
+            pnlSearchConditionArray[i].add(txtSearchConditionArray[i]);
+            pnlSearchConditionArray[i].add(btnSearchConditonArray[i]);
+            
+            pnlSearchOrderCondition.add(pnlSearchConditionArray[i]);
+        }
+        //Search theo ngay lap
+        displayOrderDateCondition();
+    }
+    public void displayOrderDateCondition(){
+        Border borderSearch = BorderFactory.createTitledBorder("Ngày lập");
+        JPanel pnlSearchConditionOrderdate = new JPanel();
+        pnlSearchConditionOrderdate.setBorder(borderSearch);
+        pnlSearchConditionOrderdate.setPreferredSize(new Dimension(250,50));
+
+        txtSearchOrderDateBef.setPreferredSize(new Dimension(90, 20));
+        btnSearchOrderDateBef.setPreferredSize(new Dimension(20,20));
+        pnlSearchConditionOrderdate.add(txtSearchOrderDateBef);
+        pnlSearchConditionOrderdate.add(btnSearchOrderDateBef);
+        
+        txtSearchOrderDateAft.setPreferredSize(new Dimension(90, 20));
+        btnSearchOrderDateAft.setPreferredSize(new Dimension(20,20));
+        pnlSearchConditionOrderdate.add(txtSearchOrderDateAft);
+        pnlSearchConditionOrderdate.add(btnSearchOrderDateAft);
+        
+        pnlSearchOrderCondition.add(pnlSearchConditionOrderdate);
+        btnSearchOrderDateBef.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtSearchOrderDateBef.setText( new DatePicker(btnSearchOrderDateBef).setPickedDateYearMonthDate());
+            }
+        });
+        btnSearchOrderDateAft.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtSearchOrderDateAft.setText( new DatePicker(btnSearchOrderDateAft).setPickedDateYearMonthDate());
+            }
+        });
+    }
+    public void showDialogSearch(JButton btnParent, JTextField txtTarget, String searchBy) {
+        //Tạo dialog xuất hiện theo btnParent, Tùy vào điều kiện condition mà dialog load table khác nhau nhờ hàm loadDataForSearch
+        JDialog dialog = new JDialog();
+        dialog.setModal(true);
+        JPanel bg = new JPanel(new BorderLayout());
+        bg.setPreferredSize(new Dimension(300, 150));
+
+        JPanel pnlSearch = new JPanel();
+
+        JTextField txtSearch = new JTextField();
+        txtSearch.setPreferredSize(new Dimension(50, 20));
+        JButton btnSearch = new JButton("Tìm");
+        
+
+        pnlSearch.add(txtSearch);
+        pnlSearch.add(btnSearch);
+
+        JTable tblSearch = new JTable();
+        JScrollPane srollSearch = new JScrollPane(tblSearch);
+        //Load data cho table
+        loadDataForSearch(tblSearch, searchBy, "");
+        
+        JButton btnChose = new JButton("Chọn");
+        btnChose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Đặt giá trị đầu tiên vào ô tìm kiếm
+                int selectedRowIndex = tblSearch.getSelectedRow();
+                txtTarget.setText(tblSearch.getValueAt(selectedRowIndex, 0).toString());
+                dialog.dispose();
+            }
+        });
+        bg.add(pnlSearch, BorderLayout.NORTH);
+        bg.add(srollSearch, BorderLayout.CENTER);
+        bg.add(btnChose, BorderLayout.SOUTH);
+        //search
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String condition = txtSearch.getText();
+                loadDataForSearch(tblSearch, searchBy, condition);
+            }
+        });
+        dialog.add(bg);
+        dialog.pack();
+        dialog.setLocationRelativeTo(btnParent);
+        dialog.setVisible(true);
+        
+
+    }
+    public void loadDataForSearch(JTable table, String searchBy ,String condition) {
+        //Tùy vào điều điện conditon mà kích hoạt các case khác nhau, condition dựa trên String[] namePnlSearch
+        try {
+            DefaultTableModel model;
+            switch (searchBy) {
+                case "Mã hóa đơn":
+                    table.setPreferredScrollableViewportSize(new Dimension(100, 100));
+                    table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"ID"}));
+                    model = (DefaultTableModel) table.getModel();
+                    ArrayList<Order> orderList = new ArrayList<>();
+                    if(condition.equals("")){
+                        orderList = busOrder.getOrder();
+                    } else {
+                        orderList = busOrder.getOrderBySearchLikeId(Integer.parseInt(condition));
+                    }
+                    model.setRowCount(0);
+                    for (Order obj : orderList) {
+                        model.addRow(new Object[]{obj.getOrder_id()});
+                    }
+                    break;
+                case "Khách hàng":
+                    table.setPreferredScrollableViewportSize(new Dimension(100, 100));
+                    table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"ID", "Tên"}));
+                    model = (DefaultTableModel) table.getModel();
+                    ArrayList<Customer> customerList = new ArrayList<>();
+                    if(condition.equals("")){
+                        customerList = busCustomer.getCustomer();
+                    } else {
+                        customerList = busCustomer.getCustomerBySearchLikeIdName(condition);
+                    }
+                    model.setRowCount(0);
+                    for (Customer obj : customerList) {
+                        model.addRow(new Object[]{obj.getCustomer_id(), obj.getFirst_name() +" "+ obj.getLast_name()});
+                    }
+                    break;
+                case "Người bán":
+                    table.setPreferredScrollableViewportSize(new Dimension(100, 100));
+                    table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"ID", "Tên"}));
+                    model = (DefaultTableModel) table.getModel();
+                    ArrayList<Staff> staffList = new ArrayList<>();
+                    if(condition.equals("")){
+                        staffList = busStaff.getStaff();
+                    } else {
+                        staffList = busStaff.getStaffBySearchLikeIdName(condition);
+                    }
+                    model.setRowCount(0);
+                    for (Staff obj : staffList) {
+                        model.addRow(new Object[]{obj.getStaff_id(), obj.getFirst_name() +" "+ obj.getLast_name()});
+                    }
+                    break;
+                case "Sách":
+                    table.setPreferredScrollableViewportSize(new Dimension(100, 100));
+                    table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"ID", "Tên"}));
+                    model = (DefaultTableModel) table.getModel();
+                    ArrayList<Book> bookList = new ArrayList<>();
+                    if(condition.equals("")){
+                        bookList = busBook.getBook();
+                    } else {
+                        bookList = busBook.getBookBySearchLikeIdName(condition);
+                    }
+                    model.setRowCount(0);
+                    for (Book obj : bookList) {
+                        model.addRow(new Object[]{obj.getBook_id(), obj.getTitle()});
+                    }
+                    break;
+                case "Tác giả":
+                    table.setPreferredScrollableViewportSize(new Dimension(100, 100));
+                    table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"ID", "Tên"}));
+                    model = (DefaultTableModel) table.getModel();
+                    ArrayList<Author> authorList = new ArrayList<>();
+                    if(condition.equals("")){
+                        authorList = busAuthor.getAuthor();
+                    } else {
+                        authorList = busAuthor.getAuthorBySearchLikeIdName(condition);
+                    }
+                    model.setRowCount(0);
+                    for (Author obj : authorList) {
+                        model.addRow(new Object[]{obj.getAuthor_id(), obj.getFirst_name()+" "+obj.getLast_name()});
+                    }
+                    break;
+                case "Khuyến mãi áp dụng":
+                    table.setPreferredScrollableViewportSize(new Dimension(100, 100));
+                    table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"ID", "Tên", "Loại"}));
+                    model = (DefaultTableModel) table.getModel();
+                    ArrayList<Discount> discountList = new ArrayList<>();
+                    if(condition.equals("")){
+                        discountList = busDiscount.getDiscount();
+                    } else {
+                        discountList = busDiscount.getDiscountBySearchLikeIdNameType(condition);
+                    }
+                    model.setRowCount(0);
+                    for (Discount obj : discountList) {
+                        model.addRow(new Object[]{obj.getDiscount_id(), obj.getDiscount_name(), obj.getDiscount_type()});
+                    }
+                    break;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void searchOrder(){
+        try {
+            String orderIdPatern = txtSearchOrderId.getText();
+            String customerPatern = txtSearchCustomer.getText();
+            String staffPatern = txtSearchStaff.getText();
+            String bookPatern = txtSearchBook.getText();
+            String authorPatern = txtSearchAuthor.getText();
+            String discountPatern = txtSearchDiscount.getText();
+            String orderDateBef = txtSearchOrderDateBef.getText();
+            String orderDateAft = txtSearchOrderDateAft.getText();
+            if(orderIdPatern.equals("") && customerPatern.equals("") &&  staffPatern.equals("") && bookPatern.equals("") && authorPatern.equals("") && authorPatern.equals("") && orderDateBef.equals("") && orderDateAft.equals("")){
+                modelTblOrder.setRowCount(0);
+                showTableOrder();
+                return;
+            }
+
+            modelTblOrder.setRowCount(0);
+            for (Order order : orderListGolbal) {
+                Customer cus = busCustomer.getCustomerById(order.getCustomer_id());
+                Staff staff = busStaff.getStaffById(order.getStaff_id());
+                Discount discount = busDiscount.getDiscountBtId(order.getDiscount_id());
+                ArrayList<OrderItem> orderItemList = busOrderItem.getOrderItemById(order.getOrder_id());
+                int sumQuantity = 0;
+                for (OrderItem orderItem : orderItemList) {
+                    sumQuantity += orderItem.getQuantity();
+                }
+                Object temp[] = {
+                    order.getOrder_id(),
+                    cus.getFirst_name() + " " + cus.getLast_name(),
+                    staff.getFirst_name() + " " + staff.getLast_name(),
+                    discount.getDiscount_name(),
+                    order.getOrder_date(),
+                    sumQuantity,
+                    order.getTotal()
+                };
+                //So sánh patern có nằm trong các thuộc tính của order hay không
+                String bookName = new String(), bookId = new String(), authorName=new String(), authorId= new String();
+                for(OrderItem obj: orderItemList){
+                    bookName = busBook.getBookTitleById(obj.getBook_id());
+                    bookId = busBook.getBookById(obj.getBook_id()).getBook_id()+"";
+                    Author authorTemp = busAuthor.getAuthorByBookId(Integer.parseInt(bookId));
+                    authorName = busAuthor.getAuthorNameById(authorTemp.getAuthor_id());
+                    authorId = authorTemp.getAuthor_id()+"";
+                }
+                if (contain(order.getOrder_id() + "", orderIdPatern) || contain(order.getCustomer_id() + "", customerPatern) || contain(cus.getFirst_name()+" "+ cus.getFirst_name(), customerPatern)
+                        || contain(order.getStaff_id()+"", staffPatern) || contain(staff.getFirst_name()+" "+staff.getLast_name(), staffPatern) 
+                        || contain(order.getDiscount_id()+"", discountPatern) || contain(discount.getDiscount_name(), discountPatern)
+                        || contain(bookId, bookPatern) || contain(bookName, bookPatern) || contain(authorId, authorPatern) || contain(authorName, authorPatern)) {
+                    modelTblOrder.addRow(temp);
+                }
+                
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public boolean contain(String superString , String subString){
+        if(subString.length()>superString.length())
+            return false;
+        if(subString.length()==superString.length() && subString.equalsIgnoreCase(superString))
+            return true;
+        if(subString.equals(""))
+            return false;
+        for(int i=0; i<superString.length(); i++){
+            if(superString.substring(i, i+subString.length()).equalsIgnoreCase(subString)){
+                return true;
+            }
+        }
+        return false;
+    }
+    // Components tab order manager
     JLabel lblBookImg = new JLabel();
     JLabel lblBookId = new JLabel();
     JLabel lblBookGenre = new JLabel();
@@ -705,5 +1151,53 @@ public class GUIOrderManager{
     JTextField txtCustomerId = new JTextField();
     JButton btnSearchCustomerId = new JButton("S");
     
-    //Tab order manager
+    //Components tab order manager
+    JPanel pnlOrderItem = new JPanel();
+        //Panel chi tiết hóa đơn
+    JPanel pnlOrderItemLeft = new JPanel();
+    String[] namePnlOrderItem = {"Mã hóa đơn:","Khách hàng:","Người bán:","Khuyến mãi:","Ngày lập:","Số lượng sản phẩm:","Tổng trước khuyến mãi:","Tổng:"};
+    JLabel[] lblPnlOrderItemValue = new JLabel[namePnlOrderItem.length];
+    JPanel[] pnlOrderItemArray = new JPanel[namePnlOrderItem.length];
+        //Table chi tiết hóa đơn
+    DefaultTableModel modelTblOrderItem = new DefaultTableModel();
+    JTable tblOrderItem = new JTable();
+    JScrollPane scrollTblOrderItem = new JScrollPane();
+        //Panel thao tác hóa đơn
+    JPanel pnlOrderItemControl = new JPanel();
+    JPanel pnlExportExcel = new JPanel();
+        //Panel tìm kiếm
+    String[] namePnlSearch = {"Mã hóa đơn", "Khách hàng", "Người bán", "Sách", "Tác giả" , "Khuyến mãi áp dụng"};
+    JTextField txtSearchOrderId = new JTextField();
+    JTextField txtSearchCustomer = new JTextField();
+    JTextField txtSearchStaff = new JTextField();
+    JTextField txtSearchBook = new JTextField();
+    JTextField txtSearchAuthor = new JTextField();
+    JTextField txtSearchDiscount = new JTextField();
+    JTextField txtSearchOrderDateBef = new JTextField();
+    JTextField txtSearchOrderDateAft = new JTextField();
+    JTextField[] txtSearchConditionArray = {txtSearchOrderId,txtSearchCustomer,txtSearchStaff,txtSearchBook,txtSearchAuthor,txtSearchDiscount};
+    JButton btnSearchOrderId = new JButton("...");
+    JButton btnSearchCustomer = new JButton("...");
+    JButton btnSearchStaff = new JButton("...");
+    JButton btnSearchBook = new JButton("...");
+    JButton btnSearchAuthor = new JButton("...");
+    JButton btnSearchDiscount = new JButton("...");
+    JButton btnSearchOrderDateBef = new JButton("...");
+    JButton btnSearchOrderDateAft = new JButton("...");
+    JButton[] btnSearchConditonArray = {btnSearchOrderId,btnSearchCustomer,btnSearchStaff,btnSearchBook,btnSearchAuthor,btnSearchDiscount};
+    JPanel[] pnlSearchConditionArray = new JPanel[namePnlSearch.length];
+    JPanel pnlSearchOrderCondition = new JPanel();
+    JPanel pnlSearchOrder = new JPanel();
+        //Table hóa đơn
+    DefaultTableModel modelTblOrder = new DefaultTableModel();
+    JTable tblOrder = new JTable();
+    JScrollPane scrollTblOrder = new JScrollPane();
+    
+    
+    
+    
+    
+    
+    
+    
 }

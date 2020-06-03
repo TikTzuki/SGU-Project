@@ -61,15 +61,8 @@ class Login extends JFrame implements ActionListener
  }
   class LoginDemo
  {
-   public static void main(String arg[])
-   {
-   try
-   {
-   Login frame=new Login();
-   frame.setSize(300,100);
-   frame.setVisible(true);
-   }
-   catch(Exception e)
-   {JOptionPane.showMessageDialog(null, e.getMessage());}
+   public static void main(String arg[]){
+       String n = "LONG";    
+       System.out.println(n.substring(0, 3));
    }
  }

@@ -70,4 +70,10 @@ public class BUSGetStaff {
         }
         return staffList.get(0);
     }
+    public Staff getStaffById(int id) throws Exception{
+        return this.getStaff("staff_id="+id).get(0);
+    }
+    public ArrayList<Staff> getStaffBySearchLikeIdName(String nameOrId) throws Exception{
+        return this.getStaff(" staff_id LIKE '%"+nameOrId+"%' OR first_name LIKE '%"+nameOrId+"%' OR last_name LIKE '%"+nameOrId+"%' ");
+    }
 }
