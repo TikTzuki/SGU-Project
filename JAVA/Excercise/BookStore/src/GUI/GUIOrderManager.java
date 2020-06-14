@@ -10,13 +10,17 @@ import DTO.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 import java.io.IOException;
-import java.sql.ResultSet;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +29,14 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
-import jdk.nashorn.internal.ir.ContinueNode;
+import jxl.write.WriteException;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 
 
 /**
@@ -33,25 +44,20 @@ import jdk.nashorn.internal.ir.ContinueNode;
  * @author Tik
  */
 public class GUIOrderManager{
-    private Color colorPink = new Color(255,97,194,255);
-    private Color colorBlueWeak = new Color(97,255,218,255);
-    private Color colorBlue = new Color(32,164,243,255);
-    private Color colorCream = new Color(255,205,97,255);
-    private Color colorRice = new Color(229,218,218,255);
-    private Color colorGray = new Color(93,87,107,255);
+
     //Nhan vien
     Staff staff;
-    private Font fontContent = new Font(Font.SERIF, 0, 12);
+    
     public JPanel pnlMainPanel;
     JTabbedPane tabbedPane;
     JPanel pnlCreateOrder;
     JPanel pnlOrderManager;
-    JTable tblProduct;
+    JTable tblProduct = new JTable();
     DefaultTableModel modelTblProduct;
     JPanel pnlSelectedProduct;
     JPanel pnlSelectedProductDetail;
     JPanel pnlInstanceOrder;
-    JTable tblOrderDetail;
+    JTable tblOrderDetail = new JTable();
     DefaultTableModel modelTblOrderdetail;
     //Tong hoa don
     JLabel lblTotalPriceOrderBefDis = new JLabel("Tổng (chưa áp khuyến mãi):");
@@ -99,50 +105,53 @@ public class GUIOrderManager{
          this.staff = staff;
         //Panel chinh
         pnlMainPanel = new JPanel(new BorderLayout());
-        pnlMainPanel.setBackground(Color.white);
+        pnlMainPanel.setBackground(Cl.colorBackground);
         //Tạo tabbedPane chứa panel tạo hóa đơn, quản lý hóa đơn
         tabbedPane = new JTabbedPane();
-        tabbedPane.setBackground(Color.white);
+        tabbedPane.setBackground(Cl.colorBackground);
+        tabbedPane.setForeground(Color.DARK_GRAY);
+       
         //Tạo panel tạo hóa đơn
         pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         pnlCreateOrder.setPreferredSize(new Dimension(1100, 700));
-        pnlCreateOrder.setBackground(Color.white);
+        pnlCreateOrder.setBackground(Cl.colorBackground);
             //Panel sản phẩm đang được chọn
-        pnlSelectedProduct = new JPanel(new BorderLayout());
-        pnlSelectedProduct.setPreferredSize(new Dimension(400, 320));
+        pnlSelectedProduct = new JPanel(new BorderLayout(0, 0));
+        pnlSelectedProduct.setPreferredSize(new Dimension(424, 320));
+        pnlSelectedProduct.setBorder(Cl.blueLine);
             //Label sản phẩm đang được chọn
         JLabel lblSelectedProduct = new JLabel("Sản phẩm đang chọn");
-        lblSelectedProduct.setPreferredSize(new Dimension(400, 20));
+        lblSelectedProduct.setFont(Cl.fontContentMB);
+        lblSelectedProduct.setPreferredSize(new Dimension(420, 20));
         lblSelectedProduct.setHorizontalAlignment(JLabel.CENTER);
+        lblSelectedProduct.setForeground(Cl.colorBlue);
+        pnlSelectedProduct.setBackground(Cl.colorBackground);
         pnlSelectedProduct.add(lblSelectedProduct,BorderLayout.NORTH);
             //Ảnh sản phẩm đang đc chọn
         lblBookImg.setPreferredSize(new Dimension(200, 300));
         lblBookImg.setHorizontalAlignment(JLabel.CENTER);
             //Thông tin sản phẩm đang đc chọn
-        pnlSelectedProductDetail = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        pnlSelectedProductDetail.setPreferredSize(new Dimension(200, 300));
-        pnlSelectedProductDetail.setBackground(colorRice);
+        pnlSelectedProductDetail = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        pnlSelectedProductDetail.setPreferredSize(new Dimension(220, 300));
+        pnlSelectedProductDetail.setBackground(Cl.colorBackground);
         
+        JPanel pnlBlock = new JPanel(); pnlBlock.setPreferredSize(new Dimension(200, 50)); pnlBlock.setBackground(Cl.colorBackground);
+            
         Dimension selectedProductLabelSize = new Dimension(60, 20);
-        JPanel pnlBlock = new JPanel(); pnlBlock.setPreferredSize(new Dimension(200, 120)); pnlBlock.setBackground(colorRice);
+        for(int i=0; i<lblSelectedBookArray.length; i++){
+            lblSelectedBookArray[i].setPreferredSize(selectedProductLabelSize);
+            lblSelectedBookArray[i].setFont(Cl.fontContentS);
+        }
         
-        lblBookId.setPreferredSize(selectedProductLabelSize);
-        lblBookId.setFont(fontContent);
-        lblBookGenre.setPreferredSize(selectedProductLabelSize);
-        lblBookGenre.setFont(fontContent);
-        lblBookName.setPreferredSize(selectedProductLabelSize);
-        lblBookName.setFont(fontContent);
-        lblBookAuthor.setPreferredSize(selectedProductLabelSize);
-        lblBookAuthor.setFont(fontContent);
-        lblBookPrice.setPreferredSize(selectedProductLabelSize);
-        lblBookPrice.setFont(fontContent);
-        lblBookQuantity.setPreferredSize(new Dimension(100, 20));
-        lblBookQuantity.setFont(fontContent);
-        lblISBN.setPreferredSize(selectedProductLabelSize);
-        lblISBN.setFont(fontContent);
+        
         lblBookIdValue.setPreferredSize(new Dimension(100,20));
         txtBookQuantity.setPreferredSize(new Dimension(50, 20));
         
+        for(int i=0; i<lblSelectedBookValueArray.length; i++){
+            lblSelectedBookValueArray[i].setForeground(Color.white);
+            lblSelectedBookValueArray[i].setPreferredSize(new Dimension(140, 20));
+            lblSelectedBookValueArray[i].setFont(Cl.fontContentSB);
+        }
         
         pnlSelectedProductDetail.add(pnlBlock);
         pnlSelectedProductDetail.add(lblBookId);
@@ -155,37 +164,56 @@ public class GUIOrderManager{
         pnlSelectedProductDetail.add(lblBookAuthorValue);
         pnlSelectedProductDetail.add(lblBookPrice);
         pnlSelectedProductDetail.add(lblBookPriceValue);
-        pnlSelectedProductDetail.add(lblBookQuantity);
-        pnlSelectedProductDetail.add(txtBookQuantity);
         pnlSelectedProductDetail.add(lblISBN);
         pnlSelectedProductDetail.add(lblISBNValue);
+        pnlSelectedProductDetail.add(lblBookQuantity);
+        pnlSelectedProductDetail.add(txtBookQuantity);
+        
         
         pnlSelectedProduct.add(lblBookImg,BorderLayout.WEST);
         pnlSelectedProduct.add(pnlSelectedProductDetail,BorderLayout.EAST);
-
+            // End Thông tin sản phẩm đang đc chọn
         pnlCreateOrder.add(pnlSelectedProduct);
             //Button thêm sản phẩm vào hóa đơn
         JPanel pnlAttachProductToOrder = new JPanel();
+        pnlAttachProductToOrder.setBackground(Cl.colorBackground);
+        pnlAttachProductToOrder.setBorder(Cl.blueLine);
+        JLabel lblAttachProductToOrder = new JLabel("Thêm vào >>");
+        lblAttachProductToOrder.setForeground(Cl.colorBlue);
+        pnlAttachProductToOrder.add(lblAttachProductToOrder);
          pnlAttachProductToOrder.addMouseListener(new MouseAdapter() {
              public void mousePressed(MouseEvent evt){
-                    showTblOrderDetail(evt);
+                    showTblOrderDetail();
+             }
+             public void mouseEntered(MouseEvent evt){
+                 pnlAttachProductToOrder.setBackground(Cl.colorBlue);
+                 lblAttachProductToOrder.setForeground(Cl.colorBackground);
+             }
+             public void mouseExited(MouseEvent evt){
+                  pnlAttachProductToOrder.setBackground(Cl.colorBackground);
+                  lblAttachProductToOrder.setForeground(Cl.colorBlue);
              }
          });
-
-        JLabel lblAttachProductToOrder = new JLabel("Thêm vào >>");
-        
-        pnlAttachProductToOrder.add(lblAttachProductToOrder);
         
         pnlCreateOrder.add(pnlAttachProductToOrder);
             //Panel hóa đơn hiện tại
-        pnlInstanceOrder = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnlInstanceOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         pnlInstanceOrder.setPreferredSize(new Dimension(560,320));
-        //Panel bên trái hóa đơn hiện tại
-        JPanel pnlLeftInstanceOrder = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pnlLeftInstanceOrder .setPreferredSize(new Dimension(410,320));
+        pnlInstanceOrder.setBorder(Cl.blueLine);
+        pnlInstanceOrder.setBackground(Cl.colorBackground);
+        
         JLabel lblOrderDetail = new JLabel("Hóa đơn");
-        tblOrderDetail = new JTable();
+        lblOrderDetail.setHorizontalAlignment(JLabel.CENTER);
+        lblOrderDetail.setFont(Cl.fontContentMB);
+        lblOrderDetail.setForeground(Cl.colorBlue);
+        lblOrderDetail.setPreferredSize(new Dimension(400,20));
+        //Panel bên trái hóa đơn hiện tại
+        JPanel pnlLeftInstanceOrder = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnlLeftInstanceOrder.setPreferredSize(new Dimension(410,296));
+        pnlLeftInstanceOrder.setBackground(Cl.colorBackground);
+        
         tblOrderDetail.setPreferredSize(new Dimension(400,500));
+        
         tblOrderDetail.setModel(new DefaultTableModel(
             new Object[][]{
             
@@ -195,15 +223,22 @@ public class GUIOrderManager{
         scrollTblOrderDetail.setPreferredSize(new Dimension(400,240));
         
         Dimension sizeOrderCalc = new Dimension(190, 16);
+        lblTotalPriceOrderBefDis.setForeground(Color.white);
         lblTotalPriceOrderBefDis.setPreferredSize(sizeOrderCalc);
+        lblTotalPriceOrderValue.setForeground(Color.white);
         lblTotalPriceOrderValue.setPreferredSize(sizeOrderCalc);
+        lblTotalValueDiscount.setForeground(Color.white);
         lblTotalValueDiscount.setPreferredSize(sizeOrderCalc);
+        lblTotalPriceOrder.setForeground(Color.white);
+        lblTotalPriceOrder.setPreferredSize(sizeOrderCalc);
         
         lblTotalPriceOrderBefDisValue.setPreferredSize(new Dimension(190, 16));
+        lblTotalPriceOrderBefDisValue.setForeground(Color.white);
         lblTotalPriceOrderValue.setPreferredSize(new Dimension(190, 16));
+        lblTotalPriceOrderValue.setForeground(Color.white);
         lblTotalValueDiscountValue.setPreferredSize(new Dimension(190, 16));
+        lblTotalValueDiscountValue.setForeground(Color.white);
 
-        pnlLeftInstanceOrder.add(lblOrderDetail);
         pnlLeftInstanceOrder.add(scrollTblOrderDetail);
         pnlLeftInstanceOrder.add(lblTotalPriceOrderBefDis);
         pnlLeftInstanceOrder.add(lblTotalPriceOrderBefDisValue);
@@ -212,35 +247,53 @@ public class GUIOrderManager{
         pnlLeftInstanceOrder.add(lblTotalPriceOrder);
         pnlLeftInstanceOrder.add(lblTotalPriceOrderValue);
         
+        //Thêm tên panel hóa đơn hiện tại
+        pnlInstanceOrder.add(lblOrderDetail);
         //Thêm panel bên trái vào hóa đơn hiện tại
         pnlInstanceOrder.add(pnlLeftInstanceOrder);
         //Panel bên phải hóa dơn hiện tại
-        JPanel pnlRightInstanceOrder = new JPanel(new FlowLayout(FlowLayout.CENTER,0,20));
-        pnlRightInstanceOrder.setPreferredSize(new Dimension(150,320));
-        pnlRightInstanceOrder.setBackground(colorRice);
+        JPanel pnlRightInstanceOrder = new JPanel(new FlowLayout(FlowLayout.CENTER,0,10));
+        pnlRightInstanceOrder.setPreferredSize(new Dimension(140,296));
+        pnlRightInstanceOrder.setBackground(Cl.colorBackground);
         
         Dimension controlSize = new Dimension(100,20);
         lblSaveOrder.setPreferredSize(controlSize);
+        lblSaveOrder.setHorizontalAlignment(JLabel.CENTER);
+        lblSaveOrder.setForeground(Cl.colorBlue);
         lblClearOrder.setPreferredSize(controlSize);
+        lblClearOrder.setHorizontalAlignment(JLabel.CENTER);
+        lblClearOrder.setForeground(Cl.colorBlue);
         lblDeleteOrderItem.setPreferredSize(controlSize);
-        cbbDiscount.setPreferredSize(new Dimension(146, 20));
+        lblDeleteOrderItem.setHorizontalAlignment(JLabel.CENTER);
+        lblDeleteOrderItem.setForeground(Cl.colorBlue);
+        pnlSaveOrder.setBorder(Cl.blueLine);
+        pnlSaveOrder.setBackground(Cl.colorBackground);
+        pnlClearOrder.setBorder(Cl.blueLine);
+        pnlClearOrder.setBackground(Cl.colorBackground);
+        pnlDeleteOrderItem.setBorder(Cl.blueLine);
+        pnlDeleteOrderItem.setBackground(Cl.colorBackground);
         //Discount
+        cbbDiscount.setPreferredSize(new Dimension(140, 24));
+        cbbDiscount.setForeground(Color.white);
+        cbbDiscount.setBackground(Cl.colorBackground);
         cbbDiscount.setModel(modelCbbDiscount = showCbbDiscount());
-        btnApplyDiscount.setPreferredSize(new Dimension(100, 20));
-        pnlDiscount.setPreferredSize(new Dimension(150, 50));
-        pnlDiscount.setBackground(colorRice);
+        btnApplyDiscount.setPreferredSize(new Dimension(120, 24));
+        btnApplyDiscount.setBackground(Cl.colorBackground);
+        btnApplyDiscount.setBorder(Cl.blueLine);
+        btnApplyDiscount.setForeground(Cl.colorBlue);
+        pnlDiscount.setPreferredSize(new Dimension(150, 60));
+        pnlDiscount.setBackground(Cl.colorBackground);
         //Chon id khach hang
         pnlCustomerId.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        pnlCustomerId.setBackground(colorRice);
-        lblCustomerId.setPreferredSize(new Dimension(70, 20));
-        txtCustomerId.setPreferredSize(new Dimension(50,20));
-        btnSearchCustomerId.setPreferredSize(new Dimension(20, 20));
+        pnlCustomerId.setBackground(Cl.colorBackground);
+        lblCustomerId.setPreferredSize(new Dimension(70, 24));
+        lblCustomerId.setForeground(Color.white);
+        txtCustomerId.setPreferredSize(new Dimension(50,24));
+        btnSearchCustomerId.setPreferredSize(new Dimension(20, 24));
         btnSearchCustomerId.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                showNSearchCustomer(e);{
-                 JFrame findCustomer = new JFrame("Tìm khách hàng");
-                }
+                showNSearchCustomer(e);
             }
         });
         
@@ -264,7 +317,6 @@ public class GUIOrderManager{
         pnlCreateOrder.add(pnlInstanceOrder);
         
             //Table sản phẩm
-        tblProduct = new JTable();
         tblProduct.setPreferredSize(new Dimension(0, 1000));
         
         tblProduct.setModel(new DefaultTableModel(
@@ -284,31 +336,36 @@ public class GUIOrderManager{
         //Tạo panel quản lý hóa đơn
         pnlOrderManager = new JPanel();
         pnlOrderManager.setPreferredSize(new Dimension(1100, 700));
-        pnlOrderManager.setBackground(Color.white);
+        pnlOrderManager.setBackground(Cl.colorBackground);
         
         //Jpanel chi tiết hóa đơn
         pnlOrderItem.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         pnlOrderItem.setPreferredSize(new Dimension(1120, 240));
-        pnlOrderItem.setBackground(colorBlue);
+        pnlOrderItem.setBackground(Cl.colorBackground);
             //Panel Chi tiết hóa đơn 
             pnlOrderItemLeft.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
             showPnlOrderItem();
             pnlOrderItemLeft.setPreferredSize(new Dimension(500,240));
             //Table chi tiết hóa đơn
+            
             tblOrderItem.setModel(new DefaultTableModel(new Object[][]{}, new String[]{
                 "ID","Tên sách","Tác giả","ISBN","#","Giá sách","Thành tiền"
             }));
-            tblOrderItem.setPreferredScrollableViewportSize(new Dimension(400,240));
+            tblOrderItem.setPreferredSize(new Dimension(410,240));
+            tblOrderItem.setPreferredScrollableViewportSize(new Dimension(410,240));
             scrollTblOrderItem.setViewportView(tblOrderItem);
-            scrollTblOrderItem.setPreferredSize(new Dimension(400, 240));
-            //Panel thao tác hóa đơn
-            pnlOrderItemControl.setPreferredSize(new Dimension(150,240));
-            pnlOrderItemControl.setBackground(Color.white);
+            scrollTblOrderItem.setPreferredSize(new Dimension(410, 240));
             
-            pnlExportExcel.add(new JLabel("Xuất file excel"));
-            pnlExportExcel.setPreferredSize(new Dimension(100,30));
-            pnlExportExcel.setBackground(colorRice);
-            pnlOrderItemControl.add(pnlExportExcel);
+            //Panel thao tác hóa đơn
+            pnlOrderItemControl.setPreferredSize(new Dimension(110,240));
+            pnlOrderItemControl.setBackground(Cl.colorBackground);
+            
+            btnExportExcel.setFont(Cl.fontContentMB);
+            btnExportExcel.setForeground(Cl.colorGreen);
+            btnExportExcel.setPreferredSize(new Dimension(100,30));
+            btnExportExcel.setBackground(Cl.colorBackground);
+            btnExportExcel.setBorder(Cl.greenLine);
+            pnlOrderItemControl.add(btnExportExcel);
         
         pnlOrderItem.add(pnlOrderItemLeft);
         pnlOrderItem.add(scrollTblOrderItem);
@@ -317,18 +374,37 @@ public class GUIOrderManager{
         //JPanel tìm kiếm
         pnlSearchOrder.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         pnlSearchOrder.setPreferredSize(new Dimension(1100,110));
-        pnlSearchOrder.setBackground(colorRice);
+        pnlSearchOrder.setBackground(Cl.colorBackground);
         pnlSearchOrderCondition.setPreferredSize(new Dimension(900,110));
+        pnlSearchOrderCondition.setBackground(Cl.colorBackground);
         showSearchCondition();
-        JButton btnSearch = new JButton("Tìm kiếm");
-        btnSearch.addActionListener(new ActionListener() {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 searchOrder();
-             }
-         });
+        JPanel pnlSearchButton = new JPanel();
+        JLabel lblSearchButton = new JLabel("Tìm kiếm", 0);
+        lblSearchButton.setForeground(Cl.colorGreen);
+        lblSearchButton.setFont(Cl.fontContentMB);
+        pnlSearchButton.add(lblSearchButton);
+        pnlSearchButton.setBackground(Cl.colorBackground);
+        pnlSearchButton.setBorder(Cl.greenLine);
+        pnlSearchButton.addMouseListener(new MouseAdapter() {
+        public void mousePressed(MouseEvent e){
+            searchOrder();
+        }
+        public void mouseEntered(MouseEvent e){
+            pnlSearchButton.setBackground(Cl.colorGreen);
+            lblSearchButton.setForeground(Cl.colorBackground);
+        }
+        public void mouseExited(MouseEvent e){
+            pnlSearchButton.setBackground(Cl.colorBackground);
+            lblSearchButton.setForeground(Cl.colorGreen);
+        }
+        
+        });
+        cbbLogicOrder.setBackground(Cl.colorBackground);
+        cbbLogicOrder.setForeground(Color.white);
+        cbbLogicOrder.setPreferredSize(new Dimension(50,34));
         pnlSearchOrder.add(pnlSearchOrderCondition);
-        pnlSearchOrder.add(btnSearch);
+        pnlSearchOrder.add(pnlSearchButton);
+        pnlSearchOrder.add(cbbLogicOrder);
         //Table hóa đơn
         tblOrder.setPreferredSize(new Dimension(1000, 400));
         tblOrder.setModel(new DefaultTableModel(new Object[][]{}, new String[]{
@@ -357,24 +433,65 @@ public class GUIOrderManager{
         btnApplyDiscount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                showTotalValueOrder();
+                    //ExcelPOI.writeFileExcel(tblProduct);
+                    showTotalValueOrder();
             }
         });
         pnlSaveOrder.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt){
                 saveOrder(evt);
-            };
+                repaintAllTable();
+            }
+            public void mouseEntered(MouseEvent evt){
+                 pnlSaveOrder.setBackground(Cl.colorBlue);
+                 lblSaveOrder.setForeground(Cl.colorBackground);
+             }
+             public void mouseExited(MouseEvent evt){
+                  pnlSaveOrder.setBackground(Cl.colorBackground);
+                  lblSaveOrder.setForeground(Cl.colorBlue);
+             }
         });
         pnlClearOrder.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt){
                 clearOrder(evt);
             }
+            public void mouseEntered(MouseEvent evt){
+                 pnlClearOrder.setBackground(Cl.colorBlue);
+                 lblClearOrder.setForeground(Cl.colorBackground);
+             }
+             public void mouseExited(MouseEvent evt){
+                  pnlClearOrder.setBackground(Cl.colorBackground);
+                  lblClearOrder.setForeground(Cl.colorBlue);
+             }
         });
         pnlDeleteOrderItem.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt){
                 deleteSelectedOrderItem(evt);
             }
+            public void mouseEntered(MouseEvent evt){
+                 pnlDeleteOrderItem.setBackground(Cl.colorBlue);
+                 lblDeleteOrderItem.setForeground(Cl.colorBackground);
+             }
+             public void mouseExited(MouseEvent evt){
+                  pnlDeleteOrderItem.setBackground(Cl.colorBackground);
+                  lblDeleteOrderItem.setForeground(Cl.colorBlue);
+             }
         });
+        btnExportExcel.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt){
+                 ExcelPOI.writeFileExcel(tblOrder);
+            }
+            public void mouseEntered(MouseEvent evt){
+                btnExportExcel.setBackground(Cl.colorGreen);
+                btnExportExcel.setForeground(Cl.colorBackground);
+            }
+            public void mouseExited(MouseEvent evt){
+                btnExportExcel.setBackground(Cl.colorBackground);
+                btnExportExcel.setForeground(Cl.colorGreen);
+            }
+        });
+        //Hàm tô màu cho tất cả table
+        showColorTable();
         modelTblProduct = (DefaultTableModel) tblProduct.getModel();
         modelTblOrderdetail = (DefaultTableModel) tblOrderDetail.getModel();
         modelTblOrder = (DefaultTableModel) tblOrder.getModel();
@@ -423,12 +540,19 @@ public class GUIOrderManager{
     public void showSelectedProduct(MouseEvent evt){
         int selectedRowIndex = tblProduct.getSelectedRow();
         lblBookId.setText("ID ");
+        lblBookId.setForeground(Color.white);
         lblBookGenre.setText("Thể loại");
+        lblBookGenre.setForeground(Color.white);
         lblBookName.setText("Tên");
+        lblBookName.setForeground(Color.white);
         lblBookAuthor.setText("Tác giả");
+        lblBookAuthor.setForeground(Color.white);
         lblBookPrice.setText("Giá");
+        lblBookPrice.setForeground(Color.white);
         lblBookQuantity.setText("Số lượng");
+        lblBookQuantity.setForeground(Color.white);
         lblISBN.setText("ISBN");
+        lblISBN.setForeground(Color.white);
         
         //Lấy book từ id
         try {
@@ -513,7 +637,7 @@ public class GUIOrderManager{
         }
 
     }
-    public void showTblOrderDetail(MouseEvent evt) {
+    public void showTblOrderDetail() {
         try {
             // Nếu sản phẩm không tồn tại, hoặc có số lượng = 0, hoặc không điền số lượng
             if (lblBookImg.getIcon() == null || txtBookQuantity.getText().equalsIgnoreCase("0") || txtBookQuantity.getText().equalsIgnoreCase("")) {
@@ -711,7 +835,10 @@ public class GUIOrderManager{
         String total = lblTotalPriceOrderValue.getText().substring(0, lblTotalPriceOrderValue.getText().indexOf("vnđ")-1);
         orderForInsert = new Order(staff.getStaff_id(), selectedDiscountGolbal.getDiscount_id(), Integer.parseInt(customer_id), order_date, Integer.parseInt(total));
         System.out.println(orderForInsert.toString());
-        JOptionPane.showConfirmDialog(null, "Xác nhận tại hóa đơn?");
+        int isConfirm = JOptionPane.showConfirmDialog(null, "Xác nhận tạo hóa đơn?", "Alert", JOptionPane.YES_NO_OPTION);
+        if(isConfirm == JOptionPane.NO_OPTION){
+            return;
+        }
         try {
             busOrder.inserts(orderForInsert);
             //Lấy ra id của order vừa insert
@@ -752,6 +879,7 @@ public class GUIOrderManager{
     // Methods tab Order manager
     public void showTableOrder(){
         try {
+            modelTblOrder.setRowCount(0);
             orderListGolbal = busOrder.getOrder();
             for(Order order: orderListGolbal){
                 Customer cus = busCustomer.getCustomerById(order.getCustomer_id());
@@ -780,12 +908,14 @@ public class GUIOrderManager{
         for(int i=0; i<namePnlOrderItem.length; i++){
             pnlOrderItemArray[i] = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
             pnlOrderItemArray[i].setPreferredSize(new Dimension(500, 30));
-            pnlOrderItemArray[i].setBackground(colorRice);
+            pnlOrderItemArray[i].setBackground(Cl.colorBackground);
             JLabel lblName = new JLabel(namePnlOrderItem[i]);
-            lblName.setFont(new Font(Font.DIALOG, 0, 14));
+            lblName.setFont(Cl.fontContentM);
+            lblName.setForeground(Color.white);
             pnlOrderItemArray[i].add(lblName);
             lblPnlOrderItemValue[i] = new JLabel();
-            lblPnlOrderItemValue[i].setFont(new Font(Font.DIALOG, 0, 14));
+            lblPnlOrderItemValue[i].setFont(Cl.fontContentM);
+            lblPnlOrderItemValue[i].setForeground(Color.white);
             pnlOrderItemArray[i].add(lblPnlOrderItemValue[i]);
             pnlOrderItemLeft.add(pnlOrderItemArray[i]);
         }
@@ -838,15 +968,24 @@ public class GUIOrderManager{
     }
     
     public void showSearchCondition(){
+        //Them combo box 
+    cbbLogicOrder.addItem("AND");
+    cbbLogicOrder.addItem("OR");
+    cbbLogicOrder.setPreferredSize(new Dimension(55,20));
         //Thêm Panel điều kiện search; thiết lập giá trị và sự kiện cho từng text field,button theo mảng String[] namePnlSearch
         for(int i=0; i<namePnlSearch.length; i++){
             pnlSearchConditionArray[i] = new JPanel();
-            Border borderSearch = BorderFactory.createTitledBorder(namePnlSearch[i]);
+            pnlSearchConditionArray[i].setBackground(Cl.colorBackground);
+            Border borderSearch = BorderFactory.createTitledBorder(Cl.blueLine, namePnlSearch[i], 2, 0, Cl.fontContentS, Cl.colorBlue);
             pnlSearchConditionArray[i].setBorder(borderSearch);
             pnlSearchConditionArray[i].setPreferredSize(new Dimension(200, 50));
             
-            txtSearchConditionArray[i].setPreferredSize(new Dimension(150,20));
+            txtSearchConditionArray[i].setPreferredSize(new Dimension(110,20));
+            txtSearchConditionArray[i].setBorder(Cl.whiteLine);
             btnSearchConditonArray[i].setPreferredSize(new Dimension(20,20));
+            btnSearchConditonArray[i].setBackground(Cl.colorBackground);
+            btnSearchConditonArray[i].setBorder(Cl.blueLine);
+            btnSearchConditonArray[i].setForeground(Cl.colorBlue);
             JButton btnTemp = btnSearchConditonArray[i];
             JTextField txtTemp = txtSearchConditionArray[i];
             String strTemp = namePnlSearch[i];
@@ -856,7 +995,6 @@ public class GUIOrderManager{
                     showDialogSearch(btnTemp, txtTemp, strTemp);
                 }
             });
-            
             pnlSearchConditionArray[i].add(txtSearchConditionArray[i]);
             pnlSearchConditionArray[i].add(btnSearchConditonArray[i]);
             
@@ -1055,6 +1193,8 @@ public class GUIOrderManager{
             String discountPatern = txtSearchDiscount.getText();
             String orderDateBef = txtSearchOrderDateBef.getText();
             String orderDateAft = txtSearchOrderDateAft.getText();
+            
+            //Truong hop tat ca dieu kien search deu trong
             if(orderIdPatern.equals("") && customerPatern.equals("") &&  staffPatern.equals("") && bookPatern.equals("") && authorPatern.equals("") && authorPatern.equals("") && orderDateBef.equals("") && orderDateAft.equals("")){
                 modelTblOrder.setRowCount(0);
                 showTableOrder();
@@ -1062,7 +1202,9 @@ public class GUIOrderManager{
             }
 
             modelTblOrder.setRowCount(0);
-            for (Order order : orderListGolbal) {
+            String logic = cbbLogicOrder.getSelectedItem().toString();
+            ArrayList<Order> resultOrderSearchList = busOrder.searchOrder(logic,orderIdPatern, customerPatern, staffPatern, bookPatern, authorPatern, discountPatern, orderDateBef, orderDateAft);
+            for(Order order: resultOrderSearchList){
                 Customer cus = busCustomer.getCustomerById(order.getCustomer_id());
                 Staff staff = busStaff.getStaffById(order.getStaff_id());
                 Discount discount = busDiscount.getDiscountBtId(order.getDiscount_id());
@@ -1080,43 +1222,55 @@ public class GUIOrderManager{
                     sumQuantity,
                     order.getTotal()
                 };
-                //So sánh patern có nằm trong các thuộc tính của order hay không
-                String bookName = new String(), bookId = new String(), authorName=new String(), authorId= new String();
-                for(OrderItem obj: orderItemList){
-                    bookName = busBook.getBookTitleById(obj.getBook_id());
-                    bookId = busBook.getBookById(obj.getBook_id()).getBook_id()+"";
-                    Author authorTemp = busAuthor.getAuthorByBookId(Integer.parseInt(bookId));
-                    authorName = busAuthor.getAuthorNameById(authorTemp.getAuthor_id());
-                    authorId = authorTemp.getAuthor_id()+"";
-                }
-                if (contain(order.getOrder_id() + "", orderIdPatern) || contain(order.getCustomer_id() + "", customerPatern) || contain(cus.getFirst_name()+" "+ cus.getFirst_name(), customerPatern)
-                        || contain(order.getStaff_id()+"", staffPatern) || contain(staff.getFirst_name()+" "+staff.getLast_name(), staffPatern) 
-                        || contain(order.getDiscount_id()+"", discountPatern) || contain(discount.getDiscount_name(), discountPatern)
-                        || contain(bookId, bookPatern) || contain(bookName, bookPatern) || contain(authorId, authorPatern) || contain(authorName, authorPatern)) {
-                    modelTblOrder.addRow(temp);
-                }
-                
+                modelTblOrder.addRow(temp);
             }
             
         } catch (Exception ex) {
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public boolean contain(String superString , String subString){
+    /*public boolean contain(String superString , String subString, String logic){
         if(subString.length()>superString.length())
             return false;
         if(subString.length()==superString.length() && subString.equalsIgnoreCase(superString))
             return true;
-        if(subString.equals(""))
-            return false;
+        if(subString.equals("")){
+            if(logic.equals("and")){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
         for(int i=0; i<superString.length(); i++){
             if(superString.substring(i, i+subString.length()).equalsIgnoreCase(subString)){
                 return true;
             }
         }
         return false;
+    }*/
+    public JTable[] showColorTable(){
+        for(int i=0; i<TableArray.length; i++){
+            TableArray[i].setBackground(Cl.colorBackground);
+            TableArray[i].setForeground(Color.white);
+            TableArray[i].setGridColor(Color.DARK_GRAY);
+            TableArray[i].setSelectionForeground(Cl.colorBlue);
+            TableArray[i].setSelectionBackground(Cl.colorBackground);
+            TableArray[i].getTableHeader().setBackground(Cl.colorBackground);
+            TableArray[i].getTableHeader().setForeground(Cl.colorBlue);
+            TableArray[i].getTableHeader().setFont(Cl.fontContentMB);
+        }
+        return TableArray;
+    }
+    public void repaintAllTable(){
+        this.showTableOrder();
+        this.showTableProduct();
+        this.showTblOrderDetail();
+        this.showTblOrderItem();
+        this.showTotalValueOrder();
     }
     // Components tab order manager
+    // Sản phẩm được chọn
     JLabel lblBookImg = new JLabel();
     JLabel lblBookId = new JLabel();
     JLabel lblBookGenre = new JLabel();
@@ -1125,6 +1279,7 @@ public class GUIOrderManager{
     JLabel lblBookPrice = new JLabel();
     JLabel lblBookQuantity = new JLabel();
     JLabel lblISBN = new JLabel();
+    JLabel lblSelectedBookArray[] = {lblBookId, lblBookGenre, lblBookName, lblBookAuthor, lblBookPrice, lblBookQuantity, lblISBN};
     
     JLabel lblBookIdValue = new JLabel();
     JLabel lblBookGenreValue  = new JLabel();
@@ -1133,6 +1288,8 @@ public class GUIOrderManager{
     JLabel lblBookPriceValue  = new JLabel();
     JTextField txtBookQuantity = new JTextField();
     JLabel lblISBNValue  = new JLabel();
+    JLabel lblSelectedBookValueArray[] = {lblBookIdValue, lblBookGenreValue, lblBookNameValue, lblBookAuthorValue, lblBookPriceValue, lblISBNValue};
+     // End sản phẩm được chọn
     
     JScrollPane scrollTblOrderDetail;
     
@@ -1146,7 +1303,7 @@ public class GUIOrderManager{
     JLabel lblDeleteOrderItem = new JLabel("Xóa");
     JComboBox<Object> cbbDiscount = new JComboBox<>();
     DefaultComboBoxModel<Object> modelCbbDiscount = new DefaultComboBoxModel<>();
-    JButton btnApplyDiscount = new JButton("Ap ma");
+    JButton btnApplyDiscount = new JButton("Áp mã");
     JLabel lblCustomerId = new JLabel("ID khach:");
     JTextField txtCustomerId = new JTextField();
     JButton btnSearchCustomerId = new JButton("S");
@@ -1164,7 +1321,7 @@ public class GUIOrderManager{
     JScrollPane scrollTblOrderItem = new JScrollPane();
         //Panel thao tác hóa đơn
     JPanel pnlOrderItemControl = new JPanel();
-    JPanel pnlExportExcel = new JPanel();
+    JButton btnExportExcel = new JButton("Báo cáo");
         //Panel tìm kiếm
     String[] namePnlSearch = {"Mã hóa đơn", "Khách hàng", "Người bán", "Sách", "Tác giả" , "Khuyến mãi áp dụng"};
     JTextField txtSearchOrderId = new JTextField();
@@ -1185,6 +1342,8 @@ public class GUIOrderManager{
     JButton btnSearchOrderDateBef = new JButton("...");
     JButton btnSearchOrderDateAft = new JButton("...");
     JButton[] btnSearchConditonArray = {btnSearchOrderId,btnSearchCustomer,btnSearchStaff,btnSearchBook,btnSearchAuthor,btnSearchDiscount};
+    JComboBox<String> cbbLogicOrder = new JComboBox<>();
+    
     JPanel[] pnlSearchConditionArray = new JPanel[namePnlSearch.length];
     JPanel pnlSearchOrderCondition = new JPanel();
     JPanel pnlSearchOrder = new JPanel();
@@ -1193,11 +1352,6 @@ public class GUIOrderManager{
     JTable tblOrder = new JTable();
     JScrollPane scrollTblOrder = new JScrollPane();
     
-    
-    
-    
-    
-    
-    
-    
+    //All of table array 
+    JTable TableArray[] = {tblOrder,tblOrderItem, tblOrderDetail, tblProduct};
 }
