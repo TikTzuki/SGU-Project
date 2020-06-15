@@ -8,6 +8,7 @@ package GUI;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.BorderFactory;
+import javax.swing.JScrollBar;
 import javax.swing.border.Border;
 
 /**
@@ -24,6 +25,7 @@ public class Cl {
     static public Border whiteLine = BorderFactory.createLineBorder(Color.white, 2, true);
     static public Border blueLine = BorderFactory.createLineBorder(colorBlue, 2,true);
     static public Border greenLine = BorderFactory.createLineBorder(colorGreen, 2,true);
+    static public Border blackLine = BorderFactory.createLineBorder(colorBackground, 2,true);
     
     static public Font fontContentS = new Font(Font.DIALOG, 0, 12);
     static public Font fontContentM = new Font(Font.DIALOG, 0, 14);
@@ -32,4 +34,11 @@ public class Cl {
     static public Font fontContentSB = new Font(Font.DIALOG, 1, 12);
     static public Font fontContentMB = new Font(Font.DIALOG, 1, 14);
     static public Font fontContentLB = new Font(Font.DIALOG, 1, 16);
+    
+    static JScrollBar scrollBar = new JScrollBar(1);
+    public static  JScrollBar verticalScrollBar(){
+        scrollBar.setBackground(Cl.colorBackground);
+        return scrollBar;
+    }
+        
 }

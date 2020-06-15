@@ -34,7 +34,8 @@ public class BUSGetStaff {
             staff.setEmail(result.getString("email"));
             staff.setPassword(result.getString("password"));
             staff.setPhone_number(result.getString("phone_number"));
-            staff.setSex((result.getString("sex")));
+            staff.setSex(result.getString("sex"));
+            staff.setRole_id(result.getInt("role_id"));
             staffList.add(staff);
         }
         return staffList;

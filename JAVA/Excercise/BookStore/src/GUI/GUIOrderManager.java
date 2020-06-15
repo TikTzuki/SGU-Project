@@ -68,7 +68,7 @@ public class GUIOrderManager{
     JLabel lblTotalPriceOrderValue = new JLabel("0");
     SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd");  
     Date today = new Date();
-    //Date transfer object
+    //Data transfer object
     private BUSGetBook busBook = new BUSGetBook();
     private BUSOrderManager busOrder = new BUSOrderManager();
     private BUSOrderItemManager busOrderItem = new BUSOrderItemManager();
@@ -113,7 +113,7 @@ public class GUIOrderManager{
        
         //Tạo panel tạo hóa đơn
         pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        pnlCreateOrder.setPreferredSize(new Dimension(1100, 700));
+        pnlCreateOrder.setPreferredSize(new Dimension(1110, 700));
         pnlCreateOrder.setBackground(Cl.colorBackground);
             //Panel sản phẩm đang được chọn
         pnlSelectedProduct = new JPanel(new BorderLayout(0, 0));
@@ -557,8 +557,7 @@ public class GUIOrderManager{
         //Lấy book từ id
         try {
             selectedBookGlobal = busBook.getBookById(Integer.parseInt(tblProduct.getValueAt(selectedRowIndex, 0).toString()));
-            ImageIcon iiconBook
-                    = loadIcon("src/images/" + selectedBookGlobal.getBook_id() + ".jpg", 200, 300);
+            ImageIcon iiconBook = loadIcon("src/images/" + selectedBookGlobal.getBook_id() + ".jpg", 200, 300);
             lblBookImg.setIcon(iiconBook);
             lblBookIdValue.setText(selectedBookGlobal.getBook_id() + "");
             
@@ -914,7 +913,7 @@ public class GUIOrderManager{
             lblName.setForeground(Color.white);
             pnlOrderItemArray[i].add(lblName);
             lblPnlOrderItemValue[i] = new JLabel();
-            lblPnlOrderItemValue[i].setFont(Cl.fontContentM);
+            lblPnlOrderItemValue[i].setFont(Cl.fontContentMB);
             lblPnlOrderItemValue[i].setForeground(Color.white);
             pnlOrderItemArray[i].add(lblPnlOrderItemValue[i]);
             pnlOrderItemLeft.add(pnlOrderItemArray[i]);
@@ -939,8 +938,8 @@ public class GUIOrderManager{
             lblPnlOrderItemValue[3].setText(selectedOrderGolbal.getDiscount_id()+", "+discount.getDiscount_name()+", "+discount.getStart_date()+" đến "+discount.getEnd_date());
             lblPnlOrderItemValue[4].setText(selectedOrderGolbal.getOrder_date());
             lblPnlOrderItemValue[5].setText(sumQuantity+"");
-            lblPnlOrderItemValue[6].setText(sumPrice+". "+"Tổng giá trị khuyến mãi: "+(sumPrice-selectedOrderGolbal.getTotal()));
-            lblPnlOrderItemValue[7].setText(selectedOrderGolbal.getTotal()+"");
+            lblPnlOrderItemValue[6].setText(sumPrice+" đ "+"( -"+(sumPrice-selectedOrderGolbal.getTotal())+"đ ).");
+            lblPnlOrderItemValue[7].setText(selectedOrderGolbal.getTotal()+" đ");
             
         } catch (Exception ex) {
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -1004,18 +1003,27 @@ public class GUIOrderManager{
         displayOrderDateCondition();
     }
     public void displayOrderDateCondition(){
-        Border borderSearch = BorderFactory.createTitledBorder("Ngày lập");
+        Border borderSearch = BorderFactory.createTitledBorder(Cl.blueLine, "Ngày lập", 0, 0, Cl.fontContentS, Cl.colorBlue);
         JPanel pnlSearchConditionOrderdate = new JPanel();
         pnlSearchConditionOrderdate.setBorder(borderSearch);
-        pnlSearchConditionOrderdate.setPreferredSize(new Dimension(250,50));
+        pnlSearchConditionOrderdate.setBackground(Cl.colorBackground);
+        pnlSearchConditionOrderdate.setPreferredSize(new Dimension(300,50));
 
         txtSearchOrderDateBef.setPreferredSize(new Dimension(90, 20));
+        txtSearchOrderDateBef.setBorder(Cl.whiteLine);
         btnSearchOrderDateBef.setPreferredSize(new Dimension(20,20));
+        btnSearchOrderDateBef.setBorder(Cl.blueLine);
+        btnSearchOrderDateBef.setBackground(Cl.colorBackground);
+        btnSearchOrderDateBef.setForeground(Cl.colorBlue);
         pnlSearchConditionOrderdate.add(txtSearchOrderDateBef);
         pnlSearchConditionOrderdate.add(btnSearchOrderDateBef);
         
         txtSearchOrderDateAft.setPreferredSize(new Dimension(90, 20));
+        txtSearchOrderDateAft.setBorder(Cl.whiteLine);
         btnSearchOrderDateAft.setPreferredSize(new Dimension(20,20));
+        btnSearchOrderDateAft.setBackground(Cl.colorBackground);
+        btnSearchOrderDateAft.setBorder(Cl.blueLine);
+        btnSearchOrderDateAft.setForeground(Cl.colorBlue);
         pnlSearchConditionOrderdate.add(txtSearchOrderDateAft);
         pnlSearchConditionOrderdate.add(btnSearchOrderDateAft);
         
@@ -1312,7 +1320,7 @@ public class GUIOrderManager{
     JPanel pnlOrderItem = new JPanel();
         //Panel chi tiết hóa đơn
     JPanel pnlOrderItemLeft = new JPanel();
-    String[] namePnlOrderItem = {"Mã hóa đơn:","Khách hàng:","Người bán:","Khuyến mãi:","Ngày lập:","Số lượng sản phẩm:","Tổng trước khuyến mãi:","Tổng:"};
+    String[] namePnlOrderItem = {"Mã hóa đơn:","Khách hàng:","Người bán:","Khuyến mãi:","Ngày lập:","Số lượng sản phẩm:","Trước khuyến mãi:","Tổng:"};
     JLabel[] lblPnlOrderItemValue = new JLabel[namePnlOrderItem.length];
     JPanel[] pnlOrderItemArray = new JPanel[namePnlOrderItem.length];
         //Table chi tiết hóa đơn

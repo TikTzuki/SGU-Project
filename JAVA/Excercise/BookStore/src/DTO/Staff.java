@@ -17,11 +17,12 @@ public class Staff {
     private String password;
     private String phone_number;
     private String sex;
+    private int role_id;
 
     public Staff() {
     }
 
-    public Staff(int staff_id, String first_name, String last_name, String email, String password, String phone_number, String sex) {
+    public Staff(int staff_id, String first_name, String last_name, String email, String password, String phone_number, String sex, int role_id) {
         this.staff_id = staff_id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -29,6 +30,7 @@ public class Staff {
         this.password = password;
         this.phone_number = phone_number;
         this.sex = sex;
+        this.role_id = role_id;
     }
 
     public int getStaff_id() {
@@ -87,9 +89,19 @@ public class Staff {
         this.sex = sex;
     }
 
+    public int getRole_id() {
+        return role_id;
+    }
+
+    public void setRole_id(int role_id) {
+        this.role_id = role_id;
+    }
+    
     @Override
     public String toString() {
         return "Staff{" + "staff_id=" + staff_id + ", first_name=" + first_name + ", last_name=" + last_name + ", email=" + email + ", password=" + password + ", phone_number=" + phone_number + ", sex=" + sex + '}';
     }
+
+
     
 }
