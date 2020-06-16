@@ -28,13 +28,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
-import jxl.write.WriteException;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 /**
  *
  * @author Tik
@@ -174,7 +168,7 @@ public class GUIStaffManager {
         pnlControlSelectedStaff.add(btnDeleteStaff);
         pnlSelectedStaff.add(pnlControlSelectedStaff);
         //Panel thêm user
-        pnlAddStaff.setBounds(600, 5, 400, 280);
+        pnlAddStaff.setBounds(600, 5, 450, 280);
         pnlAddStaff.setBorder(Cl.blueLine);
         pnlAddStaff.setBackground(Cl.colorBackground);
         JLabel lblNamePnlAddStaff = new JLabel("Thêm nhân viên");
@@ -239,7 +233,31 @@ public class GUIStaffManager {
         pnlTxtAddStaffValue.add(cbbRoleAdd);
         pnlTxtAddStaffValue.add(cbbStateAdd);
         pnlAddStaff.add(pnlTxtAddStaffValue);
+        //Panel thao tác user
+        JPanel pnlControlAddStaff = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 50));
+        pnlControlAddStaff.setPreferredSize(new Dimension(90,240));
+        pnlControlAddStaff.setBackground(Cl.colorBackground);
+        btnAddStaff.setPreferredSize(new Dimension(90,30));
+        btnAddStaff.setBackground(Cl.colorBackground);
+        btnAddStaff.setBorder(Cl.blueLine);
+        btnAddStaff.setForeground(Cl.colorBlue);
+        btnAddStaff.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt){
+                addStaff();
+                repaintAllTable();
+            }
+            public void mouseEntered(MouseEvent evt){
+                btnAddStaff.setBorder(Cl.greenLineL);
+                btnAddStaff.setForeground(Cl.colorGreen);
+            }
+            public void mouseExited(MouseEvent evt){
+                btnAddStaff.setBorder(Cl.blueLine);
+                btnAddStaff.setForeground(Cl.colorBlue);
+            }
+        });
         
+        pnlControlAddStaff.add(btnAddStaff);
+        pnlAddStaff.add(pnlControlAddStaff);
         //Table tất cả user
         tblStaff.setPreferredSize(new Dimension(1000, 500));
         tblStaff.setModel(modelTblStaff);
@@ -307,7 +325,7 @@ public class GUIStaffManager {
         if(txtSelectedStaffValue[0].getText()=="")
             return;
         for(int i=0; i<txtSelectedStaffValue.length; i++){
-            if(txtSelectedStaffValue[i].getText()=="" || txtSelectedStaffValue[i]==null){
+            if(txtSelectedStaffValue[i].getText()=="" || txtSelectedStaffValue[i].getText()==null){
                 JOptionPane.showMessageDialog(null, "Không được để trống");
             }
         }
@@ -330,16 +348,48 @@ public class GUIStaffManager {
         }
     }
     public void deleteSelectedStaff(){
-        if(txtSelectedStaffValue[0].getText()=="")
+        if(txtSelectedStaffValue[0].getText().equals(""))
             return;
         Staff newStaff = new Staff();
         newStaff.setStaff_id(Integer.parseInt(txtSelectedStaffValue[0].getText()));
+        newStaff.setName(txtSelectedStaffValue[1].getText());
+        newStaff.setEmail(txtSelectedStaffValue[2].getText());
+        newStaff.setPhone_number(txtSelectedStaffValue[3].getText());
+        newStaff.setPassword(txtSelectedStaffValue[4].getText());
+        newStaff.setSex(cbbSex.getSelectedItem().toString());
+        newStaff.setRole_id(Integer.parseInt(cbbRole.getSelectedItem().toString().substring(0, 1)));
         newStaff.setState(-1);
                 try {
             int isConfirm = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn xóa", "xóa", JOptionPane.YES_NO_OPTION);
             if(isConfirm==JOptionPane.YES_OPTION){
                 busStaff.updates(newStaff);
             }
+        } catch (Exception ex) {
+            Logger.getLogger(GUIStaffManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void addStaff(){
+        try {
+            for(int i=0; i<txtAddStaffValue.length; i++){
+                if(txtAddStaffValue[i].getText().equals("") || txtAddStaffValue[i].getText().equals(null)){
+                    JOptionPane.showMessageDialog(null, "Không được để trống");
+                    return;
+                }
+            }
+            if(busStaff.isUsePhoneNumber(txtAddStaffValue[2].getText())){
+                JOptionPane.showMessageDialog(null, "Số điện thoại đã được dùng");
+                return;
+            }
+            Staff newStaff = new Staff();
+            newStaff.setStaff_id(0);
+            newStaff.setName(txtAddStaffValue[0].getText());
+            newStaff.setEmail(txtAddStaffValue[1].getText());
+            newStaff.setPhone_number(txtAddStaffValue[2].getText());
+            newStaff.setPassword(txtAddStaffValue[3].getText());
+            newStaff.setSex(cbbSexAdd.getSelectedItem().toString());
+            newStaff.setRole_id(Integer.parseInt(cbbRoleAdd.getSelectedItem().toString().substring(0, cbbRoleAdd.getSelectedItem().toString().indexOf("."))));
+            newStaff.setState(Integer.parseInt(cbbStateAdd.getSelectedItem().toString().substring(0, cbbStateAdd.getSelectedItem().toString().indexOf("."))));
+            busStaff.inserts(newStaff);
         } catch (Exception ex) {
             Logger.getLogger(GUIStaffManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -375,7 +425,7 @@ public class GUIStaffManager {
    public JButton btnSaveChangeStaff = new JButton("Lưu");
    public JButton btnDeleteStaff = new JButton("Xóa");
     //Panel thêm user
-    public JPanel pnlAddStaff = new JPanel();
+    public JPanel pnlAddStaff = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
     public String nameAddStaff[] = {"Tên", "Email", "Số điện thoại", "Mật khẩu", "Giới tính", "Quyền"};
     public JLabel lblAddStaff[] = new JLabel[nameAddStaff.length];
     public JTextField txtAddStaffValue[] = new JTextField[nameAddStaff.length - 2];
@@ -385,6 +435,7 @@ public class GUIStaffManager {
     public DefaultComboBoxModel modelCbbRoleAdd = new DefaultComboBoxModel();
     public JComboBox<String> cbbStateAdd = new JComboBox<>();
     public DefaultComboBoxModel modelCbbStateAdd = new DefaultComboBoxModel();
+    public JButton btnAddStaff = new JButton("Thêm");
     //Table tất cả user
     public DefaultTableModel modelTblStaff = new DefaultTableModel();
     public JTable tblStaff = new JTable();

@@ -49,6 +49,7 @@ public class GUIBookStoreMain extends JFrame{
     //Main
         //Nơi khai báo các panel chính
         // VŨ, TRÂN, NINH KHAI BÁO GUI VỚI HÀM KHỞI TẠO TRỐNG
+    GUIAnalysis analysis = new GUIAnalysis();
     FrameHienThi_Book vu = new FrameHienThi_Book();
     GUIOrderManager orderManager = new GUIOrderManager();
     GUIStaffManager staffManager = new GUIStaffManager();
@@ -173,7 +174,7 @@ public class GUIBookStoreMain extends JFrame{
         layeredContent.setPreferredSize(new Dimension(1110,700));
         
         //Khởi tạo nội panel chứa nội dung chính
-        JPanel pnlAnalysis = new JPanel();
+        JPanel pnlAnalysis = analysis.initComponents(staff);
         JPanel pnlBookManager = vu.SanPham();                          // VŨ
         JPanel pnlOrderManager = orderManager.initComponents(staff);  // LONG
         JPanel pnlPublisherManager = new JPanel();                    //VŨ

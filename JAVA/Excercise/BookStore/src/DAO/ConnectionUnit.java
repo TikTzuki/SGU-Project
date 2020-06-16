@@ -83,7 +83,7 @@ public class ConnectionUnit {
         query = query.delete(query.length() - 1, query.length());
         valueInsert = valueInsert.delete(valueInsert.length() - 1, valueInsert.length());
         //Đưa giá trị của cột vào câu query
-        query.append(") VALUES(" + valueInsert.toString() + ")");
+        query.append(") VALUES( " + valueInsert.toString() + ")");
         query.append(";");
         System.out.println("Insert: " + query.toString());
         return this.connect.executeUpdate(query.toString()) > 0;

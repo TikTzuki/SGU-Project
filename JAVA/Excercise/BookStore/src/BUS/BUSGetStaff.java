@@ -25,7 +25,7 @@ public class BUSGetStaff {
     }
 
     public ArrayList<Staff> getStaff(String condition, String orderBy) throws Exception {
-        ResultSet result = connect.Select("staff", condition, orderBy);
+        ResultSet result = connect.Select("staff", condition+" AND state>=0 ", orderBy);
         ArrayList<Staff> staffList = new ArrayList<>();
         while (result.next()) {
             Staff staff = new Staff();
@@ -49,6 +49,17 @@ public class BUSGetStaff {
     public ArrayList<Staff> getStaff() throws Exception {
         return this.getStaff(null);
     }
+    public void inserts(Staff staff) throws Exception{
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", staff.getName());
+        map.put("email", staff.getEmail());
+        map.put("password", staff.getPassword());
+        map.put("phone_number", staff.getPhone_number());
+        map.put("sex", staff.getSex());
+        map.put("role_id", staff.getRole_id()+"");
+        map.put("state", staff.getState() +"");
+        this.connect.Insert("staff", map);
+    }
     public void updates(Staff staff) throws Exception{
         HashMap<String, Object> map = new HashMap<>();
         map.put("staff_id", staff.getStaff_id());
@@ -57,8 +68,8 @@ public class BUSGetStaff {
         map.put("password", staff.getPassword());
         map.put("phone_number", staff.getPhone_number());
         map.put("sex", staff.getSex());
-        map.put("role_id", staff.getRole_id());
-        map.put("state", staff.getState());
+        map.put("role_id", staff.getRole_id()+"");
+        map.put("state", staff.getState()+"");
         this.connect.Update("staff", map, "staff_id="+ staff.getStaff_id()+"");
     }
     public boolean checkStaff(Staff staff) throws Exception{
@@ -75,6 +86,16 @@ public class BUSGetStaff {
             return false;
         }
         return true;
+    }
+    public boolean isUsePhoneNumber(String phoneNumber) throws Exception{
+        ResultSet result = this.connect.Select("staff", "phone_number="+phoneNumber);
+        result.last();
+        int count = result.getRow();
+        System.out.println("count phone number: " + count);
+        if(count>0){
+            return true;
+        }
+        return false;
     }
     public Staff getStaffByPhoneNumber(String phone_number) throws Exception{
         ArrayList<Staff> staffList = this.getStaff("phone_number='"+phone_number+"'");
