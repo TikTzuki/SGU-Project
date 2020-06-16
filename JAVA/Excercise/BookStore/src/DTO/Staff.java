@@ -11,26 +11,26 @@ package DTO;
  */
 public class Staff {
     private int staff_id;
-    private String first_name;
-    private String last_name;
+    private String name;
     private String email;
     private String password;
     private String phone_number;
     private String sex;
     private int role_id;
+    private int state;
 
     public Staff() {
     }
 
-    public Staff(int staff_id, String first_name, String last_name, String email, String password, String phone_number, String sex, int role_id) {
+    public Staff(int staff_id, String name, String email, String password, String phone_number, String sex, int role_id, int state) {
         this.staff_id = staff_id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.phone_number = phone_number;
         this.sex = sex;
         this.role_id = role_id;
+        this.state = state;
     }
 
     public int getStaff_id() {
@@ -41,20 +41,12 @@ public class Staff {
         this.staff_id = staff_id;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getName() {
+        return name;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -96,10 +88,18 @@ public class Staff {
     public void setRole_id(int role_id) {
         this.role_id = role_id;
     }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
     
     @Override
     public String toString() {
-        return "Staff{" + "staff_id=" + staff_id + ", first_name=" + first_name + ", last_name=" + last_name + ", email=" + email + ", password=" + password + ", phone_number=" + phone_number + ", sex=" + sex + '}';
+        return "Staff{" + "staff_id=" + staff_id + ", name=" + name + ", email=" + email + ", password=" + password + ", phone_number=" + phone_number + ", sex=" + sex + '}';
     }
 
 

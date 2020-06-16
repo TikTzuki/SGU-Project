@@ -892,7 +892,7 @@ public class GUIOrderManager{
                 modelTblOrder.addRow(new Object[]{
                     order.getOrder_id(),
                     cus.getFirst_name()+" "+cus.getLast_name(),
-                    staff.getFirst_name()+" "+staff.getLast_name(),
+                    staff.getName(),
                     discount.getDiscount_name(),
                     order.getOrder_date(),
                     sumQuantity,
@@ -934,7 +934,7 @@ public class GUIOrderManager{
             Discount discount = busDiscount.getDiscountBtId(selectedOrderGolbal.getDiscount_id());
             lblPnlOrderItemValue[0].setText(selectedOrderGolbal.getOrder_id()+"");
             lblPnlOrderItemValue[1].setText(selectedOrderGolbal.getCustomer_id()+", "+cus.getFirst_name()+" "+cus.getLast_name()+", "+cus.getAddress()+", "+cus.getPhone_number());
-            lblPnlOrderItemValue[2].setText(selectedOrderGolbal.getStaff_id()+", "+staff.getFirst_name()+" "+staff.getLast_name()+", "+staff.getPhone_number());
+            lblPnlOrderItemValue[2].setText(selectedOrderGolbal.getStaff_id()+", "+staff.getName()+", "+staff.getPhone_number());
             lblPnlOrderItemValue[3].setText(selectedOrderGolbal.getDiscount_id()+", "+discount.getDiscount_name()+", "+discount.getStart_date()+" đến "+discount.getEnd_date());
             lblPnlOrderItemValue[4].setText(selectedOrderGolbal.getOrder_date());
             lblPnlOrderItemValue[5].setText(sumQuantity+"");
@@ -1138,7 +1138,7 @@ public class GUIOrderManager{
                     }
                     model.setRowCount(0);
                     for (Staff obj : staffList) {
-                        model.addRow(new Object[]{obj.getStaff_id(), obj.getFirst_name() +" "+ obj.getLast_name()});
+                        model.addRow(new Object[]{obj.getStaff_id(), obj.getName()});
                     }
                     break;
                 case "Sách":
@@ -1224,7 +1224,7 @@ public class GUIOrderManager{
                 Object temp[] = {
                     order.getOrder_id(),
                     cus.getFirst_name() + " " + cus.getLast_name(),
-                    staff.getFirst_name() + " " + staff.getLast_name(),
+                    staff.getName(),
                     discount.getDiscount_name(),
                     order.getOrder_date(),
                     sumQuantity,

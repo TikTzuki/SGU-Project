@@ -10,6 +10,7 @@ import DTO.Genre;
 import DTO.Staff;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 
 /**
@@ -29,13 +30,13 @@ public class BUSGetStaff {
         while (result.next()) {
             Staff staff = new Staff();
             staff.setStaff_id(result.getInt("staff_id"));
-            staff.setFirst_name(result.getString("first_name"));
-            staff.setLast_name(result.getString("last_name"));
+            staff.setName(result.getString("name"));
             staff.setEmail(result.getString("email"));
             staff.setPassword(result.getString("password"));
             staff.setPhone_number(result.getString("phone_number"));
             staff.setSex(result.getString("sex"));
             staff.setRole_id(result.getInt("role_id"));
+            staff.setState(result.getInt("state"));
             staffList.add(staff);
         }
         return staffList;
@@ -48,7 +49,18 @@ public class BUSGetStaff {
     public ArrayList<Staff> getStaff() throws Exception {
         return this.getStaff(null);
     }
-    
+    public void updates(Staff staff) throws Exception{
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("staff_id", staff.getStaff_id());
+        map.put("name", staff.getName());
+        map.put("email", staff.getEmail());
+        map.put("password", staff.getPassword());
+        map.put("phone_number", staff.getPhone_number());
+        map.put("sex", staff.getSex());
+        map.put("role_id", staff.getRole_id());
+        map.put("state", staff.getState());
+        this.connect.Update("staff", map, "staff_id="+ staff.getStaff_id()+"");
+    }
     public boolean checkStaff(Staff staff) throws Exception{
         ArrayList<Staff> staffList = this.getStaff("phone_number='"+staff.getPhone_number()+"'");
         
@@ -75,6 +87,6 @@ public class BUSGetStaff {
         return this.getStaff("staff_id="+id).get(0);
     }
     public ArrayList<Staff> getStaffBySearchLikeIdName(String nameOrId) throws Exception{
-        return this.getStaff(" staff_id LIKE '%"+nameOrId+"%' OR first_name LIKE '%"+nameOrId+"%' OR last_name LIKE '%"+nameOrId+"%' ");
+        return this.getStaff(" staff_id LIKE '%"+nameOrId+"%' OR name LIKE '%"+nameOrId+"%' ");
     }
 }

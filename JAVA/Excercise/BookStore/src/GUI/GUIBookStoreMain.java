@@ -17,6 +17,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -41,7 +43,7 @@ public class GUIBookStoreMain extends JFrame{
     //Left side menu
     private JPanel LeftSideMenu = new JPanel(new FlowLayout(FlowLayout.CENTER,-2,-2));
     private JPanel TopMenu = new JPanel(null);
-    String contentMenuItem[];
+    ArrayList<String> listContentMenuItem;
     JPanel pnlMenuItem[];
     JLabel lblMenuItem[];
     //Main
@@ -76,19 +78,44 @@ public class GUIBookStoreMain extends JFrame{
         LeftSideMenu.setBackground(Cl.colorBackground);
         LeftSideMenu.setPreferredSize(new Dimension(200, 600));
         Dimension dimesionMenuItemSize = new Dimension(204,50);
+        ArrayList<String> listContentMenuItemTemp = new ArrayList<>();
+        listContentMenuItemTemp.add("Thống kê");
+        listContentMenuItemTemp.add("Quản lý sách");
+        listContentMenuItemTemp.add("Quản lý hóa đơn");
+        listContentMenuItemTemp.add("Quản lý xuất nhập");
+        listContentMenuItemTemp.add("Quản lý khuyến mãi");
+        listContentMenuItemTemp.add("Quản lý khách hàng");
+        listContentMenuItemTemp.add("Quản lý nhân viên");
+        switch(staff.getRole_id()){
+            case 1:
+                //Admin có toàn quyền
+                break;
+            case 2:
+                //Manager cũng toàn quyền như admin, chỉ là không thể sửa tài khoản admin
+                break;
+            case 3:
+                //Cắt chức năng quản lý nhân viên
+                listContentMenuItemTemp.set(6, null);
+                break;
+        }
         
-        String[] contentMenuItemTemp = {"Thống kê","Quản lý sách","Quản lý hóa đơn","Quản lý xuất nhập","Quản lý khuyến mãi","Quản lý khách hàng","Quản lý nhân viên"};
-        contentMenuItem = contentMenuItemTemp;
-        pnlMenuItem = new JPanel[contentMenuItem.length];
-        lblMenuItem = new JLabel[contentMenuItem.length];
+        listContentMenuItem = listContentMenuItemTemp;
+        pnlMenuItem = new JPanel[listContentMenuItem.size()];
+        lblMenuItem = new JLabel[listContentMenuItem.size()];
         
+                    //Panel cấn vào flow layout
         JPanel temp = new JPanel();
         temp.setBackground(new Color(0,0,0,0));
         temp.setPreferredSize(new Dimension(200,20));
         LeftSideMenu.add(temp);
-        for(int i=0; i<contentMenuItem.length; i++){
+        //Từng lựa chọn của menu trái
+        for(int i=0; i<listContentMenuItem.size(); i++){
+            //Nếu phần tử của listContentMenuItem thứ i là null thì ẩn tính năng
             pnlMenuItem[i] = new JPanel(new FlowLayout(FlowLayout.CENTER,10,12));
-            lblMenuItem[i] = new JLabel(contentMenuItem[i]);
+            lblMenuItem[i] = new JLabel(listContentMenuItem.get(i));
+            if(listContentMenuItem.get(i) == null){
+                continue;
+            }
             lblMenuItem[i].setFont(Cl.fontContentLB);
             lblMenuItem[i].setForeground(Color.white);
             
@@ -110,7 +137,7 @@ public class GUIBookStoreMain extends JFrame{
         lblLogo.setBounds(20, 0, 160, 50);
         
             //Người dùng
-        JLabel lblUser = new JLabel("Helo, "+staff.getFirst_name()+" "+staff.getLast_name());
+        JLabel lblUser = new JLabel("Helo, "+staff.getName());
         lblUser.setFont(Cl.fontContentMB);
         lblUser.setForeground(Cl.colorBlue);
         lblUser.setBounds(1050, 0, 200, 50);

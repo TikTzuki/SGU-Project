@@ -94,7 +94,7 @@ public class ConnectionUnit {
         StringBuilder query = new StringBuilder("UPDATE " + TableName + " SET ");
         //Duyệt và đưa thông tin tên cột và giá trị của cột vào câu query
         for (String key : ColumnValues.keySet()) {
-            query.append(key + " = '" + ColumnValues.get(key).toString() + "',");
+            query.append("`"+key + "` = '" + ColumnValues.get(key).toString() + "',");
         }
         //Cắt ký tự ',' cuối câu
         query = query.delete(query.length() - 1, query.length());
