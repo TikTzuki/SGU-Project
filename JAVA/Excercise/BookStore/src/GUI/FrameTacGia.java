@@ -43,6 +43,7 @@ public class FrameTacGia extends JFrame{
     JScrollPane jscrollpane = new JScrollPane(table);
     
     public FrameTacGia() {
+        /*
         setSize(700, 500);
         setLayout(null);
 
@@ -52,6 +53,7 @@ public class FrameTacGia extends JFrame{
         add(pan);
         //Doc();
         setVisible(true);
+        */
     }
     public JPanel init()
     {

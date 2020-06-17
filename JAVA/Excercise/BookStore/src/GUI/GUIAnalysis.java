@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import BUS.BUSGetBook;
 import BUS.BUSGetStaff;
 import BUS.BUSRole;
 import DTO.Staff;
@@ -14,7 +15,10 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -35,6 +39,7 @@ public class GUIAnalysis {
     //Data transfer object
     BUSGetStaff busStaff = new BUSGetStaff();
     BUSRole busRole = new BUSRole();
+    BUSGetBook busBook = new BUSGetBook();
     
     ArrayList<Staff> listStaffGlobal = new ArrayList<>();
     Staff staffSelected = new Staff();
@@ -173,7 +178,14 @@ public class GUIAnalysis {
         
     }
     public void loadTableBook(int top, String startDate, String endDate){
-        
+        try {
+            ResultSet result = busBook.getTopBookSelled(top, startDate, endDate);
+            while(result.next()){
+            
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(GUIAnalysis.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public JTable[] showColorTable() {
         for (int i = 0; i < tblArrayAllTable.length; i++) {

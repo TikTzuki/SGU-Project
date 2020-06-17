@@ -46,15 +46,12 @@ public class BUSGetBook {
     public ArrayList<Book> getBook() throws Exception {
         return this.getBook(null);
     }
-    public ArrayList<Book> getTopBookSelled(int top, String startDate, String endDate) throws Exception{
-        String query = "";
-        String condition = "";
-        ResultSet result = this.connect.Select("", condition);
-        ArrayList<Book> bookList = new ArrayList<>();
-        while(result.next()){
-            Book book = new Book();
-        }
-        return bookList;
+    public ResultSet getTopBookSelled(int top, String startDate, String endDate) throws Exception{
+        String query = "SELECT order_item.book_id as book_id, book.title as title, SUM(order_item.quantity) as quantity "
+                + "FROM book, book_order, order_item "
+                + "WHERE order_item.book_id = book.book_id AND order_item.order_id = book_order.order_id AND book_order.order_date BETWEEN '"+ startDate+"' AND '"+endDate+"' GROUP BY order_item.book_id ORDER BY SUM(order_item.quantity) DESC LIMIT 0,"+top;
+        ResultSet result = this.connect.Select(query);
+        return result;
     }
     public Book getBookById(int bookId) throws Exception{
         ArrayList<Book> bookList = this.getBook("book_id="+bookId);

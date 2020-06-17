@@ -43,6 +43,7 @@ public class FrameTheLoai extends JFrame{
     JScrollPane jscrollpane = new JScrollPane(table);
     
     public FrameTheLoai() {
+        /*
         setSize(500, 400);
         setLayout(null);
 
@@ -52,6 +53,7 @@ public class FrameTheLoai extends JFrame{
         add(pan);
         //Doc();
         setVisible(true);
+        */
     }
     public JPanel init()
     {

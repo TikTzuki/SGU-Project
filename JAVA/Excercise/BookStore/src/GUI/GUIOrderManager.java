@@ -345,7 +345,7 @@ public class GUIOrderManager{
             //Panel Chi tiết hóa đơn 
             pnlOrderItemLeft.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
             showPnlOrderItem();
-            pnlOrderItemLeft.setPreferredSize(new Dimension(500,240));
+            pnlOrderItemLeft.setPreferredSize(new Dimension(550,240));
             //Table chi tiết hóa đơn
             
             tblOrderItem.setModel(new DefaultTableModel(new Object[][]{}, new String[]{
@@ -906,7 +906,7 @@ public class GUIOrderManager{
     public void showPnlOrderItem(){
         for(int i=0; i<namePnlOrderItem.length; i++){
             pnlOrderItemArray[i] = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-            pnlOrderItemArray[i].setPreferredSize(new Dimension(500, 30));
+            pnlOrderItemArray[i].setPreferredSize(new Dimension(550, 30));
             pnlOrderItemArray[i].setBackground(Cl.colorBackground);
             JLabel lblName = new JLabel(namePnlOrderItem[i]);
             lblName.setFont(Cl.fontContentM);
