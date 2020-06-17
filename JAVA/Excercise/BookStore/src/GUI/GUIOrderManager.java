@@ -29,7 +29,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
-import jxl.write.WriteException;
+//import jxl.write.WriteException;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -479,7 +479,7 @@ public class GUIOrderManager{
         });
         btnExportExcel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt){
-                 ExcelPOI.writeFileExcel(tblOrder);
+                 //ExcelPOI.writeFileExcel(tblOrder);
             }
             public void mouseEntered(MouseEvent evt){
                 btnExportExcel.setBackground(Cl.colorGreen);

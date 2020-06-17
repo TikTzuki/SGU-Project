@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+/*
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -24,12 +24,13 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
-
+*/
 /**
  * ----------------- @author nguyenvanquan7826 -----------------
  */
-public class ExcelPOI {
 
+public class ExcelPOI {
+/*
     // create and write new file *.xls
     static public void writeFileExcel(JTable tbl) {
         WritableWorkbook workbook = null;
