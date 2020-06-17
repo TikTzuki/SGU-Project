@@ -46,7 +46,16 @@ public class BUSGetBook {
     public ArrayList<Book> getBook() throws Exception {
         return this.getBook(null);
     }
-    
+    public ArrayList<Book> getTopBookSelled(int top, String startDate, String endDate) throws Exception{
+        String query = "";
+        String condition = "";
+        ResultSet result = this.connect.Select("", condition);
+        ArrayList<Book> bookList = new ArrayList<>();
+        while(result.next()){
+            Book book = new Book();
+        }
+        return bookList;
+    }
     public Book getBookById(int bookId) throws Exception{
         ArrayList<Book> bookList = this.getBook("book_id="+bookId);
         return bookList.get(0);

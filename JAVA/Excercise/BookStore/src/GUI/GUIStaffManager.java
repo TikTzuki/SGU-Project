@@ -322,10 +322,10 @@ public class GUIStaffManager {
         }
     }
     public void saveSelectedStaff(){
-        if(txtSelectedStaffValue[0].getText()=="")
+        if(txtSelectedStaffValue[0].getText().equals(""))
             return;
         for(int i=0; i<txtSelectedStaffValue.length; i++){
-            if(txtSelectedStaffValue[i].getText()=="" || txtSelectedStaffValue[i].getText()==null){
+            if(txtSelectedStaffValue[i].getText().equals("") || txtSelectedStaffValue[i].getText().equals(null)){
                 JOptionPane.showMessageDialog(null, "Không được để trống");
             }
         }
