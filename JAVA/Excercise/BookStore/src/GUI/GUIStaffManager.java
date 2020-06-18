@@ -48,6 +48,7 @@ public class GUIStaffManager {
         //Panel chinh
         pnlMainPanel = new JPanel(null);
         pnlMainPanel.setBackground(Cl.colorBackground);
+        pnlMainPanel.setBorder(Cl.blueLine);
         pnlMainPanel.setPreferredSize(new Dimension(1110, 700));
         
         //Panel user đang chọn

@@ -6,6 +6,7 @@
 package bookstore;
 
 import GUI.GUIBookStoreMain;
+import GUI.GUILogin;
 
 /**
  *
@@ -18,7 +19,8 @@ public class BookStore {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        GUIBookStoreMain bookStore = new GUIBookStoreMain();
+        GUILogin login = new GUILogin();
+        //GUIBookStoreMain bookStore = new GUIBookStoreMain();
     }
     
 }

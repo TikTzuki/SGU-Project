@@ -7,6 +7,7 @@ package GUI;
 
 import BUS.Book_BUS;
 import DTO.Book_DTO;
+import DTO.Staff;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -43,7 +44,7 @@ public class FrameTacGia extends JFrame{
     JScrollPane jscrollpane = new JScrollPane(table);
     
     public FrameTacGia() {
-        /*
+        
         setSize(700, 500);
         setLayout(null);
 
@@ -53,8 +54,9 @@ public class FrameTacGia extends JFrame{
         add(pan);
         //Doc();
         setVisible(true);
-        */
+        
     }
+
     public JPanel init()
     {
         pChinh = new JPanel();

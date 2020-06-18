@@ -13,14 +13,16 @@ public class DiscountDetail {
     private int book_id;
     private int discount_id;
     private int percent;
+private int status;
 
     public DiscountDetail() {
     }
 
-    public DiscountDetail(int book_id, int discount_id, int percent) {
+    public DiscountDetail(int book_id, int discount_id, int percent, int status) {
         this.book_id = book_id;
         this.discount_id = discount_id;
         this.percent = percent;
+this.status = status;
     }
 
     public int getBook_id() {
@@ -45,6 +47,13 @@ public class DiscountDetail {
 
     public void setPercent(int percent) {
         this.percent = percent;
+    }
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override

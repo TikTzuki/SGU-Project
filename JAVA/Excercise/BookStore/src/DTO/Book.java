@@ -18,6 +18,15 @@ public class Book {
     private String publication_date;
     private int price;
     private int available_quantity;
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public Book() {
     }

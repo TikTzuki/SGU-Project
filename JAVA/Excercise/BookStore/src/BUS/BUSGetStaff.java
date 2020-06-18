@@ -49,6 +49,10 @@ public class BUSGetStaff {
     public ArrayList<Staff> getStaff() throws Exception {
         return this.getStaff(null);
     }
+    public ResultSet getTopStaffSelled(int top, String startDate, String endDate) throws Exception{
+        String query = "SELECT staff.name as name, SUM(order_item.quantity) as quantity FROM book_order, order_item, staff WHERE book_order.order_id=order_item.order_id AND staff.staff_id=book_order.staff_id AND book_order.order_date BETWEEN '"+startDate+"' AND '"+endDate+"' GROUP BY staff.staff_id ORDER BY SUM(order_item.quantity) LIMIT 0,"+top;
+        return this.connect.execute(query);
+    }
     public void inserts(Staff staff) throws Exception{
         HashMap<String, Object> map = new HashMap<>();
         map.put("name", staff.getName());

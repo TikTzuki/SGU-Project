@@ -69,20 +69,23 @@ public class FrameHienThi_Book
 
     public JPanel SanPham() {
         pBook = new JPanel();
-        pBook.setPreferredSize(new Dimension(1100,700));
+        pBook.setPreferredSize(new Dimension(1110,700));
         pBook.setBounds(0, 0, 1100, 700);
+        pBook.setBackground(Cl.colorBackground);
         //pBook.setBackground(Color.WHITE);
         //pBook.setBackground(new Color(204, 255, 255));
         pBook.setLayout(null);
         //Border bo = BorderFactory.createLineBorder(Color.yellow);
         //pBook.setBorder(BorderFactory.createTitledBorder(bo,"Sản Phẩm",TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
-        pBook.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        pBook.setBorder(Cl.blueLine);
+        pBook.setBackground(Cl.colorBackground);
         JPanel pan_contain = new JPanel();
         pan_contain.setBounds(0, 0, 1000, 7);
         pan_contain.setBackground(new Color(102, 204, 255));
         pBook.add(pan_contain);
 
         JPanel pan_anh = new JPanel();
+         pan_anh.setBackground(Cl.colorBackground);
         pan_anh.setBounds(50, 10, 310, 300);
         //pan_anh.setBackground(Color.WHITE);
         //pan_anh.setBackground(new Color(204, 255, 255));
@@ -90,7 +93,7 @@ public class FrameHienThi_Book
         
         label_hinhAnh = new JLabel();
         label_hinhAnh.setBounds(10, 10, 290, 240);
-        label_hinhAnh.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        label_hinhAnh.setBorder(Cl.blueLine);
         label_hinhAnh.setHorizontalAlignment(label_hinhAnh.CENTER);
         //ImageIcon iiconBook =
         //loadIcon("src/images/"+tblProduct.getValueAt(selectedRowIndex, 0).toString()+".jpg", 290, 240);
@@ -99,7 +102,10 @@ public class FrameHienThi_Book
         button_anh = new JButton();
         button_anh.setText("Chọn ảnh");
         button_anh.setBounds(80, 260, 150, 30);
-        button_anh.setBackground(new Color(255, 204, 204));
+        button_anh.setBorder(Cl.blueLine);
+        button_anh.setForeground(Cl.colorBlue);
+        button_anh.setBackground(Cl.colorBackground);
+        button_anh.setFont(Cl.fontContentM);
         button_anh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -130,6 +136,7 @@ public class FrameHienThi_Book
 
         JPanel pan_label = new JPanel();
         pan_label.setLayout(null);
+        pan_label.setBackground(Cl.colorBackground);
         //pan_label.setBackground(Color.WHITE);
         //pan_label.setBackground(new Color(204, 255, 255));
         pan_label.setBounds(360, 10, 340, 300);
@@ -159,6 +166,13 @@ public class FrameHienThi_Book
         label_id_tacgia.setBounds(20, 260, 150, 30);
         pan_label.add(label_id_tacgia);
 
+        //ADD BY TIK
+        JLabel lblAddBook[] = {label_id_sach,label_tensach,label_soluong,label_gia,label_loai,label_ngayxuatban,label_id_tacgia};
+        for(int i=0; i<lblAddBook.length; i++){
+            lblAddBook[i].setFont(Cl.fontContentSB);
+            lblAddBook[i].setForeground(Cl.colorBlue);
+        }
+        
         txt1 = new JTextField();
         txt1.setBounds(120, 20, 200, 30);
         txt1.setEditable(false);
@@ -178,6 +192,8 @@ public class FrameHienThi_Book
         button_themtheloai = new JButton();
         //==============
         button_themtheloai.setLayout(null);
+        button_themtheloai.setBackground(Cl.colorBackground);
+        button_themtheloai.setBorder(Cl.whiteLineS);
         ImageIcon imTL = loadIcon("src/images/plus.png",30,30);
         JLabel TL = new JLabel(imTL);
         TL.setBounds(0, 0, 30, 30);
@@ -204,12 +220,13 @@ public class FrameHienThi_Book
                 txt6.setText(null);
             }
         });
-        JButton lich = new JButton(new ImageIcon("calendar.png"));
+        JButton lich = new JButton(new ImageIcon("src/images/calendar.png"));
+        lich.setBackground(Cl.colorBackground);
         lich.setBounds(280, 220, 40, 29);
         final JFrame f2 = new JFrame();
         lich.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-		txt6.setText(new DatePicker(f2).setPickedDateYearMonthDate());
+		txt6.setText(new DatePicker(lich).setPickedDateYearMonthDate());
             }
 	});
         pan_label.add(lich);
@@ -231,6 +248,7 @@ public class FrameHienThi_Book
         button_themtacgia = new JButton();
         //==============
         button_themtacgia.setLayout(null);
+        button_themtacgia.setBackground(Cl.colorBackground);
         ImageIcon imTG = loadIcon("src/images/plus.png",30,30);
         JLabel TG = new JLabel(imTG);
         TG.setBounds(0, 0, 30, 30);
@@ -263,6 +281,7 @@ public class FrameHienThi_Book
 
         //panel.add(createPaneBorder(titleBorder,"title border center just and default prsition"));
         JPanel pan_button = new JPanel();
+        pan_button.setBackground(Cl.colorBackground);
         pan_button.setLayout(null);
         //pan_button.setBackground(Color.WHITE);
         //pan_button.setBackground(new Color(204, 255, 255));
@@ -272,8 +291,8 @@ public class FrameHienThi_Book
         la.setFont(new Font("Tahoma", 3, 15));
          */
         //pan_button.setBorder(BorderFactory.createLineBorder(Color.ORANGE));
-        Border blueBorder = BorderFactory.createLineBorder(Color.BLUE);
-        pan_button.setBorder(BorderFactory.createTitledBorder(blueBorder, "Chức năng", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
+        //Border blueBorder = BorderFactory.createLineBorder(Color.BLUE);
+        pan_button.setBorder(BorderFactory.createTitledBorder(Cl.blueLine, "Chức năng", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, Cl.fontContentSB, Cl.colorBlue));
         button_showAll = new JButton();
         button_showAll.setLayout(null);
         ImageIcon imAll = loadIcon("src/images/study.png",50,50);
@@ -608,11 +627,11 @@ public class FrameHienThi_Book
         text.setFont(new Font("Tahoma", 1, 15));
         pBook.add(text);
         JButton butNgaybatdau = new JButton(new ImageIcon("src/images/calendar.png"));
-        butNgaybatdau.setBounds(170, 425, 40, 29);
+        butNgaybatdau.setBounds(170, 425, 40, 30);
         final JFrame f = new JFrame();
         butNgaybatdau.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				text.setText(new DatePicker(f).setPickedDateYearMonthDate());
+				text.setText(new DatePicker(butNgaybatdau).setPickedDateYearMonthDate());
 			}
 		});
         pBook.add(butNgaybatdau);
@@ -626,20 +645,23 @@ public class FrameHienThi_Book
         textketthuc.setFont(new Font("Tahoma", 1, 15));
         pBook.add(textketthuc);
         JButton butNgayketthuc = new JButton(new ImageIcon("src/images/calendar.png"));
-        butNgayketthuc.setBounds(340, 425, 40, 29);
+        butNgayketthuc.setBounds(340, 425, 40, 30);
         final JFrame f1 = new JFrame();
         butNgayketthuc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-		textketthuc.setText(new DatePicker(f1).setPickedDateYearMonthDate());
+		textketthuc.setText(new DatePicker(butNgayketthuc).setPickedDateYearMonthDate());
             }
 	});
         pBook.add(butNgayketthuc);
         JLabel laTim = new JLabel("Tìm: ");
         laTim.setFont(new Font("Tahoma", 1, 15));
         laTim.setBounds(390, 395, 140, 30);
-        pBook.add(laTim);
-        JButton btTim = new JButton(new ImageIcon("src/images/bieutuongtimkiem.jpg"));
-        btTim.setBounds(390, 425, 40, 30);
+        //pBook.add(laTim);
+        JButton btTim = new JButton("Tìm kiếm");
+        btTim.setBackground(Cl.colorBackground);
+        btTim.setForeground(Cl.colorBlue);
+        btTim.setBorder(Cl.blueLine);
+        btTim.setBounds(390, 425, 100, 30);
         
         btTim.addActionListener(new ActionListener() {
 	public void actionPerformed(ActionEvent ae) {
@@ -647,6 +669,18 @@ public class FrameHienThi_Book
             }
 	});
         pBook.add(btTim);
+        //ADD BY TIK
+        JLabel arrayAllLabelSearch[] = {label_vien, label_timkiem, label_timkiemma,label_timkiemgia ,ngaybatdau ,ngayketthuc,laTim};
+        for(int i=0; i<arrayAllLabelSearch.length; i++){
+            arrayAllLabelSearch[i].setForeground(Cl.colorBlue);
+        }
+        JButton arrayButtonIcon[] = {button_timkiem, button_timkiemma,butNgaybatdau,butNgayketthuc};
+        for(int i=0; i<arrayButtonIcon.length; i++){
+            arrayButtonIcon[i].setBackground(Cl.colorBackground);
+            arrayButtonIcon[i].setForeground(Cl.colorBackground);
+            arrayButtonIcon[i].setBorder(Cl.blueLineS);
+        }
+        //
         TaoTable();
 
         return pBook;
@@ -683,16 +717,17 @@ public class FrameHienThi_Book
         //pBook.add(jscrollpane);
         //JTableHeader tbh = table.getTableHeader();
         //tbh.setFont(new Font("Tahoma", 1, 15));
-        table.getTableHeader().setForeground(Color.BLACK);
-        table.getTableHeader().setBackground(new Color(153, 204, 255));
-        table.getTableHeader().setFont(new Font("Tahoma", 1, 13));
+        //table.getTableHeader().setForeground(Color.BLACK);
+        //table.getTableHeader().setBackground(new Color(153, 204, 255));
+        //table.getTableHeader().setFont(new Font("Tahoma", 1, 13));
+        Cl.showColorTable(table);
         table.setRowHeight(30);
         table.getColumnModel().getColumn(0).setPreferredWidth(40);//độ rộng của cột
         table.getColumnModel().getColumn(2).setPreferredWidth(40);
         table.getColumnModel().getColumn(2).setPreferredWidth(40);
         //tbh.setForeground(Color.yellow);
-        table.setSelectionBackground(new Color(255, 255, 0));//màu nền khi click chuột vào một row trên table
-        table.setGridColor(new Color(102, 255, 51));
+        //table.setSelectionBackground(new Color(255, 255, 0));//màu nền khi click chuột vào một row trên table
+        //table.setGridColor(new Color(102, 255, 51));
         
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

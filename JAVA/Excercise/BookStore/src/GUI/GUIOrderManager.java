@@ -31,11 +31,6 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 //import jxl.write.WriteException;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 
 
@@ -106,6 +101,7 @@ public class GUIOrderManager{
         //Panel chinh
         pnlMainPanel = new JPanel(new BorderLayout());
         pnlMainPanel.setBackground(Cl.colorBackground);
+        pnlMainPanel.setBorder(Cl.blueLine);
         //Tạo tabbedPane chứa panel tạo hóa đơn, quản lý hóa đơn
         tabbedPane = new JTabbedPane();
         tabbedPane.setBackground(Cl.colorBackground);
@@ -113,7 +109,7 @@ public class GUIOrderManager{
        
         //Tạo panel tạo hóa đơn
         pnlCreateOrder = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        pnlCreateOrder.setPreferredSize(new Dimension(1110, 700));
+        pnlCreateOrder.setPreferredSize(new Dimension(1100, 600));
         pnlCreateOrder.setBackground(Cl.colorBackground);
             //Panel sản phẩm đang được chọn
         pnlSelectedProduct = new JPanel(new BorderLayout(0, 0));
@@ -219,6 +215,8 @@ public class GUIOrderManager{
             
             },
             new Object[]{"ID","Tên sách","Giá bán","#","Thành tiền"}));
+        tblOrderDetail.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tblOrderDetail.getColumnModel().getColumn(1).setPreferredWidth(200);
         JScrollPane scrollTblOrderDetail = new JScrollPane(tblOrderDetail);
         scrollTblOrderDetail.setPreferredSize(new Dimension(400,240));
         
@@ -321,8 +319,10 @@ public class GUIOrderManager{
         
         tblProduct.setModel(new DefaultTableModel(
         new Object [][]{},
-        new String [] {"Mã sách","Thể loại", "Tên", "Tác giả", "Giá", "Còn lại", "ISBN"}
+        new String [] {"ID","Thể loại", "Tên", "Tác giả", "Giá", "Còn lại", "ISBN"}
         ));
+        tblProduct.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tblProduct.getColumnModel().getColumn(2).setPreferredWidth(200);
         tblProduct.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt){
                 showSelectedProduct(evt);
@@ -332,41 +332,58 @@ public class GUIOrderManager{
         JScrollPane scrollPane = new JScrollPane(tblProduct);
         scrollPane.setPreferredSize(new Dimension(1100, 300));
         pnlCreateOrder.add(scrollPane);
-        
+/* ------------------------------------------------------------------------------------------------ */
         //Tạo panel quản lý hóa đơn
         pnlOrderManager = new JPanel();
-        pnlOrderManager.setPreferredSize(new Dimension(1100, 700));
+        pnlOrderManager.setPreferredSize(new Dimension(1100, 668));
         pnlOrderManager.setBackground(Cl.colorBackground);
         
         //Jpanel chi tiết hóa đơn
         pnlOrderItem.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-        pnlOrderItem.setPreferredSize(new Dimension(1120, 240));
+        pnlOrderItem.setPreferredSize(new Dimension(1120, 270));
         pnlOrderItem.setBackground(Cl.colorBackground);
+            //Label hóa đơn
+            JLabel lblOrder = new JLabel("Hóa đơn");
+            lblOrder.setFont(Cl.fontContentMB);
+            lblOrder.setForeground(Cl.colorBlue);
+            lblOrder.setHorizontalAlignment(JLabel.CENTER);
+            lblOrder.setPreferredSize(new Dimension(550,30));
             //Panel Chi tiết hóa đơn 
             pnlOrderItemLeft.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
             showPnlOrderItem();
             pnlOrderItemLeft.setPreferredSize(new Dimension(550,240));
+            
+            //Label chi tiết hóa đơn
+            JLabel lblOrderItem = new JLabel("Chi tiết");
+            lblOrderItem.setFont(Cl.fontContentMB);
+            lblOrderItem.setForeground(Cl.colorBlue);
+            lblOrderItem.setHorizontalAlignment(JLabel.CENTER);
+            lblOrderItem.setPreferredSize(new Dimension(500,30));
             //Table chi tiết hóa đơn
             
             tblOrderItem.setModel(new DefaultTableModel(new Object[][]{}, new String[]{
-                "ID","Tên sách","Tác giả","ISBN","#","Giá sách","Thành tiền"
+                "ID","Tên sách","Tác giả","ISBN","#","Giá","Thành tiền"
             }));
-            tblOrderItem.setPreferredSize(new Dimension(410,240));
+            tblOrderItem.setPreferredSize(new Dimension(550,240));
             tblOrderItem.setPreferredScrollableViewportSize(new Dimension(410,240));
+            
+            tblOrderItem.getColumnModel().getColumn(0).setPreferredWidth(20);
+            tblOrderItem.getColumnModel().getColumn(1).setPreferredWidth(150);
+            tblOrderItem.getColumnModel().getColumn(2).setPreferredWidth(100);/*
+            tblOrderItem.getColumnModel().getColumn(3).setPreferredWidth(100);*/
+            tblOrderItem.getColumnModel().getColumn(4).setPreferredWidth(20);
+            tblOrderItem.getColumnModel().getColumn(5).setPreferredWidth(50);
+            tblOrderItem.getColumnModel().getColumn(6).setPreferredWidth(50);
+            
             scrollTblOrderItem.setViewportView(tblOrderItem);
-            scrollTblOrderItem.setPreferredSize(new Dimension(410, 240));
+            scrollTblOrderItem.setPreferredSize(new Dimension(500, 240));
             
             //Panel thao tác hóa đơn
-            pnlOrderItemControl.setPreferredSize(new Dimension(110,240));
+            pnlOrderItemControl.setPreferredSize(new Dimension(20,240));
             pnlOrderItemControl.setBackground(Cl.colorBackground);
             
-            btnExportExcel.setFont(Cl.fontContentMB);
-            btnExportExcel.setForeground(Cl.colorGreen);
-            btnExportExcel.setPreferredSize(new Dimension(100,30));
-            btnExportExcel.setBackground(Cl.colorBackground);
-            btnExportExcel.setBorder(Cl.greenLine);
-            pnlOrderItemControl.add(btnExportExcel);
-        
+        pnlOrderItem.add(lblOrder);
+        pnlOrderItem.add(lblOrderItem);
         pnlOrderItem.add(pnlOrderItemLeft);
         pnlOrderItem.add(scrollTblOrderItem);
         pnlOrderItem.add(pnlOrderItemControl);
@@ -406,7 +423,7 @@ public class GUIOrderManager{
         pnlSearchOrder.add(pnlSearchButton);
         pnlSearchOrder.add(cbbLogicOrder);
         //Table hóa đơn
-        tblOrder.setPreferredSize(new Dimension(1000, 400));
+        tblOrder.setPreferredSize(new Dimension(1000, 220));
         tblOrder.setModel(new DefaultTableModel(new Object[][]{}, new String[]{
             "Mã hđ","Khách hàng", "Người bán", "Khuyến mãi", "Ngày lập", "Số lượng sản phẩm", "Tổng"
         }));
@@ -418,11 +435,29 @@ public class GUIOrderManager{
         });
         
         scrollTblOrder.setViewportView(tblOrder);
-        scrollTblOrder.setPreferredSize(new Dimension(1000,300));
+        scrollTblOrder.setPreferredSize(new Dimension(900,230));
+        
+        JPanel pnlTblOrder = new JPanel(new FlowLayout(FlowLayout.CENTER,0,0));
+        pnlTblOrder.setPreferredSize(new Dimension(1100,230));
+        pnlTblOrder.setBackground(Cl.colorBackground);
+        //Panel thao tác hóa đơn
+        JPanel pnlOrderControl = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        pnlOrderControl.setPreferredSize(new Dimension(110, 230));
+        pnlOrderControl.setBackground(Cl.colorBackground);
+        
+        btnExportExcel.setFont(Cl.fontContentMB);
+        btnExportExcel.setForeground(Cl.colorGreen);
+        btnExportExcel.setPreferredSize(new Dimension(100, 30));
+        btnExportExcel.setBackground(Cl.colorBackground);
+        btnExportExcel.setBorder(Cl.greenLine);
+        pnlOrderControl.add(btnExportExcel);
+        
+        pnlTblOrder.add(scrollTblOrder);
+        pnlTblOrder.add(pnlOrderControl);
         
         pnlOrderManager.add(pnlOrderItem);
         pnlOrderManager.add(pnlSearchOrder);
-        pnlOrderManager.add(scrollTblOrder);
+        pnlOrderManager.add(pnlTblOrder);
         //
         tabbedPane.addTab("Thêm hóa đơn", null, pnlCreateOrder, "Thêm hóa đơn");
         tabbedPane.addTab("Quản lý hóa đơn",null,pnlOrderManager,"Quản lý hóa đơn");
@@ -433,7 +468,7 @@ public class GUIOrderManager{
         btnApplyDiscount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                    //ExcelPOI.writeFileExcel(tblProduct);
+                
                     showTotalValueOrder();
             }
         });
@@ -479,7 +514,7 @@ public class GUIOrderManager{
         });
         btnExportExcel.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt){
-                 //ExcelPOI.writeFileExcel(tblOrder);
+                 ExcelPOI.writeFileExcel(tblOrder);
             }
             public void mouseEntered(MouseEvent evt){
                 btnExportExcel.setBackground(Cl.colorGreen);
@@ -557,7 +592,7 @@ public class GUIOrderManager{
         //Lấy book từ id
         try {
             selectedBookGlobal = busBook.getBookById(Integer.parseInt(tblProduct.getValueAt(selectedRowIndex, 0).toString()));
-            ImageIcon iiconBook = loadIcon("src/images/" + selectedBookGlobal.getBook_id() + ".jpg", 200, 300);
+            ImageIcon iiconBook = loadIcon("src/images/" + selectedBookGlobal.getImage(), 200, 300);
             lblBookImg.setIcon(iiconBook);
             lblBookIdValue.setText(selectedBookGlobal.getBook_id() + "");
             
@@ -805,6 +840,7 @@ public class GUIOrderManager{
                         cus.getPhone_number()
                     });
                 }
+                
             }
         });
         btnChose.addActionListener(new ActionListener() {
@@ -814,6 +850,7 @@ public class GUIOrderManager{
                     String customerIdFound = tblCustomer.getValueAt(tblCustomer.getSelectedRow(), 0).toString();
                     selectedCustomerGlobal = busCustomer.getCustomerById(Integer.parseInt(customerIdFound));
                     txtCustomerId.setText(selectedCustomerGlobal.getCustomer_id()+"");
+                    findCustomer.dispose();
                 } catch (Exception ex) {
                     Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1237,28 +1274,9 @@ public class GUIOrderManager{
             Logger.getLogger(GUIOrderManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    /*public boolean contain(String superString , String subString, String logic){
-        if(subString.length()>superString.length())
-            return false;
-        if(subString.length()==superString.length() && subString.equalsIgnoreCase(superString))
-            return true;
-        if(subString.equals("")){
-            if(logic.equals("and")){
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        for(int i=0; i<superString.length(); i++){
-            if(superString.substring(i, i+subString.length()).equalsIgnoreCase(subString)){
-                return true;
-            }
-        }
-        return false;
-    }*/
     public JTable[] showColorTable(){
         for(int i=0; i<TableArray.length; i++){
+            TableArray[i].setRowHeight(30);
             TableArray[i].setBackground(Cl.colorBackground);
             TableArray[i].setForeground(Color.white);
             TableArray[i].setGridColor(Color.DARK_GRAY);
@@ -1320,7 +1338,7 @@ public class GUIOrderManager{
     JPanel pnlOrderItem = new JPanel();
         //Panel chi tiết hóa đơn
     JPanel pnlOrderItemLeft = new JPanel();
-    String[] namePnlOrderItem = {"Mã hóa đơn:","Khách hàng:","Người bán:","Khuyến mãi:","Ngày lập:","Số lượng sản phẩm:","Trước khuyến mãi:","Tổng:"};
+    String[] namePnlOrderItem = {"Mã hóa đơn:","Khách hàng:","Người bán:","Khuyến mãi:","Ngày lập:","Số lượng:","Trước khuyến mãi:","Tổng:"};
     JLabel[] lblPnlOrderItemValue = new JLabel[namePnlOrderItem.length];
     JPanel[] pnlOrderItemArray = new JPanel[namePnlOrderItem.length];
         //Table chi tiết hóa đơn

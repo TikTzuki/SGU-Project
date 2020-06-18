@@ -15,6 +15,7 @@ public class Discount {
     private int discount_type;
     private String start_date;
     private String end_date;
+private int status;
 
     public Discount() {
     }
@@ -25,6 +26,7 @@ public class Discount {
         this.discount_type = discount_type;
         this.start_date = start_date;
         this.end_date = end_date;
+this.status = status;
     }
 
     public int getDiscount_id() {
@@ -66,7 +68,13 @@ public class Discount {
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
     }
+    public int getStatus() {
+        return status;
+    }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
     @Override
     public String toString() {
         return "Discount{" + "discount_id=" + discount_id + ", discount_name=" + discount_name + ", discount_type=" + discount_type + ", start_date=" + start_date + ", end_date=" + end_date + '}';

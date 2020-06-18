@@ -24,8 +24,10 @@ class DatePicker {
 	public DatePicker(JFrame parent) {
 		d = new JDialog();
 		d.setModal(true);
+                d.setBackground(Cl.colorBackground);
 		String[] header = { "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
 		JPanel p1 = new JPanel(new GridLayout(7, 7));
+                p1.setBackground(Cl.colorBackground);
 		p1.setPreferredSize(new Dimension(400, 400));
 
 		for (int x = 0; x < button.length; x++) {
@@ -74,15 +76,19 @@ class DatePicker {
         public DatePicker(JButton parent) {
 		d = new JDialog();
 		d.setModal(true);
+                d.setBackground(Cl.colorBackground);
 		String[] header = { "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
 		JPanel p1 = new JPanel(new GridLayout(7, 7));
+                p1.setBackground(Cl.colorBackground);
 		p1.setPreferredSize(new Dimension(400, 400));
 
 		for (int x = 0; x < button.length; x++) {
 			final int selection = x;
 			button[x] = new JButton();
 			button[x].setFocusPainted(false);
-			button[x].setBackground(Color.white);
+			button[x].setBackground(Cl.colorBackground);
+                        button[x].setForeground(Cl.colorBlue);
+                        button[x].setBorder(Cl.blueLineS);
 			if (x > 6)
 				button[x].addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent ae) {
@@ -92,12 +98,17 @@ class DatePicker {
 				});
 			if (x < 7) {
 				button[x].setText(header[x]);
-				button[x].setForeground(Color.black);
+                                button[x].setFont(Cl.fontContentMB);
+				button[x].setForeground(Cl.colorRed);
 			}
 			p1.add(button[x]);
 		}
 		JPanel p2 = new JPanel(new GridLayout(1, 3));
+                p2.setBackground(Cl.colorBackground);
 		JButton previous = new JButton("<< Previous");
+                previous.setForeground(Cl.colorGreen);
+                previous.setBackground(Cl.colorBackground);
+                previous.setBorder(Cl.blueLineS);
 		previous.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				month--;
@@ -105,8 +116,12 @@ class DatePicker {
 			}
 		});
 		p2.add(previous);
+                l.setForeground(Cl.colorGreen);
 		p2.add(l);
 		JButton next = new JButton("Next >>");
+                next.setForeground(Cl.colorGreen);
+                next.setBackground(Cl.colorBackground);
+                next.setBorder(Cl.blueLineS);
 		next.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				month++;

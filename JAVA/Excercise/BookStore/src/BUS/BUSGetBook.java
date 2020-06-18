@@ -34,6 +34,7 @@ public class BUSGetBook {
             book.setPublication_date(result.getString("publication_date"));
             book.setPrice(result.getInt("price"));
             book.setAvailable_quantity(result.getInt("available_quantity"));
+            book.setImage(result.getString("ten_anh"));
             bookList.add(book);
         }
         return bookList;
@@ -50,7 +51,7 @@ public class BUSGetBook {
         String query = "SELECT order_item.book_id as book_id, book.title as title, SUM(order_item.quantity) as quantity "
                 + "FROM book, book_order, order_item "
                 + "WHERE order_item.book_id = book.book_id AND order_item.order_id = book_order.order_id AND book_order.order_date BETWEEN '"+ startDate+"' AND '"+endDate+"' GROUP BY order_item.book_id ORDER BY SUM(order_item.quantity) DESC LIMIT 0,"+top;
-        ResultSet result = this.connect.Select(query);
+        ResultSet result = this.connect.execute(query);
         return result;
     }
     public Book getBookById(int bookId) throws Exception{

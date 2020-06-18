@@ -41,7 +41,12 @@ public class BUSGetGenre {
     public ArrayList<Genre> getGenre() throws Exception {
         return this.getGenre(null);
     }
-    
+    public ResultSet getTopGenreSelled(int top, String startDate, String endDate) throws Exception{
+        String query = "SELECT genre.name as genre_name, SUM(order_item.quantity) as quantity "
+                + "FROM book_order, genre, book, order_item "
+                + "WHERE book_order.order_id=order_item.order_id AND order_item.book_id=book.book_id AND book.genre_id=genre.genre_id AND book_order.order_date BETWEEN '"+startDate+"' AND '"+endDate+"' GROUP BY genre.genre_id ORDER BY SUM(order_item.quantity) DESC LIMIT 0,"+top;
+        return this.connect.execute(query);
+    }
     public Genre getGenreByBookId(int book_id) throws Exception{
         ResultSet result = connect.Select("genre,book", "book.genre_id=genre.genre_id and book_id="+book_id, null);
         Genre genre = new Genre();

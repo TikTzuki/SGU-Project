@@ -49,7 +49,30 @@ public class BUSOrderManager {
     public ArrayList<Order> getOrder() throws Exception {
         return this.getOrder(null);
     }
-
+    public int getRevenue(String startDate, String endDate) throws Exception{
+        String query = "SELECT SUM(total) as total FROM book_order WHERE order_date BETWEEN '"+startDate+"' AND '"+endDate+"' ";
+        ResultSet result = this.connect.execute(query);
+        while(result.next()){
+            return result.getInt("total");
+        }
+        return 0;
+    }
+    public int getSales(String startDate, String endDate) throws Exception{
+        String query = "SELECT SUM(order_item.quantity) as total FROM book_order, order_item WHERE book_order.order_id = order_item.order_id AND order_date BETWEEN '"+startDate+"' AND '"+endDate+"' ";
+        ResultSet result = this.connect.execute(query);
+        while(result.next()){
+            return result.getInt("total");
+        }
+        return 0;
+    }
+    public int getTotalCustomer(String startDate, String endDate) throws Exception{
+        String query = "SELECT COUNT(customer_id) as total FROM (SELECT book_order.customer_id FROM book_order WHERE book_order.order_date BETWEEN '"+startDate+"' AND '"+endDate+"' GROUP BY customer_id ) as tbl";
+        ResultSet result = this.connect.execute(query);
+        while(result.next()){
+            return result.getInt("total");
+        }
+        return 0;
+    }
     public void inserts(Order order) throws Exception {
         HashMap<String, Object> map = new HashMap<String, Object>();
         //map.put("order_id", "NULL");

@@ -43,7 +43,12 @@ public class BUSGetAuthor {
     public ArrayList<Author> getAuthor() throws Exception {
         return this.getAuthor(null);
     }
-    
+    public ResultSet getTopAuthorSelled(int top, String startDate, String endDate) throws Exception{
+        String query = "SELECT author.first_name as first_name, author.last_name as last_name, SUM(order_item.quantity) as quantity "
+                + "FROM author, order_item, book_order, book "
+                + "WHERE author.author_id=book.author_id AND book.book_id=order_item.book_id AND order_item.order_id=book_order.order_id AND book_order.order_date BETWEEN '"+startDate+"' AND '"+endDate+"' GROUP BY author.author_id ORDER BY SUM(order_item.quantity) DESC LIMIT 0,"+top;
+        return this.connect.execute(query);
+    }
     public Author getAuthorByBookId(int book_id) throws Exception{
         ResultSet result = connect.Select("author,book", "author.author_id=book.author_id and book_id="+book_id);
         Author author = new Author();

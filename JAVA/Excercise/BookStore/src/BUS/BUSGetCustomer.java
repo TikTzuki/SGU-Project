@@ -41,6 +41,12 @@ public class BUSGetCustomer {
     public ArrayList<Customer> getCustomer() throws Exception{
         return this.getCustomer(null, null);
     }
+    public ResultSet getTopCustomerSelled(int top, String startDate, String endDate) throws Exception{
+        String query = "SELECT customer.first_name as first_name, customer.last_name as last_name, SUM(order_item.quantity) as quantity "
+                + "FROM book_order, order_item, customer "
+                + "WHERE book_order.order_id=order_item.order_id AND book_order.customer_id=customer.customer_id AND book_order.order_date BETWEEN '"+startDate+"' AND '"+endDate+"' GROUP BY customer.customer_id ORDER BY SUM(order_item.quantity) LIMIT 0,"+top;
+        return this.connect.execute(query);
+    }
     public Customer getCustomerById(int customerId) throws Exception{
         return this.getCustomer(" customer_id="+customerId).get(0);
     }

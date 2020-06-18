@@ -17,7 +17,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,10 +41,11 @@ public class GUIBookStoreMain extends JFrame{
     
     private Staff staff = new Staff();
     private BUSGetStaff busStaff = new BUSGetStaff();
-
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
     //Left side menu
     private JPanel LeftSideMenu = new JPanel(new FlowLayout(FlowLayout.CENTER,-2,-2));
     private JPanel TopMenu = new JPanel(null);
+    JLabel methodSelected = new JLabel("--------\\/--------");
     ArrayList<String> listContentMenuItem;
     JPanel pnlMenuItem[];
     JLabel lblMenuItem[];
@@ -51,9 +54,8 @@ public class GUIBookStoreMain extends JFrame{
         // VŨ, TRÂN, NINH KHAI BÁO GUI VỚI HÀM KHỞI TẠO TRỐNG
     GUIAnalysis analysis = new GUIAnalysis();
     FrameHienThi_Book vu = new FrameHienThi_Book();
-    FrameTacGia author = new FrameTacGia();
-    FrameTheLoai category = new FrameTheLoai();
     GUIOrderManager orderManager = new GUIOrderManager();
+    DiscountGiaoDien discountManager = new DiscountGiaoDien();
     GUICustomer_tran customerManager = new GUICustomer_tran();
     GUIStaffManager staffManager = new GUIStaffManager();
         //Mảng chứa nội dung chính
@@ -79,7 +81,7 @@ public class GUIBookStoreMain extends JFrame{
     public void initComp(){
         
         this.setLayout(new BorderLayout());
-        this.setUndecorated(true);
+        //this.setUndecorated(true);
         
         //Left side bar
         LeftSideMenu.setBackground(Cl.colorBackground);
@@ -89,8 +91,6 @@ public class GUIBookStoreMain extends JFrame{
         listContentMenuItemTemp.add("Thống kê");
         listContentMenuItemTemp.add("Quản lý sách");
         listContentMenuItemTemp.add("Quản lý hóa đơn");
-        listContentMenuItemTemp.add("Quản lý tac gia");
-        listContentMenuItemTemp.add("Quản lý the loai");
         listContentMenuItemTemp.add("Quản lý khuyến mãi");
         listContentMenuItemTemp.add("Quản lý khách hàng");
         listContentMenuItemTemp.add("Quản lý nhân viên");
@@ -144,8 +144,13 @@ public class GUIBookStoreMain extends JFrame{
         JLabel lblLogo = new JLabel(iconBook);
         lblLogo.setBounds(20, 0, 160, 50);
         
+            //Selected
+        methodSelected = new JLabel("--------\\/--------");
+        methodSelected.setFont(Cl.fontContentXLB);
+        methodSelected.setForeground(Cl.colorBlue);
+        methodSelected.setBounds(650, 0, 300, 50);
             //Người dùng
-        JLabel lblUser = new JLabel("Helo, "+staff.getName());
+        JLabel lblUser = new JLabel("Hello, "+staff.getName());
         lblUser.setFont(Cl.fontContentMB);
         lblUser.setForeground(Cl.colorBlue);
         lblUser.setBounds(1050, 0, 200, 50);
@@ -168,6 +173,7 @@ public class GUIBookStoreMain extends JFrame{
         });
         
         TopMenu.add(lblLogo);
+        TopMenu.add(methodSelected);
         TopMenu.add(lblUser);
         TopMenu.add(lblClose);
         TopMenu.setPreferredSize(new Dimension(1100,50));
@@ -182,15 +188,14 @@ public class GUIBookStoreMain extends JFrame{
         
         //Khởi tạo nội panel chứa nội dung chính
         JPanel pnlAnalysis = analysis.initComponents(staff);
-        JPanel pnlBookManager = vu.SanPham();                          // VŨ
-        JPanel pnlAuthorManager = author.init();                        //VU
-        JPanel pnlCategory = category.init();                           //VU
+        JPanel pnlBookManager = vu.SanPham();                          
         JPanel pnlOrderManager = orderManager.initComponents(staff);  // LONG
-        JPanel pnlDiscountManager = new  JPanel();                    //NINH
+        JPanel pnlDiscountManager = discountManager.init();                    //NINH
         JPanel pnlCustomerManager = customerManager.init();                //TRÂN
-        JPanel pnlStaffManager = staffManager.initComponents(staff);                       //LONG
+        JPanel pnlStaffManager = staffManager.initComponents(staff);//LONG
+        
         //Tạo ra 1 mảng tạm để chứ các content panel và đưa vào mảng content panel
-        JPanel[] pnlMainContentArrayTemp = {pnlAnalysis,pnlBookManager,pnlOrderManager,pnlAuthorManager,pnlCategory,pnlDiscountManager,pnlCustomerManager,pnlStaffManager};
+        JPanel[] pnlMainContentArrayTemp = {pnlAnalysis,pnlBookManager,pnlOrderManager,pnlDiscountManager,pnlCustomerManager,pnlStaffManager};
         pnlMainContentArray = pnlMainContentArrayTemp;
 
         for (int i=0; i<pnlMainContentArray.length; i++) {
@@ -213,6 +218,7 @@ public class GUIBookStoreMain extends JFrame{
             if(i==selectPanelIndex){
                 lblMenuItem[selectPanelIndex].setForeground(Cl.colorBlue);
                 pnlMenuItem[selectPanelIndex].setBorder(Cl.blueLine);
+                methodSelected.setText(listContentMenuItem.get(i));
                 continue;
             }
             pnlMenuItem[i].setBorder(Cl.whiteLine);

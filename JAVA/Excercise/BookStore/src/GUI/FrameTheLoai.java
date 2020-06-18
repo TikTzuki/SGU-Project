@@ -7,6 +7,7 @@ package GUI;
 
 import BUS.Book_BUS;
 import DTO.Book_DTO;
+import DTO.Staff;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -43,7 +44,7 @@ public class FrameTheLoai extends JFrame{
     JScrollPane jscrollpane = new JScrollPane(table);
     
     public FrameTheLoai() {
-        /*
+        
         setSize(500, 400);
         setLayout(null);
 
@@ -53,17 +54,17 @@ public class FrameTheLoai extends JFrame{
         add(pan);
         //Doc();
         setVisible(true);
-        */
+        
     }
+
     public JPanel init()
     {
         pChinh = new JPanel();
-        pChinh.setBounds(0, 0, 500, 400);
         pChinh.setPreferredSize(new Dimension(500,400));
-        pChinh.setBounds(0, 0, 1000, 660);
+        pChinh.setBounds(0, 0, 500, 400);
         //pChinh.setBackground(new Color(204, 255, 255));
         pChinh.setLayout(null);
-        pChinh.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        pChinh.setBorder(Cl.blueLine);
         label_1 = new JLabel("Mã thể loại ");
         label_1.setBounds(20, 20, 80, 30);
         pChinh.add(label_1);
