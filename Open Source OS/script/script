@@ -1,0 +1,14 @@
+#!/bin/bash
+echo "yes or no"
+read timeofday
+if [ "y$timeofday" = "yes" ] 
+then
+	echo "morning"
+elif [ "y$timeofday" = "no" ]
+then
+	echo "afternooon"
+else
+	echo "enter yes or no"
+	exit 1
+fi
+exit 0
