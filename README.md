@@ -1,4 +1,4 @@
-**Sử dụng Git như thế nào?**
+## **Sử dụng Git như thế nào?**
 
 Sau khi cài đặt, Git được sử dụng thông qua cửa sổ dòng lệnh với terminal (command-line). Ví dụ như này:
 ```php
@@ -10,8 +10,8 @@ Ngoài ra cũng có một số GUI tool giúp bạn dùng mà không phải dùn
 
 Trong bài này, chúng ta sẽ sử dụng Git trên terminal nhé. Không có tool tiếc gì ở đây 😛 cả.
 
-**Repository
-Repository là gì?**
+## **Repository**
+### **Repository là gì?**
 Trong Git, Repository là một kho chứa, lưu trữ source code của bạn. Có hai loại repository, mình tạm gọi là:
 
 * **Local repository:** Là repository được lưu tại một máy tính không. Bạn có thể thêm, sửa, xóa file, tạo **"commmit"** để lưu lại nhưng chưa thể dùng để chia sẻ tới người khác được. Để tạo local repository, đơn giản tại folder chứa source, sau đó bạn thực hiện command line:
@@ -22,7 +22,7 @@ Initialized empty Git repository in /home/ubuntu/my-project/.git/
 ```
 * **Server repository:** Là repository nhưng được lưu tại server của các hosting-service sử dụng Git. Một số hosting-service các bạn có thể biết như: Github, Gitlab, Bitbucket... Repository này có thể dùng để share tới những người khác để họ có quyền truy cập và lấy source code về. Để tạo server repository, bạn đơn giản truy cập vào trang web của hosting-service bạn dùng và thực hiện qua vài cú click tùy nhà cung cấp dịch vụ.
 
-**Làm việc với repository**
+### **Làm việc với repository**
 
 1. Tạo một repository trên máy, ta chỉ cần tạo một folder cho nó, rồi thực hiện câu lệnh:
 ```php
@@ -34,14 +34,14 @@ Initialized empty Git repository in /home/ubuntu/my-project/.git/
 ```
 Đó là tổng kết toàn bộ kiến thức về repository trong Git. Bây giờ chúng ta hãy chuyển sang phần tiếp theo nhé!
 
-**Commit**
+## **Commit**
 Tiếp đây cũng là một khái niệm quan trọng của Git nên các bạn chú ý nha. Cho bạn xem một cái ảnh này trước đi ha (Ảnh Google):
 
 ![alt](https://images.viblo.asia/6525d9ce-66c9-4e2d-a462-6702bb2caf2a.png)
 
 Quay lại với bức hình cái cây ở trên. Bạn để ý sẽ thấy trên mỗi cành đều có những quả tròn màu xanh, đỏ, vàng. Mỗi quả tương ứng với một "commit". Vậy commit là gì?
 
-**Commit là gì?**
+### **Commit là gì?**
 
 Trên mỗi **branch** bạn làm việc, sau khi sửa đổi các file source code... Những thay đổi đấy cần **được lưu lại** bằng cách tạo ra một điểm mốc đánh dấu. Điểm đánh dấu các thay đổi này gọi là **Commit**. Tại mỗi commit, git chụp lại toàn bộ dữ liệu, tạo ra một snapshot version hóa dữ liệu.
 
@@ -56,7 +56,7 @@ Mỗi commit được tạo ra gồm một số thông tin chính:
   - Full: Chuỗi SHA đầy đủ
   - Short: Là 7 ký tự đầu tiên được cắt ra từ chuỗi Full
 
-**Làm việc với commit**
+### **Làm việc với commit**
 1. Tạo một commit lưu lại các thay sửa đổi.
 ```php
 # Cú pháp: git commit -m <message>
@@ -122,19 +122,19 @@ Sau khi chạy lệnh rebase, những file bị conflict sẽ hiện thị với
 > > git config user.name "Nguyen Huu Kim"
 > > git config user.email "kimnh@webee.asia"
 > ```
-**Branch**
+## **Branch**
 
-**Ví von vui về Branch**
+### **Ví von vui về Branch**
 
 Trong một project, mình hay ví von vui như này. Nếu mình coi Repository bên trên như là một cái gốc cây. Thì Branch sẽ các cành, các nhánh con phát triển từ cái gốc (Repository) mà thành như hình cái cây bên trên. Như bạn biết, một cái cây thì phải có một thân cây to đùng. Cái thân cây cũng chẳng qua chỉ là một cái nhánh (branch), chỉ khác là nó to mà thôi. Và nó là cái Branch chính **để sinh ra (checkout)** những branch nhỏ hơn tạo thành một cây project sum sê. Trong Git, cái thân cây đó chính là branch chủ đạo có tên là **master** 😄.
 
-**Branch sinh ra để làm gì?**
+### **Branch sinh ra để làm gì?**
 
 Như đã trình bày, master branch là nhánh chính. Sau khi bạn dùng lệnh tạo repository, master branch sẽ tự động được tạo ra. "Commit" của các thay đổi đầu tiên được tạo cũng sẽ được lưu vào master branch. Hãy tưởng tượng, nếu sau khi tạo repository, bạn chỉ có lưu các thay đổi lại dưới dạng một **commit**. Như vậy, tất cả chỉ source code của project chỉ lưư tập trung tại một branch master, và cái cây Git này nó đang là một cây thân cọc trơ trụi 😄.
 
 Một dự án công nghệ thì có nhiều tính năng, khi bạn đang code dở chừng một chức năng A nhưng khách hàng thay đổi muốn có chức năng B trước, hoặc họ muốn phát triển đồng thời cả hai. Rõ ràng, chúng ta không thể lưu chung tại một branch master mãi được. Do đó, branch sinh ra để giải quyết vấn đề này. Mỗi branch cho các chức năng A, B riêng và phát triển riêng biệt. Và chúng ta có thể lưu lại công việc dở dang trên mỗi branch, chuyển đổi qua lại giữa chúng; Cũng có thể gộp hai branch lại. Và bây giờ, cái cây thân cọc đã mọc thêm nhiều branch từ `master` branch.
 
-**Làm việc với branch**
+### **Làm việc với branch**
 
 Học đi đôi với hành, hãy đút túi những câu lệnh sau để sử dụng branch trong Git nhé. Giả sử bạn đang ở master sau khi tạo mới repository nhé.
 
@@ -191,9 +191,9 @@ Khi muốn chuyển sang một branch khác, hãy hết sức lưu ý rằng b�
 ```
 - Nhập message, lưu lại là xong.
 
-**Remote và Remote branch**
+## **Remote và Remote branch**
 
-**Remote**
+### **Remote**
 
 Để đẩy code lên server repository, chúng ta cần các tham chiếu tới server repository tương ứng. Các tham chiếu này được gọi là `Remote`. Mỗi remote sẽ có các thông tin:
 
@@ -204,7 +204,7 @@ Khi muốn chuyển sang một branch khác, hãy hết sức lưu ý rằng b�
 
 > Mặc định, sau khi clone một repository về máy, remote tham chiếu tới server repository được gán tên là origin.
 
-**Remote Branch**
+### **Remote Branch**
 
 Như bạn đã biết ở trên, mỗi repository có các branch. Local repository của chúng lại tham chiếu tới nhiều repository khác thông qua remote. Dĩ nhiên các repository này sẽ có các branch bị trùng tên với nhau, chẳng hạn như `master`. Vậy làm sao phân biệt branch nào của repository nào?
 
@@ -215,7 +215,7 @@ VD: Chúng ta có:
 - master
 - origin/master
 - upstream/master
-**Làm việc với remote**
+### **Làm việc với remote**
 1. Thêm một remote
 ```php
 # Cú pháp: git remote add <remote_name> <remote_url>
@@ -246,7 +246,7 @@ VD: Chúng ta có:
 > git fetch pull/2210/head:new-feature
 ```
 
-**Git flow**
+## **Git flow**
 Để làm việc với Git hiệu quả, cả team của dự án cần tuân thủ các quy tắc của git flow.
 
 1. Repository có 2 nhánh chính: `master` và `develop`. Master chứa code hoàn chỉnh, sử dụng để deploy lên production. Develop chứ code mới nhất đang được phát triển; sử dụng để deploy lên server testing. Hai nhánh này cần được bảo vệ (protected), chỉ người có quyền mới merge, push commit lên nhánh này.
