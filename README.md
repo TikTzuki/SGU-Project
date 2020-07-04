@@ -247,6 +247,7 @@ VD: Chúng ta có:
 ```
 
 ## **Git flow**
+
 Để làm việc với Git hiệu quả, cả team của dự án cần tuân thủ các quy tắc của git flow.
 
 1. Repository có 2 nhánh chính: `master` và `develop`. Master chứa code hoàn chỉnh, sử dụng để deploy lên production. Develop chứ code mới nhất đang được phát triển; sử dụng để deploy lên server testing. Hai nhánh này cần được bảo vệ (protected), chỉ người có quyền mới merge, push commit lên nhánh này.
