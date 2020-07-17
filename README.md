@@ -6,10 +6,6 @@ git init
 git add .
 git commit -m "Save my first changed"
 ```
-Ngoài ra cũng có một số GUI tool giúp bạn dùng mà không phải dùng lệnh. Nhưng mà mình thấy nó chẳng cần thiết chút nào. Dùng terminal là xong hết, mà lại đơn giản. Dùng tool lại phải cài đặt, rồi phải học cách dùng, bla bla... 😄
-
-Trong bài này, chúng ta sẽ sử dụng Git trên terminal nhé. Không có tool tiếc gì ở đây 😛 cả.
-
 ## **Repository**
 ### **Repository là gì?**
 Trong Git, Repository là một kho chứa, lưu trữ source code của bạn. Có hai loại repository, mình tạm gọi là:
@@ -24,18 +20,17 @@ Initialized empty Git repository in /home/ubuntu/my-project/.git/
 
 ### **Làm việc với repository**
 
-1. Tạo một repository trên máy, ta chỉ cần tạo một folder cho nó, rồi thực hiện câu lệnh:
+- Tạo một repository trên máy, ta chỉ cần tạo một folder cho nó, rồi thực hiện câu lệnh:
 ```php
 > git init
 ```
-2. Tạo một local repository từ server repository:
+- Tạo một local repository từ server repository:
 ```php
 > git clone repository_url
 ```
-Đó là tổng kết toàn bộ kiến thức về repository trong Git. Bây giờ chúng ta hãy chuyển sang phần tiếp theo nhé!
 
 ## **Commit**
-Tiếp đây cũng là một khái niệm quan trọng của Git nên các bạn chú ý nha. Cho bạn xem một cái ảnh này trước đi ha (Ảnh Google):
+Tiếp đây cũng là một khái niệm quan trọng của Git.
 
 ![alt](https://images.viblo.asia/6525d9ce-66c9-4e2d-a462-6702bb2caf2a.png)
 
