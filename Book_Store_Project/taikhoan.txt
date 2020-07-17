@@ -1,0 +1,8 @@
+Đăng nhập bằng số điện thoại và password
+(`Tên`, `Mail`, `Mật khẩu`, `Số điện thoại`, `sex`, Quyền)
+( 'Long', 'tranlong@gmail.com', 'P@ssword1', '0858267296', 1),
+( 'Ninh', 'tranninh@gmail.com', 'P@ssword1', '09444555666', 1),
+( 'Vũ', 'levu@gmail.com', 'P@ssword', '09111222333', 1),
+( 'Tran', 'huynhtran@gmail.com', 'P@ssword', '09555666777',  1),
+( 'Nhi', 'trannhi@gmail.com', '12345678', '09222333444', 3),
+( 'Thủy', 'thuyta@gmail.com', '12345678', '09333444555', 2);
