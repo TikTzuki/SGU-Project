@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Built-By: TikTzuki
+Built-By: tik
 Build-Jdk: 14.0.1
 Implementation-Title: Spring Boot Blank Project (from https://github.com
  /making/spring-boot-blank)

@@ -2,7 +2,8 @@ package spring.spring_tutorial;
 
 import org.springframework.stereotype.Component;
 
-public class Nude{
+@Component
+public class Nude implements Outfit{
 public void wear() {
 	System.out.println("Nhuy is naked");
 }
