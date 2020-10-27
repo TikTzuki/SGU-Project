@@ -1,4 +1,0 @@
-------------CUPS for Printer
-sudo apt install cups
-sudo systemctl start cups
-sudo systemctl stop cups
