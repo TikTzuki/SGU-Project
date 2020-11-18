@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2020-11-18T04:28:32.080Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4315.5 Safari/537.36" etag="78vOH8VAcrSGN3rvpPYj" version="13.9.8" type="github">
+<mxfile host="app.diagrams.net" modified="2020-11-18T04:28:43.344Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4315.5 Safari/537.36" etag="pN2Kuh5ZB7ytIzDLh_Tk" version="13.9.8" type="github">
   <diagram id="-hHKwc8TE8wEk4itMou8" name="Page-1">
     <mxGraphModel dx="942" dy="525" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -73,7 +73,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="u_T7zBw5QUFRuD9IZm7b-20" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="1">
-          <mxGeometry x="365" y="940" width="80" height="40" as="geometry" />
+          <mxGeometry x="365" y="910" width="80" height="40" as="geometry" />
         </mxCell>
         <mxCell id="u_T7zBw5QUFRuD9IZm7b-21" value="yes" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;" edge="1" source="u_T7zBw5QUFRuD9IZm7b-20" parent="1" target="u_T7zBw5QUFRuD9IZm7b-24">
           <mxGeometry x="-1" relative="1" as="geometry">
@@ -86,7 +86,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="u_T7zBw5QUFRuD9IZm7b-23" value="Tài khoản đã tồn tại&lt;br&gt;hay chưa?" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="1">
-          <mxGeometry x="280" y="930" width="120" height="30" as="geometry" />
+          <mxGeometry x="280" y="890" width="120" height="30" as="geometry" />
         </mxCell>
         <mxCell id="u_T7zBw5QUFRuD9IZm7b-24" value="Thông báo tài khoản đã tồn tại" style="rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" vertex="1" parent="1">
           <mxGeometry x="560" y="490" width="120" height="40" as="geometry" />
