@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2020-11-29T04:50:06.082Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4315.5 Safari/537.36" etag="lyE8gMUVvjtqDsa7Ldy5" version="13.9.8" type="github">
+<mxfile host="app.diagrams.net" modified="2020-11-29T04:59:34.320Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4315.5 Safari/537.36" etag="GQbctLsP3rByvO_PBlXf" version="13.9.8" type="github">
   <diagram id="8TcdJ06bL4BQySNWVRu1" name="Page-1">
     <mxGraphModel dx="870" dy="1694" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -239,6 +239,46 @@
         <mxCell id="poIl2KHi6eJKHSj6FBA4-57" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;" edge="1" source="poIl2KHi6eJKHSj6FBA4-56" parent="1" target="poIl2KHi6eJKHSj6FBA4-1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="455" y="20" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-58" value="Người dùng" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;strokeColor=#000000;fillColor=#FFFFFF;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="30" y="720" width="20" height="720" as="geometry" />
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-59" value=":QuanLyKhachHang" style="shape=umlLifeline;participant=umlBoundary;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;labelBackgroundColor=#ffffff;strokeColor=#000000;fillColor=#FFFFFF;fontStyle=4" vertex="1" parent="1">
+          <mxGeometry x="215" y="720" width="50" height="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-65" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;labelBackgroundColor=#ffffff;strokeColor=#000000;fillColor=#FFFFFF;" vertex="1" parent="poIl2KHi6eJKHSj6FBA4-59">
+          <mxGeometry x="20" y="120" width="10" height="1520" as="geometry" />
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-60" value=":LichSuLuuTru" style="shape=umlLifeline;participant=umlBoundary;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;labelBackgroundColor=#ffffff;strokeColor=#000000;fillColor=#FFFFFF;fontStyle=4" vertex="1" parent="1">
+          <mxGeometry x="430" y="720" width="50" height="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-64" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;labelBackgroundColor=#ffffff;strokeColor=#000000;fillColor=#FFFFFF;" vertex="1" parent="poIl2KHi6eJKHSj6FBA4-60">
+          <mxGeometry x="20" y="120" width="10" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-61" value="&lt;u&gt;:KhachHang&lt;/u&gt;" style="shape=umlLifeline;participant=umlControl;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;labelBackgroundColor=#ffffff;strokeColor=#000000;fillColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="640" y="720" width="40" height="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-62" value=":KhachHang" style="shape=umlLifeline;participant=umlEntity;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;labelBackgroundColor=#ffffff;strokeColor=#000000;fillColor=#FFFFFF;fontStyle=4" vertex="1" parent="1">
+          <mxGeometry x="850" y="720" width="40" height="1690" as="geometry" />
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-63" value=":HoaDon" style="shape=umlLifeline;participant=umlEntity;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;labelBackgroundColor=#ffffff;strokeColor=#000000;fillColor=#FFFFFF;fontStyle=4" vertex="1" parent="1">
+          <mxGeometry x="1060" y="720" width="40" height="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-66" value="Quản lý khách hàng" style="endArrow=open;endFill=1;endSize=12;html=1;strokeColor=#000000;" edge="1" parent="1" source="poIl2KHi6eJKHSj6FBA4-58" target="poIl2KHi6eJKHSj6FBA4-65">
+          <mxGeometry x="-0.0742" y="10" width="160" relative="1" as="geometry">
+            <mxPoint x="90" y="870" as="sourcePoint" />
+            <mxPoint x="220" y="870" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="190" y="840" />
+            </Array>
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="poIl2KHi6eJKHSj6FBA4-67" value="" style="endArrow=open;endFill=1;endSize=12;html=1;strokeColor=#000000;" edge="1" parent="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="280" y="890" as="sourcePoint" />
+            <mxPoint x="440" y="890" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
