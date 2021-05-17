@@ -3,6 +3,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.Mac;
@@ -15,24 +16,25 @@ public class SignatureAlgorithm {
 	 */
 	public static String signApiRequest(Map<String, String> params, String body, String appSecret, String signMethod, String apiName) throws IOException {
 		// first: sort all text parameters
-//		String[] keys = params.keySet().toArray(new String[0]);
-//		Arrays.sort(keys);
+		String[] keys = params.keySet().toArray(new String[0]);
+		Arrays.sort(keys);
 
 		// second: connect all text parameters with key and value
 		StringBuilder query = new StringBuilder();
-//       query.append(apiName);
-//		for (String key : keys) {
-//			String value = params.get(key);
-//			if (areNotEmpty(key, value)) {
-//				query.append(key).append(value);
-//			}
-//		}
-
+       query.append(apiName);
+		for (String key : keys) {
+			String value = params.get(key);
+			if (areNotEmpty(key, value)) {
+				query.append(key).append(value);
+			}
+		}
+		
 		// third：put the body to the end
 		if (body != null) {
 			query.append(body);
 		}
 
+		System.out.println(query);
 		// next : sign the whole request
 		byte[] bytes = null;
 		
@@ -50,8 +52,11 @@ public class SignatureAlgorithm {
     	byte[] bytes = null;
     	try {
 	        SecretKey secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+
 	        Mac mac = Mac.getInstance(secretKey.getAlgorithm());
+
 	        mac.init(secretKey);
+
 	        bytes = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
     	} catch (GeneralSecurityException gse) {
             throw new IOException(gse.toString());
@@ -80,9 +85,11 @@ public class SignatureAlgorithm {
     
     public static void main(String[] args) {
 		try {
-			System.out.println( signApiRequest(null, "/test/apibar2foo1foo_bar3foobar4", "4r", "sha256", "hihi"));
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("pageIndex", "0");
+			params.put("pageSize", "10");
+			System.out.println( signApiRequest(params, "body", "app_secret", "sha256", "/api/catalog"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
